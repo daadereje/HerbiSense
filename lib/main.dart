@@ -1,23 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:herbisense/screens/home_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'config/app_config.dart';
+import 'core/routing/app_router.dart';
+import 'core/theme/app_theme.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize app configuration
+  await AppConfig.init();
+
+  runApp(
+    const ProviderScope(
+      child: HerbiSenseApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class HerbiSenseApp extends ConsumerWidget {
+  const HerbiSenseApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(goRouterProvider);
+
+    return MaterialApp.router(
+      title: AppConfig.appName,
       debugShowCheckedModeBanner: false,
-      title: 'HerbiSense',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-        useMaterial3: true,
-      ),
-      home: const HomeScreen(),
+      theme: AppTheme.lightTheme,
+      routerConfig: router,
     );
   }
 }
