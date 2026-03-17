@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:herbisense/presentation/auth/login/login_screen.dart';
+import 'package:herbisense/presentation/recommendations/recommendations_screen.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/strings.dart';
 import '../../core/widgets/shared/header_widget.dart';
@@ -20,8 +22,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(
-        () => ref.read(homeViewModelProvider.notifier).loadHomeData());
+    Future.microtask(() => ref.read(homeViewModelProvider.notifier).loadHomeData());
   }
 
   @override
@@ -32,29 +33,45 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: CustomScrollView(
         slivers: [
           HeaderWidget(
+            // margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             title: AppStrings.homeTitle,
             subtitle: AppStrings.homeSubtitle,
+            // Placeholder for future actions:
             actions: [
               ElevatedButton(
-                onPressed: () {},
-                child: const Text(AppStrings.searchHerbs),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const RecommendationsScreen(),
+                    ),
+                  );
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Text(AppStrings.getStarted),
+                    SizedBox(width: 8),
+                    Icon(Icons.rocket_launch_outlined),
+                  ],
+                ),
               ),
-              const SizedBox(width: 12),
-              OutlinedButton(
-                onPressed: () {},
-                child: const Text(AppStrings.skinConditions),
-              ),
+              // const SizedBox(width: 12),
+              // OutlinedButton(
+              //   onPressed: () {},
+              //   child: const Text(AppStrings.skinConditions),
+              // ),
             ],
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(5.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (state.isLoading) ...[
                     const LinearProgressIndicator(),
-                    const SizedBox(height: 16),
+                    // const SizedBox(height: 16),
                   ],
                   _buildHowToUseSection(),
                   const SizedBox(height: 32),
@@ -67,7 +84,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   _buildEvidenceBasedCard(),
                   const SizedBox(height: 16),
                   const TrustedHealersCard(),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),

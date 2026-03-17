@@ -4,11 +4,8 @@ import 'config/app_config.dart';
 import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize app configuration
-  await AppConfig.init();
 
   runApp(
     const ProviderScope(

@@ -8,8 +8,20 @@ class AppConfig {
   static const int certifiedHealers = 500;
   static const int communityMembers = 10000;
 
+  // Cache initialization state to avoid repeated work
+  static bool _isInitialized = false;
+
   static Future<void> init() async {
-    // Initialize any services here
-    return Future.value();
+    if (_isInitialized) {
+      return;
+    }
+    
+    // Use compute for any heavy initialization work
+    await Future.microtask(() {
+      // Initialize any services here
+      // Keep this minimal for fast startup
+    });
+    
+    _isInitialized = true;
   }
 }

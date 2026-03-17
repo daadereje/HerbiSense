@@ -8,10 +8,17 @@ class HomeViewModel extends StateNotifier<HomeState> {
   HomeViewModel() : super(HomeState.initial());
 
   Future<void> loadHomeData() async {
+    // Skip loading if already loaded to prevent redundant work
+    if (state.isDataLoaded || state.isLoading) {
+      return;
+    }
+
     state = state.copyWith(isLoading: true);
     try {
-      // Simulate loading data
-      await Future.delayed(const Duration(milliseconds: 500));
+      // Remove artificial delay for faster startup
+      // await Future.delayed(const Duration(milliseconds: 500));
+      
+      // Load data immediately
       state = state.copyWith(
         isLoading: false,
         isDataLoaded: true,

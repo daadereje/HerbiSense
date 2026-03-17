@@ -2,12 +2,13 @@ class AppStrings {
   // Home Page
   static const String homeTitle = 'Discover Nature\'s Wisdom for Radiant Skin';
   static const String homeSubtitle = 'Ancient Ethiopian herbal remedies meet modern dermatology for your skin wellness journey.';
-  static const String searchHerbs = 'Search Herbs';
+  static const String searchHerbs = 'Search Herbs or Skin Issues...';
+   static const String getStarted = 'Get Started';
   static const String skinConditions = 'Skin Conditions';
 
   // How to Use
-  static const String howToUse = 'How to Use HerbSénsse';
-  static const String howToUseSubtitle = 'Get started in 5 easy steps. Find the right herbs for your skin in minutes.';
+  static const String howToUse = 'How to Use HerbiSense?';
+  static const String howToUseSubtitle = 'Get started in 4 easy steps. Find the right herbs for your skin in minutes.';
 
   // Steps
   static const String step1Title = 'Search for Herbs';
@@ -20,18 +21,18 @@ class AppStrings {
   static const String step4Desc = 'Get herb recommendations based on your skin needs';
 
   // Why Choose
-  static const String whyChoose = 'Why Choose HerbSénsse';
+  static const String whyChoose = 'Why Choose HerbiSense?';
 
   // Features
   static const String herbsCount = '100+ Herbs';
-  static const String whoVerified = 'WHO Verified';
+  static const String whoVerified = 'Healer Verified';
   static const String runBasedSystem = 'Run-Based System';
 
   // Cards
   static const String comprehensiveDb = 'Comprehensive Database';
-  static const String comprehensiveDbDesc = 'Access verified information on 100+ Ethiopian herbs with scientific and traditional insights.';
+  static const String comprehensiveDbDesc = 'Access verified information on 100+ Ethiopian herbs with traditional insights.';
   static const String evidenceBased = 'Evidence-Based Information';
-  static const String evidenceBasedDesc = 'All herbal information is verified by WHO guidelines and traditional healer.';
+  static const String evidenceBasedDesc = 'All herbal information is verified by researchers and traditional healers.';
   static const String trustedTitle = 'Trusted by Traditional Healers & Modern Science';
   static const String trustedDesc = 'Our platform combines centuries of Ethiopian traditional wisdom with modern verification processes.';
 
@@ -39,14 +40,14 @@ class AppStrings {
   static const String communityDriven = 'Community-Driven';
   static const String multilingualAccess = 'Multilingual Access';
   static const String fastReliable = 'Fast & Reliable';
-  static const String threeLanguages = '3+ Languages';
+  static const String threeLanguages = '2+ Languages';
   static const String instantResults = 'Instant Results';
-  static const String accuracy98 = '98% Accuracy';
+  static const String accuracy98 = 'Accuracy';
 
   // Extra
   static const String alignedStrategy = 'Aligned with Traditional Medicine Strategy';
-  static const String healersContribute = '500+ certified healers contribute';
-  static const String activeMembers = '10,000+ active community members';
+  static const String healersContribute = 'Traditional healers contribute';
+  // static const String activeMembers = '10,000+ active community members';
   static const String verifiedSite = 'Verified information site';
 
   // Directory Page
@@ -56,7 +57,7 @@ class AppStrings {
   static const String publishedHerbs = 'Published Herbs';
   static const String skinCondition = 'Skin Condition';
   static const String herbalDirectory = 'Herbal Directory';
-  static const String footer = '© 2026 HerbiSense. Made with ❤️ in Ethiopia';
+  static const String footer = '© 2026 HerbiSense.';
 
   // Recommendations Page
   static const String recommendationsTitle = 'Personalized Herbal Recommendations';
@@ -75,6 +76,7 @@ class AppStrings {
   static const String tip2 = 'Specify severity levels for more personalized herbal suggestions';
   static const String tip3 = 'Traditional Ethiopian remedies often combine multiple herbs for enhanced effects';
   static const String continueToProfile = 'Continue to Your Profile >';
+  static const String getSuggestions = 'Get Personalized Suggestions';
   static const String selectAtLeastOne = 'Please select at least one skin condition to continue';
   static const String privacyNotice = 'Your information is private and used only to provide better recommendations';
   static const String whyTrust = 'Why Trust Our Recommendations?';

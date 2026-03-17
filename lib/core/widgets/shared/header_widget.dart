@@ -12,7 +12,7 @@ class HeaderWidget extends StatelessWidget {
     required this.title,
     this.subtitle,
     this.actions,
-    this.height = 220,
+    this.height = 180,
   });
 
   @override
@@ -32,10 +32,10 @@ class HeaderWidget extends StatelessWidget {
           ),
           child: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
                     title,
@@ -56,8 +56,11 @@ class HeaderWidget extends StatelessWidget {
                     ),
                   ],
                   if (actions != null) ...[
-                    const SizedBox(height: 16),
-                    Row(children: actions!),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: actions!,
+                    ),
                   ],
                 ],
               ),
