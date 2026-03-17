@@ -4,11 +4,10 @@ import '../constants/colors.dart';
 
 class AppTheme {
   static ThemeData lightTheme = ThemeData(
-    primarySwatch: Colors.green,
-    primaryColor: AppColors.primaryGreen,
     fontFamily: GoogleFonts.roboto().fontFamily,
     useMaterial3: true,
-    colorScheme: const ColorScheme.light(
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColors.primaryGreen,
       primary: AppColors.primaryGreen,
       secondary: AppColors.secondaryGreen,
       surface: AppColors.white,
@@ -32,7 +31,7 @@ class AppTheme {
         ),
       ),
     ),
-    cardTheme: CardThemeData(
+    cardTheme: CardTheme(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
