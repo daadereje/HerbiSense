@@ -58,30 +58,15 @@ class TrustedHealersCard extends StatelessWidget {
           const SizedBox(height: 12),
           const Divider(color: AppColors.darkCardBorder),
           const SizedBox(height: 8),
-<<<<<<< HEAD
-          // Use Flexible to allow text to take only needed space
-          const Flexible(
-            child: Text(
-              '• ${AppStrings.alignedStrategy}\n'
-              '• ${AppStrings.healersContribute}\n'
-              '• ${AppStrings.activeMembers}\n'
-              '• ${AppStrings.verifiedSite}',
-              style: TextStyle(
-                fontSize: 13,
-                height: 1.6,
-                color: AppColors.textSecondary,
-              ),
-=======
+
           const Text(
             '• ${AppStrings.alignedStrategy}\n'
             '• ${AppStrings.healersContribute}\n'
-            // '• ${AppStrings.activeMembers}\n'
             '• ${AppStrings.verifiedSite}',
             style: TextStyle(
               fontSize: 13,
               height: 1.6,
               color: AppColors.textSecondary,
->>>>>>> 7ece2f3 (first integration)
             ),
           ),
           // Add a tiny bit of extra padding at the bottom

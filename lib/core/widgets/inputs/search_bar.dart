@@ -4,7 +4,7 @@ import '../../constants/colors.dart';
 class CustomSearchBar extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
-  final Function(String) onChanged;
+  final ValueChanged<String> onChanged;
 
   const CustomSearchBar({
     super.key,
@@ -21,7 +21,7 @@ class CustomSearchBar extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
