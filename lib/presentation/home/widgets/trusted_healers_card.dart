@@ -17,6 +17,7 @@ class TrustedHealersCard extends StatelessWidget {
         border: Border.all(color: AppColors.darkCardBorder),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min, // This is important!
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
@@ -36,30 +37,43 @@ class TrustedHealersCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Wrap(
-            spacing: 12,
-            runSpacing: 8,
-            children: const [
-              ChipWithIcon(icon: Icons.verified, label: AppStrings.whoVerified),
-              ChipWithIcon(icon: Icons.people, label: 'Traditional Healers'),
-              ChipWithIcon(icon: Icons.groups, label: AppStrings.communityDriven),
-              ChipWithIcon(icon: Icons.star, label: AppStrings.accuracy98),
-            ],
+          // Use LayoutBuilder to make chips responsive
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return Wrap(
+                spacing: 12,
+                runSpacing: 8,
+                children: const [
+                  ChipWithIcon(
+                      icon: Icons.verified, label: AppStrings.whoVerified),
+                  ChipWithIcon(
+                      icon: Icons.people, label: 'Traditional Healers'),
+                  ChipWithIcon(
+                      icon: Icons.groups, label: AppStrings.communityDriven),
+                  ChipWithIcon(icon: Icons.star, label: AppStrings.accuracy98),
+                ],
+              );
+            },
           ),
           const SizedBox(height: 12),
           const Divider(color: AppColors.darkCardBorder),
           const SizedBox(height: 8),
-          const Text(
-            '• ${AppStrings.alignedStrategy}\n'
-            '• ${AppStrings.healersContribute}\n'
-            '• ${AppStrings.activeMembers}\n'
-            '• ${AppStrings.verifiedSite}',
-            style: TextStyle(
-              fontSize: 13,
-              height: 1.6,
-              color: AppColors.textSecondary,
+          // Use Flexible to allow text to take only needed space
+          const Flexible(
+            child: Text(
+              '• ${AppStrings.alignedStrategy}\n'
+              '• ${AppStrings.healersContribute}\n'
+              '• ${AppStrings.activeMembers}\n'
+              '• ${AppStrings.verifiedSite}',
+              style: TextStyle(
+                fontSize: 13,
+                height: 1.6,
+                color: AppColors.textSecondary,
+              ),
             ),
           ),
+          // Add a tiny bit of extra padding at the bottom
+          const SizedBox(height: 4),
         ],
       ),
     );

@@ -20,7 +20,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => ref.read(homeViewModelProvider.notifier).loadHomeData());
+    Future.microtask(
+        () => ref.read(homeViewModelProvider.notifier).loadHomeData());
   }
 
   @override
@@ -66,7 +67,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   _buildEvidenceBasedCard(),
                   const SizedBox(height: 16),
                   const TrustedHealersCard(),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),
