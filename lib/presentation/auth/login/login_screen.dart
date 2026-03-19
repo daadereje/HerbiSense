@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/strings.dart';
+import '../../../core/widgets/navigation/app_bottom_nav_bar.dart';
 import 'login_view_model.dart';
 import 'widgets/login_header.dart';
 import 'widgets/login_form.dart';
@@ -33,10 +34,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
+      bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 2),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
+              // const TopNavigationBar(),
               const LoginHeader(),
               const SizedBox(height: 30),
               _buildWelcomeMessage(),
@@ -54,7 +57,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 error: state.error,
               ),
               const SizedBox(height: 30),
-              const FeaturesSection(),
+              // const FeaturesSection(),
               const SizedBox(height: 30),
               const LoginFooter(),
             ],

@@ -3,6 +3,8 @@ class AppStrings {
   static const String homeTitle = 'Discover Nature\'s Wisdom for Radiant Skin';
   static const String homeSubtitle = 'Ancient Ethiopian herbal remedies meet modern dermatology for your skin wellness journey.';
   static const String searchHerbs = 'Search Herbs or Skin Issues...';
+    static const String searchSaved = 'Search Saved Herb...';
+
    static const String getStarted = 'Get Started';
   static const String skinConditions = 'Skin Conditions';
 
@@ -60,7 +62,7 @@ class AppStrings {
   static const String footer = '© 2026 HerbiSense.';
 
   // Recommendations Page
-  static const String recommendationsTitle = 'Personalized Herbal Recommendations';
+  static const String recommendationsTitle = 'Herbal Recommendations';
   static const String recommendationsSubtitle = 'Get traditional Ethiopian remedies tailored to your skin concerns';
   static const String personalized = 'Personalized';
   static const String traditionalWisdom = 'Traditional Wisdom';
@@ -167,4 +169,24 @@ class AppStrings {
   static const String invalidEmail = 'Please enter a valid email address';
   static const String mustAgreeToTerms = 'You must agree to the Terms of Service and Privacy Policy';
   static const String registrationFailed = 'Registration failed. Please try again.';
+
+  // Contact Page
+  static const String contactTitle = 'Contact HerbiSense';
+  static const String contactSubtitle = 'We would love to hear from you. Reach out with questions, feedback, or partnership ideas.';
+  static const String contactEmail = 'hello@herbisense.com';
+  static const String contactPhone = '+251 900 000 000';
+  static const String contactAddress = 'Addis Ababa, Ethiopia';
+  static const String contactAction = 'Send Us A Message';
+
+  // Saved Herbs Page
+  static const String savedHerbsTitle = 'Saved Herbs';
+  static const String savedHerbsSubtitle = 'Access herbs you bookmarked to review later';
+  static const String savedHerbsEmpty = 'You have no saved herbs yet. Browse the directory and tap save to keep your favorites.';
+  static const String savedHerbsCountLabel = 'Saved';
+
+  // Favorites Page
+  static const String favoritesTitle = 'Favorites';
+  static const String favoritesSubtitle = 'Your bookmarked herbs and remedies in one place';
+  static const String favoritesEmpty = 'You have no favorites yet. Tap the heart icon on a herb or remedy to add it here.';
+  static const String favoritesCountLabel = 'Favorites';
 }

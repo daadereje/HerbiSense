@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/strings.dart';
+import '../../../core/widgets/navigation/app_bottom_nav_bar.dart';
 import '../../../core/widgets/navigation/top_navigation_bar.dart';
 import 'register_view_model.dart';
 import 'widgets/register_hero.dart';
@@ -46,51 +47,62 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const TopNavigationBar(),
-              const RegisterHero(),
-              const SizedBox(height: 30),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 5,
-                      child: BenefitsSection(
-                        benefits: state.benefits,
-                      ),
-                    ),
-                    const SizedBox(width: 30),
-                    Expanded(
-                      flex: 7,
-                      child: RegisterForm(
-                        fullNameController: _fullNameController,
-                        emailController: _emailController,
-                        passwordController: _passwordController,
-                        confirmPasswordController: _confirmPasswordController,
-                        obscurePassword: state.obscurePassword,
-                        obscureConfirmPassword: state.obscureConfirmPassword,
-                        agreeToTerms: state.agreeToTerms,
-                        isLoading: state.isLoading,
-                        error: state.error,
-                        onTogglePassword: notifier.togglePasswordVisibility,
-                        onToggleConfirmPassword: notifier.toggleConfirmPasswordVisibility,
-                        onTermsChanged: notifier.toggleTermsAgreement,
-                        onSubmit: () => _handleRegister(notifier),
-                      ),
-                    ),
-                  ],
-                ),
+      bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 2),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isNarrow = constraints.maxWidth < 800;
+
+          final benefits = BenefitsSection(benefits: state.benefits);
+          final form = RegisterForm(
+            fullNameController: _fullNameController,
+            emailController: _emailController,
+            passwordController: _passwordController,
+            confirmPasswordController: _confirmPasswordController,
+            obscurePassword: state.obscurePassword,
+            obscureConfirmPassword: state.obscureConfirmPassword,
+            agreeToTerms: state.agreeToTerms,
+            isLoading: state.isLoading,
+            error: state.error,
+            onTogglePassword: notifier.togglePasswordVisibility,
+            onToggleConfirmPassword: notifier.toggleConfirmPasswordVisibility,
+            onTermsChanged: notifier.toggleTermsAgreement,
+            onSubmit: () => _handleRegister(notifier),
+          );
+
+          return SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  // const TopNavigationBar(),
+                  const RegisterHero(),
+                  const SizedBox(height: 30),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: isNarrow
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              benefits,
+                              const SizedBox(height: 24),
+                              form,
+                            ],
+                          )
+                        : Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(flex: 5, child: benefits),
+                              const SizedBox(width: 30),
+                              Expanded(flex: 7, child: form),
+                            ],
+                          ),
+                  ),
+                  const SizedBox(height: 40),
+                  const FooterWidget(),
+                ],
               ),
-              const SizedBox(height: 40),
-              const FooterWidget(),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

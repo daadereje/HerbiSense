@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:herbisense/core/widgets/navigation/app_bottom_nav_bar.dart';
 import '../../core/constants/colors.dart';
+import '../../core/widgets/navigation/top_navigation_bar.dart';
 import 'about_view_model.dart';
 import 'widgets/hero_section.dart';
 import 'widgets/stats_grid.dart';
@@ -31,6 +33,7 @@ class _AboutScreenState extends ConsumerState<AboutScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
+      bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 2,),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(

@@ -6,6 +6,7 @@ import '../../presentation/recommendations/recommendations_screen.dart';
 import '../../presentation/about/about_screen.dart';
 import '../../presentation/auth/login/login_screen.dart';
 import '../../presentation/auth/register/register_screen.dart';
+import '../../presentation/contact/contact_screen.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -40,6 +41,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/register',
         name: 'register',
         builder: (context, state) => const RegisterScreen(),
+      ),
+      GoRoute(
+        path: '/contact',
+        name: 'contact',
+        builder: (context, state) => const ContactScreen(),
       ),
       // Add other routes here
     ],

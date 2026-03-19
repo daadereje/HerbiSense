@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/strings.dart';
+import '../../core/widgets/navigation/app_bottom_nav_bar.dart';
 import '../../core/widgets/inputs/search_bar.dart';
+import '../../core/widgets/shared/header_widget.dart';
 import 'recommendations_view_model.dart';
 import 'widgets/concern_grid.dart';
 import 'widgets/tips_card.dart';
@@ -11,7 +13,8 @@ class RecommendationsScreen extends ConsumerStatefulWidget {
   const RecommendationsScreen({super.key});
 
   @override
-  ConsumerState<RecommendationsScreen> createState() => _RecommendationsScreenState();
+  ConsumerState<RecommendationsScreen> createState() =>
+      _RecommendationsScreenState();
 }
 
 class _RecommendationsScreenState extends ConsumerState<RecommendationsScreen> {
@@ -22,7 +25,9 @@ class _RecommendationsScreenState extends ConsumerState<RecommendationsScreen> {
     super.initState();
     _searchController = TextEditingController();
     Future.microtask(
-      () => ref.read(recommendationsViewModelProvider.notifier).loadSkinConcerns(),
+      () => ref
+          .read(recommendationsViewModelProvider.notifier)
+          .loadSkinConcerns(),
     );
   }
 
@@ -39,16 +44,15 @@ class _RecommendationsScreenState extends ConsumerState<RecommendationsScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
+      bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 0),
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            expandedHeight: 220,
-            pinned: true,
-            automaticallyImplyLeading: false,
-            backgroundColor: AppColors.secondaryGreen,
-            flexibleSpace: FlexibleSpaceBar(
-              background: _buildHeader(),
-            ),
+          HeaderWidget.compact(
+            title: 'Herbal\nRecommendations',
+            subtitle: AppStrings.recommendationsSubtitle,
+            height: 160,
+            solidColor: true,
+            language: 'en', // TODO: hook up localization when ready
           ),
           SliverToBoxAdapter(
             child: Padding(
@@ -81,64 +85,6 @@ class _RecommendationsScreenState extends ConsumerState<RecommendationsScreen> {
                 ],
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: const BoxDecoration(
-        color: AppColors.secondaryGreen,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SafeArea(
-            bottom: false,
-            child: Row(
-              children: [
-                IconButton(
-                  padding: const EdgeInsets.only(right: 12),
-                  icon: const Icon(Icons.arrow_back, color: AppColors.white),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                const Expanded(
-                  child: Text(
-                    AppStrings.recommendationsTitle,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.white,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 4),
-          const Text(
-            AppStrings.recommendationsSubtitle,
-            style: TextStyle(
-              fontSize: 14,
-              color: AppColors.textLight,
-            ),
-          ),
-          const SizedBox(height: 16),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              FeatureBadge(icon: Icons.person, label: AppStrings.personalized),
-              FeatureBadge(icon: Icons.auto_awesome, label: AppStrings.traditionalWisdom),
-              FeatureBadge(icon: Icons.health_and_safety, label: AppStrings.safeAndNatural),
-            ],
           ),
         ],
       ),

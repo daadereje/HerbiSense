@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:herbisense/presentation/auth/login/login_screen.dart';
-import 'package:herbisense/presentation/recommendations/recommendations_screen.dart';
+import 'package:herbisense/presentation/recommendations/recommendations_screen.dart'
+    show RecommendationsScreen;
 import '../../core/constants/colors.dart';
 import '../../core/constants/strings.dart';
 import '../../core/widgets/shared/header_widget.dart';
 import '../../core/widgets/cards/step_card.dart';
 import '../../core/widgets/cards/feature_pill.dart';
 import '../../core/widgets/cards/info_card.dart';
+import '../../core/widgets/navigation/app_bottom_nav_bar.dart';
 import 'home_view_model.dart';
 import 'widgets/trusted_healers_card.dart';
 
@@ -30,45 +31,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final state = ref.watch(homeViewModelProvider);
 
     return Scaffold(
+      // bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 0),
       body: CustomScrollView(
         slivers: [
-          HeaderWidget(
-            // margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          HeaderWidget.compact(
             title: AppStrings.homeTitle,
             subtitle: AppStrings.homeSubtitle,
-            // Placeholder for future actions:
-            actions: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const RecommendationsScreen(),
-                    ),
-                  );
-                },
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Text(AppStrings.getStarted),
-                    SizedBox(width: 8),
-                    Icon(Icons.rocket_launch_outlined),
-                  ],
-                ),
-              ),
-              // const SizedBox(width: 12),
-              // OutlinedButton(
-              //   onPressed: () {},
-              //   child: const Text(AppStrings.skinConditions),
-              // ),
-            ],
+            height: 200,
+            actions: const [_HomeBadgesRow()],
+            language: 'en', // TODO: hook up localization when ready
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(5.0),
+              padding: const EdgeInsets.fromLTRB(12, 6, 12, 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                                    const SizedBox(height: 10),
+
+                  const Center(child: _GetStartedButton()),
+                  const SizedBox(height: 16),
                   if (state.isLoading) ...[
                     const LinearProgressIndicator(),
                     // const SizedBox(height: 16),
@@ -191,6 +173,91 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       tags: [
         AppStrings.threeLanguages,
         AppStrings.instantResults,
+      ],
+    );
+  }
+}
+
+class _GetStartedButton extends StatelessWidget {
+  const _GetStartedButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      onPressed: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const RecommendationsScreen()),
+        );
+      },
+      style: OutlinedButton.styleFrom(
+        foregroundColor: AppColors.secondaryGreen,
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+        side: const BorderSide(color: AppColors.secondaryGreen, width: 2),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        elevation: 0,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          Text(
+            AppStrings.getStarted,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(width: 8),
+          Icon(Icons.rocket_launch_outlined),
+        ],
+      ),
+    );
+  }
+}
+
+class _HomeBadgesRow extends StatelessWidget {
+  const _HomeBadgesRow();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: const [
+        _HomeBadge(icon: Icons.person, label: AppStrings.personalized),
+         SizedBox(width: 20),
+        _HomeBadge(icon: Icons.auto_awesome, label: AppStrings.traditionalWisdom),
+                SizedBox(width: 20),
+        _HomeBadge(icon: Icons.health_and_safety, label: AppStrings.safeAndNatural),
+      ],
+    );
+  }
+}
+
+class _HomeBadge extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  const _HomeBadge({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Colors.white24,
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white30),
+          ),
+          child: Icon(icon, color: Colors.white, size: 20),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ],
     );
   }

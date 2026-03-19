@@ -138,7 +138,7 @@ class RegisterForm extends StatelessWidget {
           const SizedBox(height: 24),
           _buildCreateAccountButton(),
           const SizedBox(height: 16),
-          _buildSignInLink(),
+          _buildSignInLink(context),
         ],
       ),
     );
@@ -189,7 +189,7 @@ class RegisterForm extends StatelessWidget {
     );
   }
 
-  Widget _buildSignInLink() {
+  Widget _buildSignInLink(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -198,7 +198,7 @@ class RegisterForm extends StatelessWidget {
           style: TextStyle(color: Colors.grey[600]),
         ),
         TextButton(
-          onPressed: () {},
+          onPressed: () => Navigator.of(context).pop(),
           style: TextButton.styleFrom(
             foregroundColor: AppColors.secondaryGreen,
           ),

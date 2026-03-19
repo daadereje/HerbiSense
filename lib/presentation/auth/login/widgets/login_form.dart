@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:herbisense/presentation/auth/register/register_screen.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/strings.dart';
 import '../../../../core/widgets/inputs/email_field.dart';
@@ -86,7 +87,7 @@ class LoginForm extends StatelessWidget {
           const SizedBox(height: 24),
           _buildSignInButton(),
           const SizedBox(height: 16),
-          _buildSignUpLink(),
+          _buildSignUpLink(context),
         ],
       ),
     );
@@ -168,7 +169,7 @@ class LoginForm extends StatelessWidget {
     );
   }
 
-  Widget _buildSignUpLink() {
+  Widget _buildSignUpLink(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -177,7 +178,11 @@ class LoginForm extends StatelessWidget {
           style: TextStyle(color: Colors.grey[600]),
         ),
         TextButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const RegisterScreen()),
+            );
+          },
           style: TextButton.styleFrom(
             foregroundColor: AppColors.secondaryGreen,
           ),

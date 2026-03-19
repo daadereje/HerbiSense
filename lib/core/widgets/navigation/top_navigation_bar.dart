@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../constants/colors.dart';
 import '../../constants/strings.dart';
 import '../buttons/nav_button.dart';
@@ -8,6 +9,9 @@ class TopNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final router = GoRouter.of(context);
+    final location = router.routeInformationProvider.value.uri.toString();
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       decoration: BoxDecoration(
@@ -44,14 +48,34 @@ class TopNavigationBar extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          NavButton(label: 'Home', onPressed: () {}),
-          NavButton(label: 'Herbs', onPressed: () {}),
-          NavButton(label: 'Recommendation', onPressed: () {}),
-          NavButton(label: 'About', onPressed: () {}),
-          NavButton(label: 'Contact', onPressed: () {}),
+          NavButton(
+            label: 'Home',
+            isActive: location == '/',
+            onPressed: () => _navigate(router, '/'),
+          ),
+          NavButton(
+            label: 'Herbs',
+            isActive: location == '/directory',
+            onPressed: () => _navigate(router, '/directory'),
+          ),
+          NavButton(
+            label: 'Recommendation',
+            isActive: location == '/recommendations',
+            onPressed: () => _navigate(router, '/recommendations'),
+          ),
+          NavButton(
+            label: 'About',
+            isActive: location == '/about',
+            onPressed: () => _navigate(router, '/about'),
+          ),
+          NavButton(
+            label: 'Contact',
+            isActive: location == '/contact',
+            onPressed: () => _navigate(router, '/contact'),
+          ),
           _buildLanguageSelector(),
           const SizedBox(width: 8),
-          _buildLoginButton(),
+          _buildLoginButton(router),
         ],
       ),
     );
@@ -75,9 +99,9 @@ class TopNavigationBar extends StatelessWidget {
     );
   }
 
-  Widget _buildLoginButton() {
+  Widget _buildLoginButton(GoRouter router) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () => _navigate(router, '/login'),
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.secondaryGreen,
         foregroundColor: AppColors.white,
@@ -88,5 +112,9 @@ class TopNavigationBar extends StatelessWidget {
       ),
       child: const Text('Login'),
     );
+  }
+
+  void _navigate(GoRouter router, String path) {
+    router.go(path);
   }
 }
