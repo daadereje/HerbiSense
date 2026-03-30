@@ -11,6 +11,29 @@ class AboutStatModel {
     required this.icon,
   });
 
+  factory AboutStatModel.fromJson(Map<String, dynamic> json) {
+    return AboutStatModel(
+      value: json['value']?.toString() ?? '',
+      label: json['label']?.toString() ?? '',
+      icon: _iconFromString(json['icon']?.toString()),
+    );
+  }
+
+  static IconData _iconFromString(String? name) {
+    switch (name) {
+      case 'inventory':
+        return Icons.inventory;
+      case 'eco':
+        return Icons.eco;
+      case 'history':
+        return Icons.history;
+      case 'verified':
+        return Icons.verified;
+      default:
+        return Icons.insights;
+    }
+  }
+
   static List<AboutStatModel> getMockStats() {
     return [
       AboutStatModel(

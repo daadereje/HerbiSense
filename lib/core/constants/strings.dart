@@ -2,7 +2,7 @@ class AppStrings {
   // Home Page
   static const String homeTitle = 'Discover Nature\'s Wisdom for Radiant Skin';
   static const String homeSubtitle = 'Ancient Ethiopian herbal remedies meet modern dermatology for your skin wellness journey.';
-  static const String searchHerbs = 'Search Herbs or Skin Issues...';
+  static const String searchHerbs = 'Search skin conditions...';
     static const String searchSaved = 'Search Saved Herb...';
 
    static const String getStarted = 'Get Started';

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/strings.dart';
 import '../../../core/widgets/navigation/app_bottom_nav_bar.dart';
+import '../../profile/profile_screen.dart';
+import '../../profile/profile_screen.dart' show currentUserProvider;
 import 'login_view_model.dart';
 import 'widgets/login_header.dart';
 import 'widgets/login_form.dart';
@@ -31,6 +33,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(loginViewModelProvider);
     final notifier = ref.read(loginViewModelProvider.notifier);
+
+    ref.listen(loginViewModelProvider, (previous, next) {
+      if (next.loginSuccess) {
+        ref.invalidate(currentUserProvider);
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const ProfileScreen()),
+        );
+      }
+    });
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,

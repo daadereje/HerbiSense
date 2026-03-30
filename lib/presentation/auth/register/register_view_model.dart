@@ -35,22 +35,30 @@ class RegisterViewModel extends StateNotifier<RegisterState> {
     required String password,
     required String confirmPassword,
   }) async {
-    if (fullName.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+    final nameTrimmed = fullName.trim();
+    final emailTrimmed = email.trim();
+    final passwordTrimmed = password;
+    final confirmTrimmed = confirmPassword;
+
+    if (nameTrimmed.isEmpty ||
+        emailTrimmed.isEmpty ||
+        passwordTrimmed.isEmpty ||
+        confirmTrimmed.isEmpty) {
       state = state.copyWith(error: AppStrings.fillAllFields);
       return false;
     }
 
-    if (password != confirmPassword) {
+    if (passwordTrimmed != confirmTrimmed) {
       state = state.copyWith(error: AppStrings.passwordsDoNotMatch);
       return false;
     }
 
-    if (password.length < 6) {
+    if (passwordTrimmed.length < 6) {
       state = state.copyWith(error: AppStrings.passwordTooShort);
       return false;
     }
 
-    if (!_isValidEmail(email)) {
+    if (!_isValidEmail(emailTrimmed)) {
       state = state.copyWith(error: AppStrings.invalidEmail);
       return false;
     }
@@ -60,17 +68,17 @@ class RegisterViewModel extends StateNotifier<RegisterState> {
       return false;
     }
 
-    state = state.copyWith(isLoading: true, error: null);
+    state = state.copyWith(isLoading: true, error: null, registerSuccess: false);
 
     try {
       final success = await _authRepository.register(
-        fullName: fullName,
-        email: email,
-        password: password,
+        fullName: nameTrimmed,
+        email: emailTrimmed,
+        password: passwordTrimmed,
       );
 
       if (success) {
-        state = state.copyWith(isLoading: false);
+        state = state.copyWith(isLoading: false, registerSuccess: true);
         return true;
       }
 
@@ -101,12 +109,14 @@ class RegisterState {
   final bool isLoading;
   final String? error;
   final List<BenefitModel> benefits;
+  final bool registerSuccess;
 
   RegisterState({
     required this.obscurePassword,
     required this.obscureConfirmPassword,
     required this.agreeToTerms,
     required this.isLoading,
+    required this.registerSuccess,
     this.error,
     required this.benefits,
   });
@@ -117,6 +127,7 @@ class RegisterState {
       obscureConfirmPassword: true,
       agreeToTerms: false,
       isLoading: false,
+      registerSuccess: false,
       error: null,
       benefits: BenefitModel.getRegisterBenefits(),
     );
@@ -129,6 +140,7 @@ class RegisterState {
     bool? isLoading,
     String? error,
     List<BenefitModel>? benefits,
+    bool? registerSuccess,
   }) {
     return RegisterState(
       obscurePassword: obscurePassword ?? this.obscurePassword,
@@ -137,6 +149,7 @@ class RegisterState {
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
       benefits: benefits ?? this.benefits,
+      registerSuccess: registerSuccess ?? this.registerSuccess,
     );
   }
 }

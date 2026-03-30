@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:herbisense/common/network/api_exception.dart';
 import 'package:herbisense/core/constants/colors.dart';
-import 'package:herbisense/core/constants/strings.dart';
 import 'package:herbisense/core/widgets/navigation/app_bottom_nav_bar.dart';
+import 'package:herbisense/data/repositories/feedback_repository.dart';
 
 import '../../core/widgets/shared/header_widget.dart';
 
-class FeedbackScreen extends StatefulWidget {
+class FeedbackScreen extends ConsumerStatefulWidget {
   const FeedbackScreen({super.key});
 
   @override
-  State<FeedbackScreen> createState() => _FeedbackScreenState();
+  ConsumerState<FeedbackScreen> createState() => _FeedbackScreenState();
 }
 
-class _FeedbackScreenState extends State<FeedbackScreen> {
+class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _messageController = TextEditingController();
+  bool _isSubmitting = false;
 
   @override
   void dispose() {
@@ -91,7 +94,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: _submit,
+                        onPressed: _isSubmitting ? null : _submit,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.secondaryGreen,
                           padding: const EdgeInsets.symmetric(vertical: 14),
@@ -99,10 +102,19 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text(
-                          'Submit Feedback',
-                          style: TextStyle(fontWeight: FontWeight.w700),
-                        ),
+                        child: _isSubmitting
+                            ? const SizedBox(
+                                height: 18,
+                                width: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
+                                ),
+                              )
+                            : const Text(
+                                'Submit Feedback',
+                                style: TextStyle(fontWeight: FontWeight.w700),
+                              ),
                       ),
                     ),
                   ],
@@ -163,18 +175,48 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     );
   }
 
-  void _submit() {
+  Future<void> _submit() async {
+    if (_isSubmitting) return;
     if (!_formKey.currentState!.validate()) return;
 
+    setState(() => _isSubmitting = true);
+
+    try {
+      final repo = ref.read(feedbackRepositoryProvider);
+      await repo.submitFeedback(
+        name: _nameController.text,
+        email: _emailController.text,
+        message: _messageController.text,
+      );
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Thank you for your feedback!'),
+          backgroundColor: AppColors.secondaryGreen,
+        ),
+      );
+      _formKey.currentState!.reset();
+      _nameController.clear();
+      _emailController.clear();
+      _messageController.clear();
+    } on ApiException catch (e) {
+      _showError(e.message);
+    } catch (e) {
+      _showError('Something went wrong. Please try again.');
+    } finally {
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+      }
+    }
+  }
+
+  void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Thank you for your feedback!'),
-        backgroundColor: AppColors.secondaryGreen,
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.redAccent,
       ),
     );
-    _formKey.currentState!.reset();
-    _nameController.clear();
-    _emailController.clear();
-    _messageController.clear();
   }
 }

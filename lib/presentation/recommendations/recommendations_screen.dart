@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:herbisense/data/models/skin_concern_model.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/strings.dart';
 import '../../core/widgets/navigation/app_bottom_nav_bar.dart';
@@ -8,6 +11,7 @@ import '../../core/widgets/shared/header_widget.dart';
 import 'recommendations_view_model.dart';
 import 'widgets/concern_grid.dart';
 import 'widgets/tips_card.dart';
+import '../../data/models/herb_model.dart';
 
 class RecommendationsScreen extends ConsumerStatefulWidget {
   const RecommendationsScreen({super.key});
@@ -19,6 +23,7 @@ class RecommendationsScreen extends ConsumerStatefulWidget {
 
 class _RecommendationsScreenState extends ConsumerState<RecommendationsScreen> {
   late final TextEditingController _searchController;
+  Timer? _searchDebounce;
 
   @override
   void initState() {
@@ -31,9 +36,216 @@ class _RecommendationsScreenState extends ConsumerState<RecommendationsScreen> {
     );
   }
 
+  Widget _buildSearchResults() {
+    final state = ref.watch(recommendationsViewModelProvider);
+    if (_searchController.text.isEmpty) return const SizedBox.shrink();
+
+    if (state.isSearchLoading) {
+      return const LinearProgressIndicator(minHeight: 2);
+    }
+
+    if (state.searchError != null) {
+      return Text(
+        state.searchError!,
+        style: const TextStyle(color: Colors.red, fontSize: 12),
+      );
+    }
+
+    if (state.searchResults.isEmpty) {
+      return const Text(
+        'No conditions found. Try another keyword.',
+        style: TextStyle(fontSize: 12, color: Colors.grey),
+      );
+    }
+
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (_, index) {
+        final condition = state.searchResults[index];
+        return ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.healing, color: AppColors.primaryGreen),
+          title: Text(
+            condition.title,
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          subtitle: Text(
+            condition.description,
+            style: TextStyle(color: Colors.grey[600], fontSize: 12),
+          ),
+          trailing: const Icon(Icons.add, size: 18, color: AppColors.secondaryGreen),
+          onTap: () {
+            ref
+                .read(recommendationsViewModelProvider.notifier)
+                .selectConditionFromSearch(condition);
+            _searchController.clear();
+            FocusScope.of(context).unfocus();
+          },
+        );
+      },
+      separatorBuilder: (_, __) => const Divider(height: 8),
+      itemCount: state.searchResults.length,
+    );
+  }
+
+  void _showHerbDetails(BuildContext context, HerbModel herb) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.5,
+          minChildSize: 0.4,
+          maxChildSize: 0.9,
+          builder: (_, controller) {
+            return SingleChildScrollView(
+              controller: controller,
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          herb.name,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                      ),
+                      // Text(
+                      //   '#${herb.id}',
+                      //   style: const TextStyle(
+                      //     fontSize: 12,
+                      //     color: Colors.grey,
+                      //   ),
+                      // ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                                 
+Text("Scientific Name",
+style: const TextStyle(
+            fontSize: 12,
+            color: Colors.grey,
+            letterSpacing: 0.2,
+          ),),
+                      Text(
+                        herb.scientificName,
+                        style: const TextStyle(
+                          fontStyle: FontStyle.italic,
+                          color: AppColors.secondaryGreen,
+                        ),
+                      ),
+                      if (herb.conditionName != null) ...[
+                        const SizedBox(height: 12),
+                
+Text("Condition Used for",
+style: const TextStyle(
+            fontSize: 12,
+            color: Colors.grey,
+            letterSpacing: 0.2,
+          ),),
+                        Text(
+                          herb.conditionName!,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  _detailRow('Description', herb.description),
+                  const SizedBox(height: 8),
+                  _detailRow('Preparation', herb.preparation ?? 'Not provided'),
+                  const SizedBox(height: 8),
+                  _detailRow('Safety', herb.safetyWarning ?? 'No warnings'),
+                  const SizedBox(height: 12),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _detailRow(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.grey,
+            letterSpacing: 0.2,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 14,
+            color: AppColors.textPrimary,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _chip(String label, String value) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            '$label: ',
+            style: const TextStyle(
+              fontSize: 12,
+              color: Colors.grey,
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 12,
+              color: AppColors.secondaryGreen,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
+    _searchDebounce?.cancel();
     super.dispose();
   }
 
@@ -117,13 +329,21 @@ class _RecommendationsScreenState extends ConsumerState<RecommendationsScreen> {
                   controller: _searchController,
                   hintText: AppStrings.searchHerbs,
                   onChanged: (value) {
-                    // TODO: hook up search filtering when available
+                    _searchDebounce?.cancel();
+                    _searchDebounce =
+                        Timer(const Duration(milliseconds: 350), () {
+                      ref
+                          .read(recommendationsViewModelProvider.notifier)
+                          .searchConditions(value);
+                    });
                   },
                 ),
               ),
             ),
           ],
         ),
+        const SizedBox(height: 12),
+        _buildSearchResults(),
         const SizedBox(height: 16),
         const Text(
           AppStrings.whatAreYourConcerns,

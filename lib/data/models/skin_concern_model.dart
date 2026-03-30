@@ -1,18 +1,21 @@
 class SkinConcernModel {
+  final int? id;
   final String title;
   final String description;
   final bool selected;
   final int severity;
 
   SkinConcernModel({
+    this.id,
     required this.title,
     required this.description,
     required this.selected,
     required this.severity,
   });
 
-  factory SkinConcernModel.initial(String title, String description) {
+  factory SkinConcernModel.initial(String title, String description, {int? id}) {
     return SkinConcernModel(
+      id: id,
       title: title,
       description: description,
       selected: false,
@@ -21,17 +24,42 @@ class SkinConcernModel {
   }
 
   SkinConcernModel copyWith({
+    int? id,
     String? title,
     String? description,
     bool? selected,
     int? severity,
   }) {
     return SkinConcernModel(
+      id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
       selected: selected ?? this.selected,
       severity: severity ?? this.severity,
     );
+  }
+
+  factory SkinConcernModel.fromJson(Map<String, dynamic> json) {
+    final dynamic level = json['severity'] ?? json['level'];
+    return SkinConcernModel(
+      id: (json['id'] ?? json['condition_id']) is num
+          ? (json['id'] ?? json['condition_id']).toInt()
+          : null,
+      title: (json['title'] ?? json['name'] ?? '').toString(),
+      description: (json['description'] ?? '').toString(),
+      selected: json['selected'] == true,
+      severity: level is num ? level.toInt() : 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'description': description,
+      'selected': selected,
+      'severity': severity,
+    };
   }
 
   String get severityText {

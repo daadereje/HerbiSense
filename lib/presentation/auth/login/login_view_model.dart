@@ -27,13 +27,13 @@ class LoginViewModel extends StateNotifier<LoginState> {
       return;
     }
 
-    state = state.copyWith(isLoading: true, error: null);
+    state = state.copyWith(isLoading: true, error: null, loginSuccess: false);
 
     try {
       final success = await _authRepository.login(email, password);
 
       if (success) {
-        state = state.copyWith(isLoading: false);
+        state = state.copyWith(isLoading: false, loginSuccess: true);
       } else {
         state = state.copyWith(
           isLoading: false,
@@ -58,11 +58,13 @@ class LoginState {
   final bool obscurePassword;
   final bool isLoading;
   final String? error;
+  final bool loginSuccess;
 
   LoginState({
     required this.rememberMe,
     required this.obscurePassword,
     required this.isLoading,
+    required this.loginSuccess,
     this.error,
   });
 
@@ -71,6 +73,7 @@ class LoginState {
       rememberMe: false,
       obscurePassword: true,
       isLoading: false,
+      loginSuccess: false,
       error: null,
     );
   }
@@ -80,12 +83,14 @@ class LoginState {
     bool? obscurePassword,
     bool? isLoading,
     String? error,
+    bool? loginSuccess,
   }) {
     return LoginState(
       rememberMe: rememberMe ?? this.rememberMe,
       obscurePassword: obscurePassword ?? this.obscurePassword,
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
+      loginSuccess: loginSuccess ?? this.loginSuccess,
     );
   }
 }

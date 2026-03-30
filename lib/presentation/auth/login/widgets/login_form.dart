@@ -178,16 +178,19 @@ class LoginForm extends StatelessWidget {
           style: TextStyle(color: Colors.grey[600]),
         ),
         TextButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const RegisterScreen()),
-            );
-          },
+          onPressed: isLoading
+              ? null
+              : () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                  );
+                },
           style: TextButton.styleFrom(
             foregroundColor: AppColors.secondaryGreen,
           ),
           child: const Text(
             AppStrings.signUp,
+            
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),

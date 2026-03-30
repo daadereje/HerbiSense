@@ -65,6 +65,49 @@ class RecommendationsViewModel extends StateNotifier<RecommendationsState> {
     state = state.copyWith(skinConcerns: updatedConcerns);
   }
 
+  Future<void> searchConditions(String query) async {
+    if (query.trim().isEmpty) {
+      state = state.copyWith(searchResults: [], searchError: null);
+      return;
+    }
+
+    state = state.copyWith(isSearchLoading: true, searchError: null);
+    try {
+      final results = await _repository.searchConditions(query);
+      state = state.copyWith(
+        isSearchLoading: false,
+        searchResults: results,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isSearchLoading: false,
+        searchError: e.toString(),
+      );
+    }
+  }
+
+  void selectConditionFromSearch(SkinConcernModel concern) {
+    final updated = List<SkinConcernModel>.from(state.skinConcerns);
+    final index = updated.indexWhere(
+      (c) =>
+          (c.id != null && c.id == concern.id) ||
+          c.title.toLowerCase() == concern.title.toLowerCase(),
+    );
+    if (index >= 0) {
+      updated[index] = updated[index].copyWith(
+        selected: true,
+        severity: updated[index].severity > 0 ? updated[index].severity : 1,
+      );
+    } else {
+      updated.add(concern.copyWith(selected: true, severity: 1));
+    }
+    state = state.copyWith(
+      skinConcerns: updated,
+      searchResults: const [],
+      isSearchLoading: false,
+    );
+  }
+
   void continueToNextStep() {
     if (state.currentStep < 3) {
       state = state.copyWith(currentStep: state.currentStep + 1);
@@ -81,14 +124,20 @@ class RecommendationsViewModel extends StateNotifier<RecommendationsState> {
 class RecommendationsState {
   final int currentStep;
   final List<SkinConcernModel> skinConcerns;
+  final List<SkinConcernModel> searchResults;
   final bool isLoading;
+  final bool isSearchLoading;
   final String? error;
+  final String? searchError;
 
   RecommendationsState({
     required this.currentStep,
     required this.skinConcerns,
     required this.isLoading,
+    required this.searchResults,
+    required this.isSearchLoading,
     this.error,
+    this.searchError,
   });
 
   factory RecommendationsState.initial() {
@@ -96,7 +145,10 @@ class RecommendationsState {
       currentStep: 1,
       skinConcerns: SkinConcernModel.getMockConcerns(),
       isLoading: false,
+      searchResults: const [],
+      isSearchLoading: false,
       error: null,
+      searchError: null,
     );
   }
 
@@ -106,13 +158,19 @@ class RecommendationsState {
     int? currentStep,
     List<SkinConcernModel>? skinConcerns,
     bool? isLoading,
+    List<SkinConcernModel>? searchResults,
+    bool? isSearchLoading,
     String? error,
+    String? searchError,
   }) {
     return RecommendationsState(
       currentStep: currentStep ?? this.currentStep,
       skinConcerns: skinConcerns ?? this.skinConcerns,
       isLoading: isLoading ?? this.isLoading,
+      searchResults: searchResults ?? this.searchResults,
+      isSearchLoading: isSearchLoading ?? this.isSearchLoading,
       error: error ?? this.error,
+      searchError: searchError ?? this.searchError,
     );
   }
 }

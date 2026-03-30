@@ -1,39 +1,84 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../common/network/api_client.dart';
+import '../../common/network/api_endpoints.dart';
 import '../models/herb_model.dart';
 
 final herbRepositoryProvider = Provider<HerbRepository>((ref) {
-  return HerbRepository();
+  final apiClient = ref.read(apiClientProvider);
+  return HerbRepository(apiClient);
 });
 
 class HerbRepository {
-  // This will be replaced with actual API/database calls later
+  HerbRepository(this._apiClient);
+
+  final ApiClient _apiClient;
+
   Future<List<HerbModel>> getAllHerbs() async {
-    // Simulate network delay
-    await Future.delayed(const Duration(milliseconds: 500));
-    return HerbModel.getMockHerbs();
+    final response = await _apiClient.get(ApiEndpoints.herbs);
+    final items = _unwrapList(response, 'herbs');
+    return items.map(HerbModel.fromJson).toList();
   }
 
   Future<HerbModel?> getHerbById(String id) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    return HerbModel.getMockHerbs().firstWhere((herb) => herb.id == id);
+    final response = await _apiClient.get(ApiEndpoints.herbById(id));
+    if (response == null) return null;
+
+    final map = response is Map<String, dynamic>
+        ? response
+        : <String, dynamic>{};
+    final data = map['data'] ?? map;
+
+    return HerbModel.fromJson(Map<String, dynamic>.from(data as Map));
   }
 
-  Future<List<HerbModel>> searchHerbs(String query) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    if (query.isEmpty) return HerbModel.getMockHerbs();
+  Future<List<HerbModel>> searchHerbs({
+    required String query,
+    String? conditionId,
+    int page = 1,
+    int limit = 10,
+    String sort = 'created_at',
+  }) async {
+    final response = await _apiClient.get(
+      ApiEndpoints.herbSearch,
+      queryParams: {
+        'search': query,
+        'page': page,
+        'limit': limit,
+        'sort': sort,
+        if (conditionId != null && conditionId.isNotEmpty)
+          'conditionId': conditionId,
+      },
+    );
 
-    return HerbModel.getMockHerbs().where((herb) {
-      return herb.name.toLowerCase().contains(query.toLowerCase()) ||
-          herb.scientificName.toLowerCase().contains(query.toLowerCase());
-    }).toList();
+    final items = _unwrapList(response, 'data');
+    return items.map(HerbModel.fromJson).toList();
   }
 
   Future<List<HerbModel>> getHerbsByCondition(String condition) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    if (condition == 'All Conditions') return HerbModel.getMockHerbs();
+    final queryParams = condition == 'All Conditions'
+        ? null
+        : <String, dynamic>{'condition': condition};
 
-    return HerbModel.getMockHerbs().where((herb) {
-      return herb.skinConditions.contains(condition);
-    }).toList();
+    final response = await _apiClient.get(
+      ApiEndpoints.herbs,
+      queryParams: queryParams,
+    );
+
+    final items = _unwrapList(response, 'herbs');
+    return items.map(HerbModel.fromJson).toList();
+  }
+
+  List<Map<String, dynamic>> _unwrapList(dynamic response, String key) {
+    if (response is List) {
+      return List<Map<String, dynamic>>.from(response);
+    }
+
+    if (response is Map<String, dynamic>) {
+      final data = response[key] ?? response['data'] ?? [];
+      return List<Map<String, dynamic>>.from(data as List);
+    }
+
+    return <Map<String, dynamic>>[];
   }
 }

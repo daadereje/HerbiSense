@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:herbisense/core/constants/colors.dart';
 import 'package:herbisense/core/constants/strings.dart';
 import 'package:herbisense/core/widgets/cards/info_card.dart';
 import 'package:herbisense/core/widgets/navigation/app_bottom_nav_bar.dart';
 import 'package:herbisense/core/widgets/shared/header_widget.dart';
+import 'package:herbisense/data/models/favorite_model.dart';
+import 'package:herbisense/data/repositories/favorites_repository.dart';
 
-class FavoritesScreen extends StatelessWidget {
+final favoritesProvider = FutureProvider<List<FavoriteModel>>((ref) {
+  final repo = ref.read(favoritesRepositoryProvider);
+  return repo.getFavorites();
+});
+
+class FavoritesScreen extends ConsumerWidget {
   const FavoritesScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final favorites = _mockFavorites;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final favoritesAsync = ref.watch(favoritesProvider);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
@@ -21,7 +29,7 @@ class FavoritesScreen extends StatelessWidget {
             title: AppStrings.favoritesTitle,
             subtitle: AppStrings.favoritesSubtitle,
             showBack: false,
-            height: 160,
+            height: 120,
             solidColor: true,
             titleStyle: const TextStyle(
               fontSize: 24,
@@ -32,26 +40,35 @@ class FavoritesScreen extends StatelessWidget {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(20),
-              child: favorites.isEmpty
-                  ? _buildEmptyState()
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildSummary(favorites.length),
-                        const SizedBox(height: 16),
-                        ...favorites.map(
-                          (item) => Padding(
-                            padding: const EdgeInsets.only(bottom: 14),
-                            child: InfoCard(
-                              title: item.title,
-                              description: item.description,
-                              tags: item.tags,
-                              extra: item.extra,
+              child: favoritesAsync.when(
+                loading: () => const Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 40),
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+                error: (err, _) => _buildError(err.toString()),
+                data: (favorites) => favorites.isEmpty
+                    ? _buildEmptyState()
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildSummary(favorites.length),
+                          const SizedBox(height: 16),
+                          ...favorites.map(
+                            (item) => Padding(
+                              padding: const EdgeInsets.only(bottom: 14),
+                              child: InfoCard(
+                                title: item.name,
+                                description: item.description,
+                                tags: item.tags,
+                                extra: item.extraNote,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+              ),
             ),
           ),
         ],
@@ -75,6 +92,7 @@ class FavoritesScreen extends StatelessWidget {
               const Icon(Icons.favorite, size: 18, color: Colors.redAccent),
               const SizedBox(width: 6),
               Text(
+                // 'register to app to see your favorites',
                 '${AppStrings.favoritesCountLabel}: $count',
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
@@ -109,40 +127,35 @@ class FavoritesScreen extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildError(String message) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+        child: Column(
+          children: [
+            const Icon(Icons.error_outline, size: 48, color: Colors.redAccent),
+            const SizedBox(height: 12),
+            Text(
+              'Failed to load favorites',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              "Register or login to the app to see your favorites",
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 13,
+                color: Colors.grey,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
-
-class _FavoriteItem {
-  final String title;
-  final String description;
-  final List<String> tags;
-  final String? extra;
-
-  const _FavoriteItem({
-    required this.title,
-    required this.description,
-    required this.tags,
-    this.extra,
-  });
-}
-
-/// Temporary mock data until favorites are backed by storage/backend.
-const List<_FavoriteItem> _mockFavorites = [
-  _FavoriteItem(
-    title: 'Frankincense (Etan)',
-    description: 'Resin traditionally used for soothing, purification, and calming aromas.',
-    tags: ['Soothing', 'Aromatic', 'Antimicrobial'],
-    extra: 'Pairs well with myrrh for rituals and skin balms',
-  ),
-  _FavoriteItem(
-    title: 'Black Seed (Tikur Azmud)',
-    description: 'Oil used for supporting skin barrier and reducing inflammation.',
-    tags: ['Anti-inflammatory', 'Barrier Support', 'Traditional Remedy'],
-    extra: 'Test on small area first if you have sensitive skin',
-  ),
-  _FavoriteItem(
-    title: 'Rosemary (Yetut Zaf)',
-    description: 'Stimulating herb used to boost circulation and freshness.',
-    tags: ['Circulation', 'Refreshing', 'Antioxidant'],
-    extra: 'Great in steam infusions or diluted oils',
-  ),
-];

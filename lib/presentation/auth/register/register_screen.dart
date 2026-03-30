@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:herbisense/core/widgets/navigation/app_bottom_nav_bar.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/strings.dart';
-import '../../../core/widgets/navigation/app_bottom_nav_bar.dart';
 import '../../../core/widgets/navigation/top_navigation_bar.dart';
 import 'register_view_model.dart';
+import '../login/login_screen.dart';
+import '../../profile/profile_screen.dart' show ProfileScreen, currentUserProvider;
 import 'widgets/register_hero.dart';
 import 'widgets/benefits_section.dart';
 import 'widgets/register_form.dart';
@@ -21,7 +23,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   @override
   void initState() {
@@ -45,64 +48,78 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final state = ref.watch(registerViewModelProvider);
     final notifier = ref.read(registerViewModelProvider.notifier);
 
+    ref.listen(registerViewModelProvider, (prev, next) {
+      if (next.registerSuccess) {
+        ref.invalidate(currentUserProvider);
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const ProfileScreen()),
+        );
+      }
+    });
+
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
-      bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 2),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final isNarrow = constraints.maxWidth < 800;
+            bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 2),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // const TopNavigationBar(),
+              const RegisterHero(),
+              const SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final isNarrow = constraints.maxWidth < 800;
 
-          final benefits = BenefitsSection(benefits: state.benefits);
-          final form = RegisterForm(
-            fullNameController: _fullNameController,
-            emailController: _emailController,
-            passwordController: _passwordController,
-            confirmPasswordController: _confirmPasswordController,
-            obscurePassword: state.obscurePassword,
-            obscureConfirmPassword: state.obscureConfirmPassword,
-            agreeToTerms: state.agreeToTerms,
-            isLoading: state.isLoading,
-            error: state.error,
-            onTogglePassword: notifier.togglePasswordVisibility,
-            onToggleConfirmPassword: notifier.toggleConfirmPasswordVisibility,
-            onTermsChanged: notifier.toggleTermsAgreement,
-            onSubmit: () => _handleRegister(notifier),
-          );
+                    final benefitsSection =
+                        BenefitsSection(benefits: state.benefits);
 
-          return SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  // const TopNavigationBar(),
-                  const RegisterHero(),
-                  const SizedBox(height: 30),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: isNarrow
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              benefits,
-                              const SizedBox(height: 24),
-                              form,
-                            ],
-                          )
-                        : Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(flex: 5, child: benefits),
-                              const SizedBox(width: 30),
-                              Expanded(flex: 7, child: form),
-                            ],
-                          ),
-                  ),
-                  const SizedBox(height: 40),
-                  const FooterWidget(),
-                ],
+                    final formSection = RegisterForm(
+                      fullNameController: _fullNameController,
+                      emailController: _emailController,
+                      passwordController: _passwordController,
+                      confirmPasswordController: _confirmPasswordController,
+                      obscurePassword: state.obscurePassword,
+                      obscureConfirmPassword: state.obscureConfirmPassword,
+                      agreeToTerms: state.agreeToTerms,
+                      isLoading: state.isLoading,
+                      error: state.error,
+                      onTogglePassword: notifier.togglePasswordVisibility,
+                      onToggleConfirmPassword:
+                          notifier.toggleConfirmPasswordVisibility,
+                      onTermsChanged: notifier.toggleTermsAgreement,
+                      onSubmit: () => _handleRegister(notifier),
+                    );
+
+                    if (isNarrow) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          benefitsSection,
+                          const SizedBox(height: 24),
+                          formSection,
+                        ],
+                      );
+                    }
+
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(flex: 5, child: benefitsSection),
+                        const SizedBox(width: 30),
+                        Expanded(flex: 7, child: formSection),
+                      ],
+                    );
+                  },
+                ),
               ),
-            ),
-          );
-        },
+              const SizedBox(height: 40),
+              const FooterWidget(),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -110,11 +127,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   void _handleRegister(RegisterViewModel notifier) {
     notifier
         .register(
-          fullName: _fullNameController.text,
-          email: _emailController.text,
-          password: _passwordController.text,
-          confirmPassword: _confirmPasswordController.text,
-        )
+      fullName: _fullNameController.text,
+      email: _emailController.text,
+      password: _passwordController.text,
+      confirmPassword: _confirmPasswordController.text,
+    )
         .then((success) {
       if (success && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

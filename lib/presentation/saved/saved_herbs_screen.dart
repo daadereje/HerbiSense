@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:herbisense/core/constants/colors.dart';
 import 'package:herbisense/core/constants/strings.dart';
 import 'package:herbisense/core/widgets/cards/info_card.dart';
 import 'package:herbisense/core/widgets/navigation/app_bottom_nav_bar.dart';
 import 'package:herbisense/core/widgets/shared/header_widget.dart';
 import 'package:herbisense/core/widgets/inputs/search_bar.dart';
+import 'package:herbisense/data/models/herb_model.dart';
+import 'package:herbisense/data/repositories/saved_herbs_repository.dart';
 
-class SavedHerbsScreen extends StatefulWidget {
+final savedHerbsProvider = FutureProvider<List<HerbModel>>((ref) {
+  final repo = ref.read(savedHerbsRepositoryProvider);
+  return repo.getSavedHerbs();
+});
+
+class SavedHerbsScreen extends ConsumerStatefulWidget {
   const SavedHerbsScreen({super.key});
 
   @override
-  State<SavedHerbsScreen> createState() => _SavedHerbsScreenState();
+  ConsumerState<SavedHerbsScreen> createState() => _SavedHerbsScreenState();
 }
 
-class _SavedHerbsScreenState extends State<SavedHerbsScreen> {
+class _SavedHerbsScreenState extends ConsumerState<SavedHerbsScreen> {
   late final TextEditingController _searchController;
+  String _query = '';
 
   @override
   void initState() {
@@ -30,7 +39,7 @@ class _SavedHerbsScreenState extends State<SavedHerbsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final savedHerbs = _mockSavedHerbs; // TODO: replace with real data source
+    final savedAsync = ref.watch(savedHerbsProvider);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
@@ -55,28 +64,48 @@ class _SavedHerbsScreenState extends State<SavedHerbsScreen> {
                     controller: _searchController,
                     hintText: AppStrings.searchSaved,
                     onChanged: (value) {
-                      // TODO: hook up search filtering when data source is connected
+                      setState(() => _query = value.trim().toLowerCase());
                     },
                   ),
                   const SizedBox(height: 16),
-                  if (savedHerbs.isEmpty)
-                    _buildEmptyState()
-                  else ...[
-                    _buildSummary(savedHerbs.length),
-                    const SizedBox(height: 16),
-                    ...savedHerbs.map(
-                      (herb) => Padding(
-                        padding: const EdgeInsets.only(bottom: 14),
-                        child: InfoCard(
-                          title: herb.title,
-                          description: herb.description,
-                          tags: herb.tags,
-                          extra: herb.extra,
-                        ),
+                  savedAsync.when(
+                    loading: () => const Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 40),
+                        child: CircularProgressIndicator(),
                       ),
                     ),
-                  ],
-                ],
+                    error: (err, _) => _buildError(err.toString()),
+                    data: (herbs) {
+                      final filtered = _query.isEmpty
+                          ? herbs
+                          : herbs
+                              .where((h) =>
+                                  h.name.toLowerCase().contains(_query) ||
+                                  (h.scientificName.toLowerCase().contains(_query)))
+                              .toList();
+
+                      if (filtered.isEmpty) return _buildEmptyState();
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildSummary(filtered.length),
+                              const SizedBox(height: 16),
+                              ...filtered.map(
+                            (herb) => Padding(
+                              padding: const EdgeInsets.only(bottom: 14),
+                              child: _SavedHerbTile(
+                                herb: herb,
+                                onDelete: () => _removeHerb(herb.id),
+                              ),
+                            ),
+                          ),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
               ),
             ),
           ),
@@ -135,40 +164,91 @@ class _SavedHerbsScreenState extends State<SavedHerbsScreen> {
       ),
     );
   }
+
+  Widget _buildError(String message) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+        child: Column(
+          children: [
+            const Icon(Icons.error_outline, size: 48, color: Colors.redAccent),
+            const SizedBox(height: 12),
+            const Text(
+              'Failed to load saved herbs',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              "Register or login to the app to see your saved herbs",
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 13,
+                color: Colors.grey,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _removeHerb(String herbId) async {
+    final repo = ref.read(savedHerbsRepositoryProvider);
+    try {
+      await repo.deleteSavedHerb(herbId);
+      if (!mounted) return;
+      ref.invalidate(savedHerbsProvider);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Herb removed from saved list'),
+          backgroundColor: AppColors.secondaryGreen,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Could not remove herb. Please try again.'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
+  }
 }
 
-class _SavedHerb {
-  final String title;
-  final String description;
-  final List<String> tags;
-  final String? extra;
+class _SavedHerbTile extends StatelessWidget {
+  final HerbModel herb;
+  final VoidCallback onDelete;
 
-  const _SavedHerb({
-    required this.title,
-    required this.description,
-    required this.tags,
-    this.extra,
+  const _SavedHerbTile({
+    required this.herb,
+    required this.onDelete,
   });
-}
 
-/// Temporary mock data until the saved-herbs feature is wired to real storage.
-const List<_SavedHerb> _mockSavedHerbs = [
-  _SavedHerb(
-    title: 'Aloe Vera (Eret)',
-    description: 'Soothing succulent used to calm irritated skin and support moisture balance.',
-    tags: ['Cooling', 'Hydration', 'Anti-inflammatory'],
-    extra: 'Great for sun-exposed or sensitive skin',
-  ),
-  _SavedHerb(
-    title: 'Neem (Nim Tree)',
-    description: 'Traditional antimicrobial leaf known for supporting clearer skin.',
-    tags: ['Purifying', 'Antimicrobial', 'Oil Control'],
-    extra: 'Often combined with turmeric for breakouts',
-  ),
-  _SavedHerb(
-    title: 'Turmeric (Erd)',
-    description: 'Root rich in curcumin; used for brightening and calming redness.',
-    tags: ['Brightening', 'Anti-inflammatory', 'Antioxidant'],
-    extra: 'Patch test before use to avoid staining',
-  ),
-];
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        InfoCard(
+          title: herb.name,
+          description: herb.description,
+          tags: herb.skinConditions,
+          extra: herb.category,
+        ),
+        Positioned(
+          top: 8,
+          right: 8,
+          child: IconButton(
+            icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+            tooltip: 'Remove',
+            onPressed: onDelete,
+          ),
+        ),
+      ],
+    );
+  }
+}
