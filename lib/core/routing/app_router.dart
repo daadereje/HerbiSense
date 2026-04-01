@@ -7,11 +7,17 @@ import '../../presentation/about/about_screen.dart';
 import '../../presentation/auth/login/login_screen.dart';
 import '../../presentation/auth/register/register_screen.dart';
 import '../../presentation/contact/contact_screen.dart';
+import '../../presentation/splash/splash_screen.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/',
+    initialLocation: '/splash',
     routes: [
+      GoRoute(
+        path: '/splash',
+        name: 'splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
       GoRoute(
         path: '/',
         name: 'home',

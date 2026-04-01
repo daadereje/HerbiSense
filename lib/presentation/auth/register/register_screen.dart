@@ -59,7 +59,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
-            bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 2),
+            bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 3),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(

@@ -8,6 +8,7 @@ class ApiEndpoints {
 
   // Herbs
   static const String herbs = '/herbs';
+  static const String herbsPublished = '/herbs/published';
   static const String herbSearch = '/herbs/search';
   static String herbById(String id) => '$herbs/$id';
 
@@ -24,8 +25,10 @@ class ApiEndpoints {
   // Feedback
   static const String feedback = '/feedback';
 
-  // Uploads
-  static String uploadHerbById(String id) => '/uploads/herbs/$id';
+  // Uploads (some backends serve at /uploads/{id}, others at /uploads/herbs/{id})
+  static String uploadHerbById(String id, {bool withHerbsSegment = true}) =>
+      withHerbsSegment ? '/uploads/herbs/$id' : '/uploads/$id';
+  static String uploadById(String id) => '/uploads/$id';
   static const String upload = '/uploads/herbs';
 
   // About

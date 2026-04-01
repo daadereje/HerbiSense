@@ -46,6 +46,7 @@ dev_dependencies:
   flutter_launcher_icons: ^0.13.1
 flutter_launcher_icons:
   image_path: assets/icons/app_icon.jpg
+
   android: true
   ios: true
 
@@ -67,9 +68,10 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-
+ 
   assets:
     - assets/icons/app_icon.jpg
+    - assets/images/splash_logo.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

@@ -7,12 +7,14 @@ class HerbModel {
   final String? safetyWarning;
   final String? conditionId;
   final String? conditionName;
+  final String? conditionDescription;
   final String category;
   final int views;
   final List<String> skinConditions;
   final String? imageUrl;
   final bool isTraditional;
   final bool isVerified;
+  final String? status;
 
   HerbModel({
     required this.id,
@@ -23,15 +25,22 @@ class HerbModel {
     this.safetyWarning,
     this.conditionId,
     this.conditionName,
+    this.conditionDescription,
     required this.category,
     required this.views,
     required this.skinConditions,
     this.imageUrl,
     required this.isTraditional,
     required this.isVerified,
+    this.status,
   });
 
   factory HerbModel.fromJson(Map<String, dynamic> json) {
+    final rawImage =
+        json['imageUrl'] ?? json['image_url'] ?? json['image'] ?? '';
+    final conditionMap =
+        json['condition'] is Map ? Map<String, dynamic>.from(json['condition']) : null;
+
     return HerbModel(
       id: (json['id'] ?? json['herb_id'] ?? '').toString(),
       name: (json['name'] ?? '').toString(),
@@ -50,8 +59,12 @@ class HerbModel {
           (json['safety_warning'] ?? json['warning'] ?? '').toString().isEmpty
               ? null
               : (json['safety_warning'] ?? json['warning']).toString(),
-      conditionId: json['condition_id']?.toString(),
-      conditionName: json['condition_name']?.toString(),
+      conditionId: (json['condition_id'] ?? conditionMap?['id'])?.toString(),
+      conditionName: (json['condition_name'] ?? conditionMap?['name'])
+          ?.toString(),
+      conditionDescription: (json['condition_description'] ??
+              conditionMap?['description'])
+          ?.toString(),
       category: (json['category'] ?? 'Traditional medicine').toString(),
       views: (json['views'] ?? json['view_count'] ?? 0) is num
           ? (json['views'] ?? json['view_count'] ?? 0 as num).toInt()
@@ -63,9 +76,10 @@ class HerbModel {
                 [])
             .map((e) => e.toString()),
       ),
-      imageUrl: json['imageUrl']?.toString(),
+      imageUrl: rawImage.toString().isEmpty ? null : rawImage.toString(),
       isTraditional: json['isTraditional'] ?? json['traditional'] ?? true,
       isVerified: json['isVerified'] ?? json['verified'] ?? false,
+      status: json['status']?.toString(),
     );
   }
 
@@ -79,13 +93,40 @@ class HerbModel {
       'safety_warning': safetyWarning,
       'condition_id': conditionId,
       'condition_name': conditionName,
+      'condition_description': conditionDescription,
       'category': category,
       'views': views,
       'skinConditions': skinConditions,
       'imageUrl': imageUrl,
       'isTraditional': isTraditional,
       'isVerified': isVerified,
+      'status': status,
     };
+  }
+
+  HerbModel copyWith({
+    String? imageUrl,
+    String? conditionName,
+    String? conditionDescription,
+  }) {
+    return HerbModel(
+      id: id,
+      name: name,
+      scientificName: scientificName,
+      description: description,
+      preparation: preparation,
+      safetyWarning: safetyWarning,
+      conditionId: conditionId,
+      conditionName: conditionName ?? this.conditionName,
+      conditionDescription: conditionDescription ?? this.conditionDescription,
+      category: category,
+      views: views,
+      skinConditions: skinConditions,
+      imageUrl: imageUrl ?? this.imageUrl,
+      isTraditional: isTraditional,
+      isVerified: isVerified,
+      status: status,
+    );
   }
 
   // Mock data for initial development

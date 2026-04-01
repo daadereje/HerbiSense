@@ -15,9 +15,19 @@ class HerbRepository {
   final ApiClient _apiClient;
 
   Future<List<HerbModel>> getAllHerbs() async {
-    final response = await _apiClient.get(ApiEndpoints.herbs);
-    final items = _unwrapList(response, 'herbs');
-    return items.map(HerbModel.fromJson).toList();
+    final response = await _apiClient.get(ApiEndpoints.herbsPublished);
+    final items = _unwrapList(response, 'data');
+    final herbs = items.map(HerbModel.fromJson).toList();
+
+    // Hydrate each herb with its first upload image if available
+    final enriched = await Future.wait(
+      herbs.map((herb) async {
+        final imageUrl = await _fetchFirstImageUrl(herb.id);
+        return herb.copyWith(imageUrl: imageUrl);
+      }),
+    );
+
+    return enriched;
   }
 
   Future<HerbModel?> getHerbById(String id) async {
@@ -80,5 +90,31 @@ class HerbRepository {
     }
 
     return <Map<String, dynamic>>[];
+  }
+
+  Future<String?> _fetchFirstImageUrl(String herbId) async {
+    try {
+      final response =
+          await _apiClient.get(ApiEndpoints.uploadById(herbId.toString()));
+
+      final data = response is Map<String, dynamic>
+          ? response['data'] ?? response['uploads'] ?? response['images']
+          : response;
+
+      if (data is List && data.isNotEmpty) {
+        final first = data.first;
+        if (first is Map<String, dynamic>) {
+          return (first['url'] ??
+                  first['path'] ??
+                  first['image'] ??
+                  first['location'])
+              ?.toString();
+        }
+        return first.toString();
+      }
+    } catch (_) {
+      // Fail silently; UI will show placeholder image
+    }
+    return null;
   }
 }
