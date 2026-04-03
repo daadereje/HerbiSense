@@ -8,7 +8,6 @@ import '../../core/widgets/shared/header_widget.dart';
 import '../../core/widgets/cards/step_card.dart';
 import '../../core/widgets/cards/feature_pill.dart';
 import '../../core/widgets/cards/info_card.dart';
-import '../../core/widgets/navigation/app_bottom_nav_bar.dart';
 import 'home_view_model.dart';
 import 'widgets/trusted_healers_card.dart';
 
@@ -47,8 +46,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                                    const SizedBox(height: 10),
-
+                  const SizedBox(height: 10),
                   const Center(child: _GetStartedButton()),
                   const SizedBox(height: 16),
                   if (state.isLoading) ...[

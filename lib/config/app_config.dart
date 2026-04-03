@@ -6,7 +6,7 @@ class AppConfig {
   // Backend
   static const String apiBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://http://10.41.248.116/:5001/api',
+    defaultValue: 'http://10.250.56.116/5001/api',
   );
 
   // Features
