@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../common/network/api_client.dart';
-import '../../common/network/api_endpoints.dart';
+import '../../../../common/network/api_client.dart';
+import '../../../../common/network/api_endpoints.dart';
 
 final feedbackRepositoryProvider = Provider<FeedbackRepository>((ref) {
   final apiClient = ref.read(apiClientProvider);

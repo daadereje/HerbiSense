@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:herbisense/presentation/recommendations/recommendations_screen.dart'
     show RecommendationsScreen;
 import '../../core/constants/colors.dart';
-import '../../core/constants/strings.dart';
+import '../../core/constants/languages/strings.dart';
 import '../../core/widgets/shared/header_widget.dart';
 import '../../core/widgets/cards/step_card.dart';
 import '../../core/widgets/cards/feature_pill.dart';

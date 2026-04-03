@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../constants/colors.dart';
-import '../../constants/strings.dart';
+import '../../constants/languages/strings.dart';
 import '../buttons/nav_button.dart';
 
 class TopNavigationBar extends StatelessWidget {

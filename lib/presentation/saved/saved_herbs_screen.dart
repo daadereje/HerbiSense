@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:herbisense/core/constants/colors.dart';
-import 'package:herbisense/core/constants/strings.dart';
+import 'package:herbisense/core/constants/languages/strings.dart';
 import 'package:herbisense/core/widgets/cards/info_card.dart';
 import 'package:herbisense/core/widgets/navigation/app_bottom_nav_bar.dart';
 import 'package:herbisense/core/widgets/shared/header_widget.dart';
 import 'package:herbisense/core/widgets/inputs/search_bar.dart';
-import 'package:herbisense/data/models/herb_model.dart';
-import 'package:herbisense/data/repositories/saved_herbs_repository.dart';
+import 'package:herbisense/core/constants/data/models/herb_model.dart';
+import 'package:herbisense/core/constants/data/repositories/saved_herbs_repository.dart';
+import 'package:herbisense/core/constants/data/repositories/herb_repository.dart';
+import 'package:herbisense/presentation/discover/herb_detail_screen.dart';
 
 final savedHerbsProvider = FutureProvider<List<HerbModel>>((ref) {
   final repo = ref.read(savedHerbsRepositoryProvider);
@@ -98,6 +100,7 @@ class _SavedHerbsScreenState extends ConsumerState<SavedHerbsScreen> {
                               child: _SavedHerbTile(
                                 herb: herb,
                                 onDelete: () => _removeHerb(herb.id),
+                                onOpen: () => _openHerb(context, herb.id),
                               ),
                             ),
                           ),
@@ -218,26 +221,69 @@ class _SavedHerbsScreenState extends ConsumerState<SavedHerbsScreen> {
       );
     }
   }
+
+  Future<void> _openHerb(BuildContext context, String herbId) async {
+    _showLoadingDialog(context);
+    try {
+      final repo = ref.read(herbRepositoryProvider);
+      final herb = await repo.getHerbById(herbId);
+      Navigator.of(context, rootNavigator: true).pop(); // close dialog
+
+      if (herb == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Herb details not found.')),
+        );
+        return;
+      }
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => HerbDetailScreen(herb: herb),
+        ),
+      );
+    } catch (e) {
+      Navigator.of(context, rootNavigator: true).pop(); // close dialog
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to open herb: $e')),
+      );
+    }
+  }
+
+  void _showLoadingDialog(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
 }
 
 class _SavedHerbTile extends StatelessWidget {
   final HerbModel herb;
   final VoidCallback onDelete;
+  final VoidCallback onOpen;
 
   const _SavedHerbTile({
     required this.herb,
     required this.onDelete,
+    required this.onOpen,
   });
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        InfoCard(
-          title: herb.name,
-          description: herb.description,
-          tags: herb.skinConditions,
-          extra: herb.category,
+        InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: onOpen,
+          child: InfoCard(
+            title: herb.name,
+            description: herb.description,
+            tags: herb.skinConditions,
+            extra: herb.category,
+          ),
         ),
         Positioned(
           top: 8,

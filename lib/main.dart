@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'config/app_config.dart';
 import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
-import 'data/repositories/auth_repository.dart';
+import 'core/constants/data/repositories/auth_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

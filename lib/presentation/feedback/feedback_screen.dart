@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:herbisense/common/network/api_exception.dart';
 import 'package:herbisense/core/constants/colors.dart';
 import 'package:herbisense/core/widgets/navigation/app_bottom_nav_bar.dart';
-import 'package:herbisense/data/repositories/feedback_repository.dart';
+import 'package:herbisense/core/constants/data/repositories/feedback_repository.dart';
 
 import '../../core/widgets/shared/header_widget.dart';
 

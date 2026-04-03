@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/colors.dart';
-import '../../core/constants/strings.dart';
+import '../../core/constants/languages/strings.dart';
 import '../../core/widgets/navigation/top_navigation_bar.dart';
 
 class ContactScreen extends StatelessWidget {

@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../data/repositories/auth_repository.dart';
+import '../../../core/constants/data/repositories/auth_repository.dart';
 
 final loginViewModelProvider = StateNotifierProvider<LoginViewModel, LoginState>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);

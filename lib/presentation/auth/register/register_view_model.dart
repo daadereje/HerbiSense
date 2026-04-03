@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/constants/strings.dart';
-import '../../../data/models/benefit_model.dart';
-import '../../../data/repositories/auth_repository.dart';
+import '../../../core/constants/languages/strings.dart';
+import '../../../core/constants/data/models/benefit_model.dart';
+import '../../../core/constants/data/repositories/auth_repository.dart';
 
 final registerViewModelProvider = StateNotifierProvider<RegisterViewModel, RegisterState>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);

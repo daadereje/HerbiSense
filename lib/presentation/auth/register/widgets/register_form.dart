@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/colors.dart';
-import '../../../../core/constants/strings.dart';
+import '../../../../core/constants/languages/strings.dart';
 import '../../../../core/widgets/inputs/text_field_with_icon.dart';
 import '../../../../core/widgets/inputs/password_field_with_icon.dart';
 import 'terms_checkbox.dart';

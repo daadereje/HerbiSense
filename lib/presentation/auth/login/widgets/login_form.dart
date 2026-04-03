@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:herbisense/presentation/auth/register/register_screen.dart';
 import '../../../../core/constants/colors.dart';
-import '../../../../core/constants/strings.dart';
+import '../../../../core/constants/languages/strings.dart';
 import '../../../../core/widgets/inputs/email_field.dart';
 import '../../../../core/widgets/inputs/password_field.dart';
 
@@ -14,16 +14,20 @@ class LoginForm extends StatelessWidget {
   final bool isLoading;
   final String? error;
 
-  const LoginForm({
-    super.key,
-    required this.emailController,
-    required this.passwordController,
+  LoginForm({
+    Key? key,
+    TextEditingController? emailController,
+    TextEditingController? passwordController,
     required this.rememberMe,
     required this.onRememberMeChanged,
     required this.onSubmit,
     required this.isLoading,
     this.error,
-  });
+  })  : emailController =
+            emailController ?? TextEditingController(text: 'admin@herbisense.com'),
+        passwordController =
+            passwordController ?? TextEditingController(text: 'admin123'),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +61,7 @@ class LoginForm extends StatelessWidget {
           ],
           const Text(
             AppStrings.emailAddress,
+
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,

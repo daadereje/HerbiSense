@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/colors.dart';
-import '../../../data/models/skin_concern_model.dart';
+import '../../../core/constants/data/models/skin_concern_model.dart';
 
 class SeverityBottomSheet extends StatefulWidget {
   final SkinConcernModel concern;

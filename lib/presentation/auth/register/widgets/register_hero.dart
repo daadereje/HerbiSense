@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/colors.dart';
-import '../../../../core/constants/strings.dart';
+import '../../../../core/constants/languages/strings.dart';
 import '../../../../core/widgets/buttons/primary_button.dart';
 
 class RegisterHero extends StatelessWidget {

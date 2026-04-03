@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../common/network/api_client.dart';
-import '../../common/network/api_endpoints.dart';
+import '../../../../common/network/api_client.dart';
+import '../../../../common/network/api_endpoints.dart';
 import '../models/herb_model.dart';
 
 final herbRepositoryProvider = Provider<HerbRepository>((ref) {

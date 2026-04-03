@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../common/network/api_client.dart';
-import '../../common/network/api_endpoints.dart';
+import '../../../../common/network/api_client.dart';
+import '../../../../common/network/api_endpoints.dart';
 import '../models/about_stat_model.dart';
 
 final aboutRepositoryProvider = Provider<AboutRepository>((ref) {

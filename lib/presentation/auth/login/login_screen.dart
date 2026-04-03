@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/colors.dart';
-import '../../../core/constants/strings.dart';
+import '../../../core/constants/languages/strings.dart';
 import '../../../core/widgets/navigation/app_bottom_nav_bar.dart';
 import '../../profile/profile_screen.dart';
 import '../../profile/profile_screen.dart' show currentUserProvider;

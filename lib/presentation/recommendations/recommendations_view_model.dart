@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/models/skin_concern_model.dart';
-import '../../data/repositories/recommendation_repository.dart';
+import '../../core/constants/data/models/skin_concern_model.dart';
+import '../../core/constants/data/repositories/recommendation_repository.dart';
 import 'widgets/severity_bottom_sheet.dart';
 
 final recommendationsViewModelProvider =

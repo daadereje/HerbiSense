@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:herbisense/core/constants/colors.dart';
-import 'package:herbisense/core/constants/strings.dart';
+import 'package:herbisense/core/constants/languages/strings.dart';
 import 'package:herbisense/core/widgets/navigation/app_bottom_nav_bar.dart';
-import 'package:herbisense/data/models/user_model.dart';
-import 'package:herbisense/data/repositories/auth_repository.dart';
+import 'package:herbisense/core/constants/data/models/user_model.dart';
+import 'package:herbisense/core/constants/data/repositories/auth_repository.dart';
 import 'package:herbisense/presentation/auth/login/login_screen.dart';
 import 'package:herbisense/presentation/saved/saved_herbs_screen.dart';
 

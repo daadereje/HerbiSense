@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/colors.dart';
-import '../../../../core/constants/strings.dart';
+import '../../../../core/constants/languages/strings.dart';
 
 class LoginHeader extends StatelessWidget {
   const LoginHeader({super.key});

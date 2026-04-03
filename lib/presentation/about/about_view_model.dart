@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/models/about_stat_model.dart';
-import '../../data/repositories/about_repository.dart';
+import '../../core/constants/data/models/about_stat_model.dart';
+import '../../core/constants/data/repositories/about_repository.dart';
 
 final aboutViewModelProvider = StateNotifierProvider<AboutViewModel, AboutState>((ref) {
   final repository = ref.watch(aboutRepositoryProvider);

@@ -2,16 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:herbisense/data/models/skin_concern_model.dart';
+import 'package:herbisense/core/constants/data/models/skin_concern_model.dart';
 import '../../core/constants/colors.dart';
-import '../../core/constants/strings.dart';
+import '../../core/constants/languages/strings.dart';
 import '../../core/widgets/navigation/app_bottom_nav_bar.dart';
 import '../../core/widgets/inputs/search_bar.dart';
 import '../../core/widgets/shared/header_widget.dart';
 import 'recommendations_view_model.dart';
 import 'widgets/concern_grid.dart';
 import 'widgets/tips_card.dart';
-import '../../data/models/herb_model.dart';
+import '../../core/constants/data/models/herb_model.dart';
 
 class RecommendationsScreen extends ConsumerStatefulWidget {
   const RecommendationsScreen({super.key});

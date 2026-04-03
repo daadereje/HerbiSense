@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/strings.dart';
+import '../../../core/constants/languages/strings.dart';
 import 'organization_link_card.dart';
 
 class OrganizationLinks extends StatelessWidget {

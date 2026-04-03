@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../common/network/api_client.dart';
-import '../../common/network/api_endpoints.dart';
+import '../../../../common/network/api_client.dart';
+import '../../../../common/network/api_endpoints.dart';
 import '../models/skin_concern_model.dart';
 
 final recommendationRepositoryProvider =

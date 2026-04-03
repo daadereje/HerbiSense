@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../common/network/api_exception.dart';
 import '../../../core/constants/colors.dart';
-import '../../../data/repositories/saved_herbs_repository.dart';
+import '../../../core/constants/data/repositories/saved_herbs_repository.dart';
 
 class HerbCard extends ConsumerStatefulWidget {
   final dynamic herb;

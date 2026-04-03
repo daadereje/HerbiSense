@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/colors.dart';
-import '../../../../data/models/benefit_model.dart';
+import '../../../../core/constants/data/models/benefit_model.dart';
 
 class BenefitItem extends StatelessWidget {
   final BenefitModel benefit;

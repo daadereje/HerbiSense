@@ -18,11 +18,16 @@ class FavoriteModel {
   });
 
   factory FavoriteModel.fromJson(Map<String, dynamic> json) {
+    final rawHerbId = json['herb_id'] ?? json['herbId'] ?? json['herb'];
+    final parsedHerbId = rawHerbId is num
+        ? rawHerbId.toInt()
+        : int.tryParse(rawHerbId?.toString() ?? '');
+
     return FavoriteModel(
       id: (json['id'] ?? 0) is num ? (json['id'] as num).toInt() : 0,
       name: (json['name'] ?? '').toString(),
       description: (json['description'] ?? '').toString(),
-      herbId: json['herb_id'] is num ? (json['herb_id'] as num).toInt() : null,
+      herbId: parsedHerbId,
       linkedHerbName: json['linked_herb_name']?.toString(),
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'].toString())

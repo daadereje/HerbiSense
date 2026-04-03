@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/colors.dart';
-import '../../../data/models/skin_concern_model.dart';
+import '../../../core/constants/data/models/skin_concern_model.dart';
 
 class ConcernGrid extends StatelessWidget {
   final List<SkinConcernModel> concerns;

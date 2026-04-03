@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/colors.dart';
-import '../../../core/constants/strings.dart';
-import '../../../data/models/herb_model.dart';
+import '../../../core/constants/languages/strings.dart';
+import '../../../core/constants/data/models/herb_model.dart';
 import 'herb_card.dart';
 
 class HerbList extends StatelessWidget {

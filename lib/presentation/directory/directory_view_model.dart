@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/models/herb_model.dart';
-import '../../data/repositories/herb_repository.dart';
+import '../../core/constants/data/models/herb_model.dart';
+import '../../core/constants/data/repositories/herb_repository.dart';
 
 final directoryViewModelProvider = StateNotifierProvider<DirectoryViewModel, DirectoryState>((ref) {
   final herbRepository = ref.watch(herbRepositoryProvider);

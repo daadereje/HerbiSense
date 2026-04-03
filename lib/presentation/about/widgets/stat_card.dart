@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/colors.dart';
-import '../../../data/models/about_stat_model.dart';
+import '../../../core/constants/data/models/about_stat_model.dart';
 
 class StatCard extends StatelessWidget {
   final AboutStatModel stat;

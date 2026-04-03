@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../data/models/about_stat_model.dart';
+import '../../../core/constants/data/models/about_stat_model.dart';
 import 'stat_card.dart';
 
 class StatsGrid extends StatelessWidget {
