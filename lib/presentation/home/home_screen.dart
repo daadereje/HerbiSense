@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:herbisense/presentation/recommendations/recommendations_screen.dart'
     show RecommendationsScreen;
 import '../../core/constants/colors.dart';
-import '../../core/constants/languages/strings.dart';
+import '../../core/constants/languages/home_strings.dart';
+import '../../core/state/language_provider.dart';
 import '../../core/widgets/shared/header_widget.dart';
 import '../../core/widgets/cards/step_card.dart';
 import '../../core/widgets/cards/feature_pill.dart';
@@ -28,17 +29,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(homeViewModelProvider);
+    final language = ref.watch(languageProvider);
+    final strings = HomeStrings.fromLanguage(language);
+    final langNotifier = ref.read(languageProvider.notifier);
 
     return Scaffold(
       // bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 0),
       body: CustomScrollView(
         slivers: [
           HeaderWidget.compact(
-            title: AppStrings.homeTitle,
-            subtitle: AppStrings.homeSubtitle,
+            title: strings.homeTitle,
+            subtitle: strings.homeSubtitle,
             height: 200,
-            actions: const [_HomeBadgesRow()],
-            language: 'en', // TODO: hook up localization when ready
+            actions: [_HomeBadgesRow(strings: strings)],
+            language: language,
+            languageOptions: const ['eng', 'amh', 'or'],
+            onLanguageSelected: langNotifier.setLanguage,
           ),
           SliverToBoxAdapter(
             child: Padding(
@@ -47,23 +53,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 10),
-                  const Center(child: _GetStartedButton()),
+                  Center(child: _GetStartedButton(strings: strings)),
                   const SizedBox(height: 16),
                   if (state.isLoading) ...[
                     const LinearProgressIndicator(),
                     // const SizedBox(height: 16),
                   ],
-                  _buildHowToUseSection(),
+                  _buildHowToUseSection(strings),
                   const SizedBox(height: 32),
-                  _buildWhyChooseSection(),
+                  _buildWhyChooseSection(strings),
                   const SizedBox(height: 20),
-                  _buildFeaturesRow(),
+                  _buildFeaturesRow(strings),
                   const SizedBox(height: 28),
-                  _buildComprehensiveDbCard(),
+                  _buildComprehensiveDbCard(strings),
                   const SizedBox(height: 16),
-                  _buildEvidenceBasedCard(),
+                  _buildEvidenceBasedCard(strings),
                   const SizedBox(height: 16),
-                  const TrustedHealersCard(),
+                  TrustedHealersCard(strings: strings),
                   const SizedBox(height: 20),
                 ],
               ),
@@ -74,22 +80,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildHowToUseSection() {
+  Widget _buildHowToUseSection(HomeStrings strings) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          AppStrings.howToUse,
-          style: TextStyle(
+        Text(
+          strings.howToUse,
+          style: const TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
           ),
         ),
         const SizedBox(height: 4),
-        const Text(
-          AppStrings.howToUseSubtitle,
-          style: TextStyle(
+        Text(
+          strings.howToUseSubtitle,
+          style: const TextStyle(
             fontSize: 14,
             color: AppColors.textHint,
           ),
@@ -99,26 +105,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           height: 160,
           child: ListView(
             scrollDirection: Axis.horizontal,
-            children: const [
+            children: [
               StepCard(
                 number: '1',
-                title: AppStrings.step1Title,
-                description: AppStrings.step1Desc,
+                title: strings.step1Title,
+                description: strings.step1Desc,
               ),
               StepCard(
                 number: '2',
-                title: AppStrings.step2Title,
-                description: AppStrings.step2Desc,
+                title: strings.step2Title,
+                description: strings.step2Desc,
               ),
               StepCard(
                 number: '3',
-                title: AppStrings.step3Title,
-                description: AppStrings.step3Desc,
+                title: strings.step3Title,
+                description: strings.step3Desc,
               ),
               StepCard(
                 number: '4',
-                title: AppStrings.step4Title,
-                description: AppStrings.step4Desc,
+                title: strings.step4Title,
+                description: strings.step4Desc,
               ),
             ],
           ),
@@ -127,11 +133,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildWhyChooseSection() {
-    return const Center(
+  Widget _buildWhyChooseSection(HomeStrings strings) {
+    return Center(
       child: Text(
-        AppStrings.whyChoose,
-        style: TextStyle(
+        strings.whyChoose,
+        style: const TextStyle(
           fontSize: 22,
           fontWeight: FontWeight.bold,
           color: AppColors.textPrimary,
@@ -140,44 +146,45 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildFeaturesRow() {
+  Widget _buildFeaturesRow(HomeStrings strings) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: const [
-        FeaturePill(icon: Icons.eco, label: AppStrings.herbsCount),
-        FeaturePill(icon: Icons.verified, label: AppStrings.whoVerified),
-        FeaturePill(icon: Icons.science, label: AppStrings.runBasedSystem),
+      children: [
+        FeaturePill(icon: Icons.eco, label: strings.herbsCount),
+        FeaturePill(icon: Icons.verified, label: strings.whoVerified),
+        FeaturePill(icon: Icons.science, label: strings.runBasedSystem),
       ],
     );
   }
 
-  Widget _buildComprehensiveDbCard() {
-    return const InfoCard(
-      title: AppStrings.comprehensiveDb,
-      description: AppStrings.comprehensiveDbDesc,
+  Widget _buildComprehensiveDbCard(HomeStrings strings) {
+    return InfoCard(
+      title: strings.comprehensiveDb,
+      description: strings.comprehensiveDbDesc,
       tags: [
-        AppStrings.communityDriven,
-        AppStrings.multilingualAccess,
-        AppStrings.fastReliable,
+        strings.communityDriven,
+        strings.multilingualAccess,
+        strings.fastReliable,
       ],
-      extra: AppStrings.alignedStrategy,
+      extra: strings.alignedStrategy,
     );
   }
 
-  Widget _buildEvidenceBasedCard() {
-    return const InfoCard(
-      title: AppStrings.evidenceBased,
-      description: AppStrings.evidenceBasedDesc,
+  Widget _buildEvidenceBasedCard(HomeStrings strings) {
+    return InfoCard(
+      title: strings.evidenceBased,
+      description: strings.evidenceBasedDesc,
       tags: [
-        AppStrings.threeLanguages,
-        AppStrings.instantResults,
+        strings.threeLanguages,
+        strings.instantResults,
       ],
     );
   }
 }
 
 class _GetStartedButton extends StatelessWidget {
-  const _GetStartedButton();
+  final HomeStrings strings;
+  const _GetStartedButton({required this.strings});
 
   @override
   Widget build(BuildContext context) {
@@ -198,13 +205,13 @@ class _GetStartedButton extends StatelessWidget {
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: const [
+        children: [
           Text(
-            AppStrings.getStarted,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            strings.getStarted,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          SizedBox(width: 8),
-          Icon(Icons.rocket_launch_outlined),
+          const SizedBox(width: 8),
+          const Icon(Icons.rocket_launch_outlined),
         ],
       ),
     );
@@ -212,18 +219,19 @@ class _GetStartedButton extends StatelessWidget {
 }
 
 class _HomeBadgesRow extends StatelessWidget {
-  const _HomeBadgesRow();
+  final HomeStrings strings;
+  const _HomeBadgesRow({required this.strings});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: const [
-        _HomeBadge(icon: Icons.person, label: AppStrings.personalized),
-         SizedBox(width: 20),
-        _HomeBadge(icon: Icons.auto_awesome, label: AppStrings.traditionalWisdom),
-                SizedBox(width: 20),
-        _HomeBadge(icon: Icons.health_and_safety, label: AppStrings.safeAndNatural),
+      children: [
+        _HomeBadge(icon: Icons.person, label: strings.personalized),
+         const SizedBox(width: 20),
+        _HomeBadge(icon: Icons.auto_awesome, label: strings.traditionalWisdom),
+                const SizedBox(width: 20),
+        _HomeBadge(icon: Icons.health_and_safety, label: strings.safeAndNatural),
       ],
     );
   }

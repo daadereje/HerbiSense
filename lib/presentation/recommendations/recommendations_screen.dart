@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:herbisense/core/constants/data/models/skin_concern_model.dart';
 import '../../core/constants/colors.dart';
-import '../../core/constants/languages/strings.dart';
+import '../../core/constants/languages/recommendations_strings.dart';
+import '../../core/state/language_provider.dart';
 import '../../core/widgets/navigation/app_bottom_nav_bar.dart';
 import '../../core/widgets/inputs/search_bar.dart';
 import '../../core/widgets/shared/header_widget.dart';
@@ -251,8 +252,12 @@ style: const TextStyle(
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(recommendationsViewModelProvider);
-    final notifier = ref.read(recommendationsViewModelProvider.notifier);
+    final RecommendationsState state = ref.watch(recommendationsViewModelProvider);
+    final RecommendationsViewModel notifier =
+        ref.read(recommendationsViewModelProvider.notifier);
+    final language = ref.watch(languageProvider);
+    final languageNotifier = ref.read(languageProvider.notifier);
+    final strings = RecommendationsStrings.fromLanguage(language);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
@@ -260,11 +265,13 @@ style: const TextStyle(
       body: CustomScrollView(
         slivers: [
           HeaderWidget.compact(
-            title: 'Herbal\nRecommendations',
-            subtitle: AppStrings.recommendationsSubtitle,
+            title: strings.recommendationsTitle,
+            subtitle: strings.recommendationsSubtitle,
             height: 160,
             solidColor: true,
-            language: 'en', // TODO: hook up localization when ready
+            language: language,
+            languageOptions: const ['eng', 'amh', 'or'],
+            onLanguageSelected: languageNotifier.setLanguage,
           ),
           SliverToBoxAdapter(
             child: Padding(
@@ -274,25 +281,25 @@ style: const TextStyle(
                 children: [
                   // StepIndicator(currentStep: state.currentStep),
                   // const SizedBox(height: 24),
-                  _buildMainQuestion(),
+                  _buildMainQuestion(strings),
                   const SizedBox(height: 20),
-                  _buildSubtitle(),
+                  _buildSubtitle(strings),
                   const SizedBox(height: 16),
                   ConcernGrid(
                     concerns: state.skinConcerns,
                     onConcernTap: notifier.showSeverityDialog,
                   ),
                   const SizedBox(height: 24),
-                  const TipsCard(),
+                  TipsCard(strings: strings),
                   const SizedBox(height: 20),
-                  _buildContinueButton(notifier, state),
-                  if (!state.hasSelection) _buildValidationMessage(),
+                  _buildContinueButton(notifier, state, strings),
+                  if (!state.hasSelection) _buildValidationMessage(strings),
                   const SizedBox(height: 16),
                   // const PrivacyNotice(),
                   // const SizedBox(height: 20),
                   // const TrustSection(),
                   // const SizedBox(height: 20),
-                  _buildFooter(),
+                  _buildFooter(strings),
                   const SizedBox(height: 20),
                 ],
               ),
@@ -303,7 +310,7 @@ style: const TextStyle(
     );
   }
 
-  Widget _buildMainQuestion() {
+  Widget _buildMainQuestion(RecommendationsStrings strings) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -327,7 +334,7 @@ style: const TextStyle(
                 ),
                 child: CustomSearchBar(
                   controller: _searchController,
-                  hintText: AppStrings.searchHerbs,
+                  hintText: strings.searchHerbs,
                   onChanged: (value) {
                     _searchDebounce?.cancel();
                     _searchDebounce =
@@ -345,9 +352,9 @@ style: const TextStyle(
         const SizedBox(height: 12),
         _buildSearchResults(),
         const SizedBox(height: 16),
-        const Text(
-          AppStrings.whatAreYourConcerns,
-          style: TextStyle(
+        Text(
+          strings.whatAreYourConcerns,
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
@@ -355,7 +362,7 @@ style: const TextStyle(
         ),
         const SizedBox(height: 4),
         Text(
-          AppStrings.selectAllThatApply,
+          strings.selectAllThatApply,
           style: TextStyle(
             fontSize: 14,
             color: Colors.grey[600],
@@ -365,13 +372,13 @@ style: const TextStyle(
     );
   }
 
-  Widget _buildSubtitle() {
+  Widget _buildSubtitle(RecommendationsStrings strings) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          AppStrings.selectYourConcerns,
-          style: TextStyle(
+        Text(
+          strings.selectYourConcerns,
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
@@ -379,7 +386,7 @@ style: const TextStyle(
         ),
         const SizedBox(height: 4),
         Text(
-          AppStrings.chooseConditions,
+          strings.chooseConditions,
           style: TextStyle(
             fontSize: 13,
             color: Colors.grey[600],
@@ -392,6 +399,7 @@ style: const TextStyle(
   Widget _buildContinueButton(
     RecommendationsViewModel notifier,
     RecommendationsState state,
+    RecommendationsStrings strings,
   ) {
     return SizedBox(
       width: double.infinity,
@@ -406,9 +414,9 @@ style: const TextStyle(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        child: const Text(
-          AppStrings.getSuggestions,
-          style: TextStyle(
+        child: Text(
+          strings.getSuggestions,
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
@@ -417,11 +425,11 @@ style: const TextStyle(
     );
   }
 
-  Widget _buildValidationMessage() {
+  Widget _buildValidationMessage(RecommendationsStrings strings) {
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: Text(
-        AppStrings.selectAtLeastOne,
+        strings.selectAtLeastOne,
         style: TextStyle(
           fontSize: 12,
           color: Colors.red[400],
@@ -430,10 +438,10 @@ style: const TextStyle(
     );
   }
 
-  Widget _buildFooter() {
+  Widget _buildFooter(RecommendationsStrings strings) {
     return Center(
       child: Text(
-        AppStrings.footer,
+        strings.footer,
         style: TextStyle(
           fontSize: 13,
           color: Colors.grey[600],

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:herbisense/common/network/api_client.dart';
+import 'package:herbisense/common/network/api_endpoints.dart';
 import 'package:herbisense/core/constants/colors.dart';
 import 'package:herbisense/core/constants/languages/strings.dart';
 import 'package:herbisense/core/widgets/cards/info_card.dart';
+import 'package:herbisense/core/state/language_provider.dart';
 import 'package:herbisense/core/widgets/navigation/app_bottom_nav_bar.dart';
 import 'package:herbisense/core/widgets/shared/header_widget.dart';
 import 'package:herbisense/core/constants/data/models/favorite_model.dart';
@@ -28,6 +31,8 @@ class FavoritesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final favoritesAsync = ref.watch(favoritesProvider);
+    final language = ref.watch(languageProvider);
+    final languageNotifier = ref.read(languageProvider.notifier);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
@@ -40,6 +45,9 @@ class FavoritesScreen extends ConsumerWidget {
             showBack: false,
             height: 120,
             solidColor: true,
+            language: language,
+            languageOptions: const ['eng', 'amh', 'or'],
+            onLanguageSelected: languageNotifier.setLanguage,
             titleStyle: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -162,7 +170,6 @@ class FavoritesScreen extends ConsumerWidget {
       ),
     );
   }
-
 }
 
 class _FavoriteHerbTile extends ConsumerWidget {
@@ -199,18 +206,23 @@ class _FavoriteHerbTile extends ConsumerWidget {
             extra: item.extraNote,
           );
         }
-        return _HerbListTile(herb: herb);
+        return _HerbListTile(
+          herb: herb,
+          favoriteId: item.id?.toString() ?? item.herbId?.toString() ?? herb.id,
+        );
       },
     );
   }
 }
 
-class _HerbListTile extends StatelessWidget {
+class _HerbListTile extends ConsumerWidget {
   final HerbModel herb;
-  const _HerbListTile({required this.herb});
+  final String favoriteId;
+  const _HerbListTile({required this.herb, required this.favoriteId});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final apiClient = ref.read(apiClientProvider);
     return InkWell(
       borderRadius: BorderRadius.circular(14),
       onTap: () {
@@ -235,13 +247,43 @@ class _HerbListTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: SizedBox(
-                width: 96,
-                height: 96,
-                child: _MiniImage(url: herb.imageUrl),
-              ),
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: SizedBox(
+                    width: 96,
+                    height: 96,
+                    child: _MiniImage(url: herb.imageUrl),
+                  ),
+                ),
+                Positioned(
+                  top: 4,
+                  right: 4,
+                  child: Material(
+                    color: Colors.black45,
+                    shape: const CircleBorder(),
+                    child: InkWell(
+                      customBorder: const CircleBorder(),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => HerbDetailScreen(herb: herb),
+                          ),
+                        );
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(6),
+                        child: Icon(
+                          Icons.open_in_new,
+                          size: 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -296,6 +338,46 @@ class _HerbListTile extends StatelessWidget {
             ),
             const SizedBox(width: 6),
             const Icon(Icons.chevron_right, color: Colors.grey),
+            IconButton(
+              icon: const Icon(Icons.open_in_new,
+                  color: AppColors.secondaryGreen),
+              tooltip: 'Open herb',
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (_) => HerbDetailScreen(herb: herb)),
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.favorite, color: Colors.redAccent),
+              tooltip: 'Remove from favorites',
+              onPressed: () async {
+                final parsedId = int.tryParse(favoriteId);
+                try {
+                  await apiClient.delete(
+                      '${ApiEndpoints.favorites}/${parsedId ?? favoriteId}');
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Removed from favorites'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                    ref.invalidate(favoritesProvider);
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Failed to remove: $e'),
+                        duration: const Duration(seconds: 3),
+                      ),
+                    );
+                  }
+                }
+              },
+            ),
           ],
         ),
       ),

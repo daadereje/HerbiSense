@@ -15,6 +15,7 @@ import 'package:herbisense/core/constants/data/repositories/favorites_repository
 import 'package:herbisense/core/constants/data/repositories/saved_herbs_repository.dart';
 import 'package:http/http.dart' as http;
 import 'herb_detail_screen.dart';
+import 'package:herbisense/core/state/language_provider.dart';
 
 final discoverHerbsProvider =
     FutureProvider.autoDispose.family<List<HerbModel>, String>(
@@ -33,7 +34,12 @@ final discoverHerbsProvider =
 );
 
 /// Favorited herb ids so we can show filled heart on the list.
-final favoriteHerbIdsProvider = FutureProvider.autoDispose<Set<String>>((ref) async {
+final favoriteHerbIdsProvider =
+    FutureProvider.autoDispose<Set<String>>((ref) async {
+  // Skip network call when user isn't authenticated.
+  if (ApiClient.authToken == null || ApiClient.authToken!.isEmpty) {
+    return <String>{};
+  }
   final repo = ref.read(favoritesRepositoryProvider);
   final favs = await repo.getFavorites();
   // Prefer herbId, fallback to favorite record id.
@@ -44,7 +50,12 @@ final favoriteHerbIdsProvider = FutureProvider.autoDispose<Set<String>>((ref) as
 });
 
 /// Saved herb ids so we can show filled bookmark on the list.
-final savedHerbIdsProvider = FutureProvider.autoDispose<Set<String>>((ref) async {
+final savedHerbIdsProvider =
+    FutureProvider.autoDispose<Set<String>>((ref) async {
+  // Skip network call when user isn't authenticated.
+  if (ApiClient.authToken == null || ApiClient.authToken!.isEmpty) {
+    return <String>{};
+  }
   final repo = ref.read(savedHerbsRepositoryProvider);
   final saved = await repo.getSavedHerbs();
   return saved.map((h) => h.id).toSet();
@@ -78,6 +89,8 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
     final herbsAsync = ref.watch(discoverHerbsProvider(_query));
     final favsAsync = ref.watch(favoriteHerbIdsProvider);
     final savedAsync = ref.watch(savedHerbIdsProvider);
+    final language = ref.watch(languageProvider);
+    final languageNotifier = ref.read(languageProvider.notifier);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
@@ -92,7 +105,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
       //   ),
       //   centerTitle: true,
       //   automaticallyImplyLeading: false,
-      // ),    
+      // ),
       body: CustomScrollView(
         slivers: [
           HeaderWidget.compact(
@@ -101,7 +114,9 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
             // showBack: true,
             height: 120,
             solidColor: true,
-
+            language: language,
+            languageOptions: const ['eng', 'amh', 'or'],
+            onLanguageSelected: languageNotifier.setLanguage,
           ),
           SliverToBoxAdapter(
             child: Padding(
@@ -158,8 +173,11 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
     );
   }
 
-  Widget _buildList(List<HerbModel> herbs, Set<String> favoriteIds, Set<String> savedIds) {
+  Widget _buildList(
+      List<HerbModel> herbs, Set<String> favoriteIds, Set<String> savedIds) {
     final apiClient = ref.read(apiClientProvider);
+    final isLoggedIn =
+        ApiClient.authToken != null && ApiClient.authToken!.isNotEmpty;
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -200,9 +218,9 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                   child: SizedBox(
                     width: 96,
                     height: 96,
-            child: _ResilientImage(urls: candidates),
-          ),
-        ),
+                    child: _ResilientImage(urls: candidates),
+                  ),
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -227,6 +245,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                             apiClient: apiClient,
                             initiallyFavorite: favoriteIds.contains(herb.id),
                             initiallySaved: savedIds.contains(herb.id),
+                            canMutate: isLoggedIn,
                           ),
                         ],
                       ),
@@ -445,20 +464,20 @@ class _ResilientImageState extends State<_ResilientImage> {
 
   Future<String?> _fetchUploadImageUrl(String url) async {
     try {
-      final resp = await http
-          .get(
-            Uri.parse(url),
-            headers: {
-              'Accept': 'application/json',
-              if (ApiClient.authToken != null)
-                'Authorization': 'Bearer ${ApiClient.authToken}',
-            },
-          )
-          .timeout(const Duration(seconds: 8));
+      final resp = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Accept': 'application/json',
+          if (ApiClient.authToken != null)
+            'Authorization': 'Bearer ${ApiClient.authToken}',
+        },
+      ).timeout(const Duration(seconds: 8));
       if (resp.statusCode >= 200 && resp.statusCode < 300) {
         final body = resp.body;
         final decoded = jsonDecode(body);
-        if (decoded is Map && decoded['data'] is List && decoded['data'].isNotEmpty) {
+        if (decoded is Map &&
+            decoded['data'] is List &&
+            decoded['data'].isNotEmpty) {
           final first = decoded['data'][0];
           if (first is Map && first['image_url'] != null) {
             return first['image_url'].toString();
@@ -550,6 +569,7 @@ class _QuickActions extends StatefulWidget {
     required this.apiClient,
     required this.initiallyFavorite,
     required this.initiallySaved,
+    required this.canMutate,
     Key? key,
   }) : super(key: key);
 
@@ -557,6 +577,7 @@ class _QuickActions extends StatefulWidget {
   final ApiClient apiClient;
   final bool initiallyFavorite;
   final bool initiallySaved;
+  final bool canMutate;
 
   @override
   State<_QuickActions> createState() => _QuickActionsState();
@@ -577,31 +598,43 @@ class _QuickActionsState extends State<_QuickActions> {
 
   @override
   Widget build(BuildContext context) {
+    final canMutate = widget.canMutate;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         IconButton(
           icon: _saving
               ? const SizedBox(
-                  width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2))
               : Icon(
                   _isSaved ? Icons.bookmark : Icons.bookmark_add_outlined,
                   color: AppColors.secondaryGreen,
                 ),
           tooltip: _isSaved ? 'Saved' : 'Save herb',
-          onPressed: _saving ? null : () => _post(ApiEndpoints.savedHerbs, isSave: true),
+          onPressed: !canMutate
+              ? null
+              : (_saving
+                  ? null
+                  : () => _post(ApiEndpoints.savedHerbs, isSave: true)),
         ),
         IconButton(
           icon: _favoriting
               ? const SizedBox(
-                  width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2))
               : Icon(
                   _isFavorite ? Icons.favorite : Icons.favorite_border,
                   color: Colors.redAccent,
                 ),
           tooltip: _isFavorite ? 'Favorited' : 'Add to favorites',
-          onPressed:
-              _favoriting ? null : () => _post(ApiEndpoints.favorites, isSave: false),
+          onPressed: !canMutate
+              ? null
+              : (_favoriting
+                  ? null
+                  : () => _post(ApiEndpoints.favorites, isSave: false)),
         ),
       ],
     );
@@ -660,7 +693,9 @@ class _QuickActionsState extends State<_QuickActions> {
           content: Text(
             isSave
                 ? (_isSaved ? 'Saved herb' : 'Removed from saved')
-                : (_isFavorite ? 'Added to favorites' : 'Removed from favorites'),
+                : (_isFavorite
+                    ? 'Added to favorites'
+                    : 'Removed from favorites'),
           ),
           duration: const Duration(seconds: 2),
         ),

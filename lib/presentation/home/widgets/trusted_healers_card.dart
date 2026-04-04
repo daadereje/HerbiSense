@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/colors.dart';
-import '../../../core/constants/languages/strings.dart';
+import '../../../core/constants/languages/home_strings.dart';
 import '../../../core/widgets/cards/chip_with_icon.dart';
 
 class TrustedHealersCard extends StatelessWidget {
-  const TrustedHealersCard({super.key});
+  final HomeStrings strings;
+
+  const TrustedHealersCard({super.key, required this.strings});
 
   @override
   Widget build(BuildContext context) {
@@ -20,18 +22,18 @@ class TrustedHealersCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min, // This is important!
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            AppStrings.trustedTitle,
-            style: TextStyle(
+          Text(
+            strings.trustedTitle,
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            AppStrings.trustedDesc,
-            style: TextStyle(
+          Text(
+            strings.trustedDesc,
+            style: const TextStyle(
               fontSize: 14,
               color: AppColors.textSecondary,
             ),
@@ -43,14 +45,11 @@ class TrustedHealersCard extends StatelessWidget {
               return Wrap(
                 spacing: 12,
                 runSpacing: 8,
-                children: const [
-                  ChipWithIcon(
-                      icon: Icons.verified, label: AppStrings.whoVerified),
-                  ChipWithIcon(
-                      icon: Icons.people, label: 'Traditional Healers'),
-                  ChipWithIcon(
-                      icon: Icons.groups, label: AppStrings.communityDriven),
-                  ChipWithIcon(icon: Icons.star, label: AppStrings.accuracy98),
+                children: [
+                  ChipWithIcon(icon: Icons.verified, label: strings.whoVerified),
+                  ChipWithIcon(icon: Icons.people, label: strings.traditionalWisdom),
+                  ChipWithIcon(icon: Icons.groups, label: strings.communityDriven),
+                  ChipWithIcon(icon: Icons.star, label: strings.accuracy98),
                 ],
               );
             },
@@ -59,11 +58,11 @@ class TrustedHealersCard extends StatelessWidget {
           const Divider(color: AppColors.darkCardBorder),
           const SizedBox(height: 8),
 
-          const Text(
-            '• ${AppStrings.alignedStrategy}\n'
-            '• ${AppStrings.healersContribute}\n'
-            '• ${AppStrings.verifiedSite}',
-            style: TextStyle(
+          Text(
+            '• ${strings.alignedStrategy}\n'
+            '• ${strings.healersContribute}\n'
+            '• ${strings.verifiedSite}',
+            style: const TextStyle(
               fontSize: 13,
               height: 1.6,
               color: AppColors.textSecondary,

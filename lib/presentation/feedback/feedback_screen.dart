@@ -4,6 +4,7 @@ import 'package:herbisense/common/network/api_exception.dart';
 import 'package:herbisense/core/constants/colors.dart';
 import 'package:herbisense/core/widgets/navigation/app_bottom_nav_bar.dart';
 import 'package:herbisense/core/constants/data/repositories/feedback_repository.dart';
+import 'package:herbisense/core/state/language_provider.dart';
 
 import '../../core/widgets/shared/header_widget.dart';
 
@@ -31,6 +32,8 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final language = ref.watch(languageProvider);
+    final languageNotifier = ref.read(languageProvider.notifier);
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
       bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 3),
@@ -41,7 +44,9 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
             showBack: true,
             height: 90,
             solidColor: true,
-            // language: 'en', // TODO: hook up localization when ready
+            language: language,
+            languageOptions: const ['eng', 'amh', 'or'],
+            onLanguageSelected: languageNotifier.setLanguage,
           ),
           SliverToBoxAdapter(
             child: Padding(

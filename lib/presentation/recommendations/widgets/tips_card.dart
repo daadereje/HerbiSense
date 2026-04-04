@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/colors.dart';
-import '../../../core/constants/languages/strings.dart';
+import '../../../core/constants/languages/recommendations_strings.dart';
 
 class TipsCard extends StatelessWidget {
-  const TipsCard({super.key});
+  final RecommendationsStrings strings;
+  const TipsCard({super.key, required this.strings});
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +26,9 @@ class TipsCard extends StatelessWidget {
                 size: 20,
               ),
               const SizedBox(width: 8),
-              const Text(
-                AppStrings.tipsForBestResults,
-                style: TextStyle(
+              Text(
+                strings.tipsForBestResults,
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
@@ -36,9 +37,9 @@ class TipsCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          _buildTip(AppStrings.tip1),
-          _buildTip(AppStrings.tip2),
-          _buildTip(AppStrings.tip3),
+          _buildTip(strings.tip1),
+          _buildTip(strings.tip2),
+          _buildTip(strings.tip3),
         ],
       ),
     );

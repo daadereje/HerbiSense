@@ -1,192 +1,192 @@
 class AppStrings {
   // Home Page
-  static const String homeTitle = 'Beekumsa Uumamaa Bareedina Gogaa keef Argadhu';
-  static const String homeSubtitle = 'Qoricha aadaa Itiyoophiyaa fi qorannoo ammayyaa walitti makamee imala kee ni deeggaru';
-  static const String searchHerbs = 'Rakkoo gogaa barbaadi...';
-  static const String searchSaved = 'Biqiltoota kuufaman barbaadi...';
+  static const String homeTitle = 'Discover Nature\'s Wisdom for Radiant Skin';
+  static const String homeSubtitle = 'Ancient Ethiopian herbal remedies meet modern dermatology for your skin wellness journey.';
+  static const String searchHerbs = 'Search skin conditions...';
+    static const String searchSaved = 'Search Saved Herb...';
 
-  static const String getStarted = 'Jalqabi';
-  static const String skinConditions = 'Rakkoolee Gogaa';
+   static const String getStarted = 'Get Started';
+  static const String skinConditions = 'Skin Conditions';
 
   // How to Use
-  static const String howToUse = 'HerbiSense akkamitti fayyadamuu?';
-  static const String howToUseSubtitle = 'Tarkaanfii salphaa 4n jalqabi';
+  static const String howToUse = 'How to Use HerbiSense?';
+  static const String howToUseSubtitle = 'Get started in 4 easy steps. Find the right herbs for your skin in minutes.';
 
   // Steps
-  static const String step1Title = 'Biqiltoota Barbaadi';
-  static const String step1Desc = 'Maqaa ykn rakkoo irratti hundaa\'uun barbaadi';
-  static const String step2Title = 'Gareewwan Ilaali';
-  static const String step2Desc = 'Gosa fi rakkoo irratti hundaa\'uun qoradhu';
-  static const String step3Title = 'Waa\'ee Biqiltootaa Baradhu';
-  static const String step3Desc = 'Akka itti fayyadamtan odeeffannoo argadhu';
-  static const String step4Title = 'Gorsa Argadhu';
-  static const String step4Desc = 'Akka fedhii kee irratti gorsa argadhu';
+  static const String step1Title = 'Search for Herbs';
+  static const String step1Desc = 'Find herbs by name or what skin issue you want to treat';
+  static const String step2Title = 'Browse Categories';
+  static const String step2Desc = 'Explore herbs by type, skin condition, or traditional use';
+  static const String step3Title = 'Learn About Herbs';
+  static const String step3Desc = 'Read detailed info about how to use each herb safely';
+  static const String step4Title = 'Get Suggestions';
+  static const String step4Desc = 'Get herb recommendations based on your skin needs';
 
   // Why Choose
-  static const String whyChoose = 'Maaliif HerbiSense filatta?';
+  static const String whyChoose = 'Why Choose HerbiSense?';
 
   // Features
-  static const String herbsCount = 'Biqiltoota 100+';
-  static const String whoVerified = 'Ogeeyyii aadaa irraa mirkanaa\'e';
-  static const String runBasedSystem = 'Sirna gahee irratti hundaa\'e';
+  static const String herbsCount = '100+ Herbs';
+  static const String whoVerified = 'Healer Verified';
+  static const String runBasedSystem = 'Run-Based System';
 
   // Cards
-  static const String comprehensiveDb = 'Kuusaa Odeeffannoo Bal\'aa';
-  static const String comprehensiveDbDesc = 'Odeeffannoo mirkanaa\'e biqiltoota Itiyoophiyaa 100+ argadhu';
-  static const String evidenceBased = 'Ragaa irratti hundaa\'e';
-  static const String evidenceBasedDesc = 'Odeeffannoon hundi qorattootaa fi ogeeyyii irraa mirkanaa\'e';
-  static const String trustedTitle = 'Amanamaa ogeeyyii fi saayinsiin';
-  static const String trustedDesc = 'Beekumsa aadaa fi saayinsii walitti makaa';
+  static const String comprehensiveDb = 'Comprehensive Database';
+  static const String comprehensiveDbDesc = 'Access verified information on 100+ Ethiopian herbs with traditional insights.';
+  static const String evidenceBased = 'Evidence-Based Information';
+  static const String evidenceBasedDesc = 'All herbal information is verified by researchers and traditional healers.';
+  static const String trustedTitle = 'Trusted by Traditional Healers & Modern Science';
+  static const String trustedDesc = 'Our platform combines centuries of Ethiopian traditional wisdom with modern verification processes.';
 
   // Tags
-  static const String communityDriven = 'Hawaasaan hogganame';
-  static const String multilingualAccess = 'Afaanota heddu';
-  static const String fastReliable = 'Saffisaa fi amanamaa';
-  static const String threeLanguages = 'Afaanota 2+';
-  static const String instantResults = "Bu'aa saffisaa";
-  static const String accuracy98 = 'Sirrummaa';
+  static const String communityDriven = 'Community-Driven';
+  static const String multilingualAccess = 'Multilingual Access';
+  static const String fastReliable = 'Fast & Reliable';
+  static const String threeLanguages = '2+ Languages';
+  static const String instantResults = 'Instant Results';
+  static const String accuracy98 = 'Accuracy';
 
   // Extra
-  static const String alignedStrategy = 'Tarsiimoo aadaa waliin wal simata';
-  static const String healersContribute = 'Ogeeyyiin aadaa ni hirmaatu';
-  // static const String activeMembers = '10,000+ miseensota dammaqoo';
-  static const String verifiedSite = 'Marsariitii odeeffannoo mirkanaa\'e';
+  static const String alignedStrategy = 'Aligned with Traditional Medicine Strategy';
+  static const String healersContribute = 'Traditional healers contribute';
+  // static const String activeMembers = '10,000+ active community members';
+  static const String verifiedSite = 'Verified information site';
 
   // Directory Page
-  static const String directoryTitle = 'Galmee Biqiltoota Itiyoophiyaa';
-  static const String directorySubtitle = 'Biqiltoota aadaa qoradhu';
-  static const String searchHint = 'Maqaa ykn saayinsii irratti hundaa\'uun barbaadi...';
-  static const String publishedHerbs = 'Biqiltoota maxxanfaman';
-  static const String skinCondition = 'Rakkoo gogaa';
-  static const String herbalDirectory = 'Galmee Biqiltootaa';
+  static const String directoryTitle = 'Ethiopian Herb Directory';
+  static const String directorySubtitle = 'Explore traditional Ethiopian herbs for skin wellness and healing';
+  static const String searchHint = 'Search herbs by name, local name, or scientific name...';
+  static const String publishedHerbs = 'Published Herbs';
+  static const String skinCondition = 'Skin Condition';
+  static const String herbalDirectory = 'Herbal Directory';
   static const String footer = '© 2026 HerbiSense.';
 
   // Recommendations Page
-  static const String recommendationsTitle = 'Gorsa Biqiltootaa';
-  static const String recommendationsSubtitle = 'Qoricha aadaa Itoophiyaa rakkoo gogaa keetiif qophaa’e argadhu';
-  static const String personalized = 'Dhuunfaa';
-  static const String traditionalWisdom = 'Beekumsa Aadaa';
-  static const String safeAndNatural = 'Nageenya fi Uumamaa';
-  static const String yourProfile = 'Profaayilii Kee';
-  static const String recommendations = 'Gorsa';
-  static const String whatAreYourConcerns = 'Rakkoon gogaa kee maal dha?';
-  static const String selectAllThatApply = 'Kan si ilaallatu hunda filadhu gorsa dhuunfaa argachuuf';
-  static const String selectYourConcerns = 'Rakkoolee Gogaa Kee Filadhu';
-  static const String chooseConditions = 'Rakkoolee si ilaallatan hunda filadhu. Sadarkaa cimaa isaanii ibsi gorsa sirrii argachuuf';
-  static const String tipsForBestResults = 'Gorsa Bu’aa Gaarii Argachuuf';
-  static const String tip1 = 'Gorsa guutuu argachuuf rakkoolee hunda filadhu';
-  static const String tip2 = 'Sadarkaa cimaa ibsi gorsa sirrii argachuuf';
-  static const String tip3 = 'Qorichi aadaa Itoophiyaa yeroo hedduu biqiltoota hedduu walitti makuun fayyadama';
-  static const String continueToProfile = 'Gara Profaayilii Kee itti fufi >';
-  static const String getSuggestions = 'Gorsa Dhuunfaa Argadhu';
-  static const String selectAtLeastOne = 'Yoo xiqqaate rakkoo gogaa tokko filadhu itti fufuuf';
-  static const String privacyNotice = 'Odeeffannoon kee dhuunfaa dha, gorsa fooyya’aa kennuuf qofa fayyadama';
-  static const String whyTrust = 'Maaliif Gorsa Keenya Amantaa?';
-  static const String healerVerified = 'Ogeeyyii Aadaa Irraa Mirkanaa’e';
-  static const String scientificBacking = 'Saayinsiin Deeggarame';
+  static const String recommendationsTitle = 'Herbal Recommendations';
+  static const String recommendationsSubtitle = 'Get traditional Ethiopian remedies tailored to your skin concerns';
+  static const String personalized = 'Personalized';
+  static const String traditionalWisdom = 'Traditional Wisdom';
+  static const String safeAndNatural = 'Safe & Natural';
+  static const String yourProfile = 'Your Profile';
+  static const String recommendations = 'Recommendations';
+  static const String whatAreYourConcerns = 'What are your skin concerns?';
+  static const String selectAllThatApply = 'Select all that apply to get personalized herbal recommendations';
+  static const String selectYourConcerns = 'Select Your Skin Concerns';
+  static const String chooseConditions = 'Choose all conditions that apply to you. Select severity levels for more personalized recommendations.';
+  static const String tipsForBestResults = 'Tips for Best Results';
+  static const String tip1 = 'Select all conditions that apply to you for comprehensive recommendations';
+  static const String tip2 = 'Specify severity levels for more personalized herbal suggestions';
+  static const String tip3 = 'Traditional Ethiopian remedies often combine multiple herbs for enhanced effects';
+  static const String continueToProfile = 'Continue to Your Profile >';
+  static const String getSuggestions = 'Get Personalized Suggestions';
+  static const String selectAtLeastOne = 'Please select at least one skin condition to continue';
+  static const String privacyNotice = 'Your information is private and used only to provide better recommendations';
+  static const String whyTrust = 'Why Trust Our Recommendations?';
+  static const String healerVerified = 'Traditional Healer Verified';
+  static const String scientificBacking = 'Scientific Backing';
 
   // About Page
-  static const String discoverHerbiSense = 'HerbiSense Beeki:';
-  static const String bridgingWisdom = 'Beekumsa durii fi fayyaa ammayyaa walitti fiduu';
-  static const String herbiSenseDescription = 'HerbiSense iddoo addaa namoota, maatii fi warra qoricha aadaa biqiltootaa irratti hojjetan hundaaf qophaa’e dha, keessumaa daa’immaniif. Kaayyoon keenya dhaala kana salphaatti argamuu gochuu dha.';
-  static const String herbiSenseMission = 'Qoricha dhugaa fi guutuu ta’e akka argattan isin waliin walqunnamsiisuu dha, akkasumas seenaa fi beekumsa durii eeguudha.';
-  static const String ourMission = 'Ergama Keenya: Fayyaa Cimsuu fi Aadaa Eegu';
-  static const String missionDescription1 = 'Beekumsa aadaa guddisuu, eegu fi qooduuf kutannoo qabna. Oomisha uumamaa fayyadamuun dhugaa fi badhaadhina aadaa dhiheessina.';
-  static const String missionDescription2 = 'Qorannoo fi hojii waloo hawaasaa waliin hojjechuun oomisha aadaa fi naannoo waliin waliigalu uumna.';
-  static const String research = 'Qorannoo';
-  static const String researchCenter = 'Giddugala Qorannoo';
-  static const String ourMethodology = 'Mala Hojii Keenya';
-  static const String organization = 'Dhaabbata';
-  static const String organizationCenter = 'Giddugala Dhaabbataa';
-  static const String community = 'Hawaasa';
-  static const String legacyTitle = 'Dhaala Guddaa Qoricha Aadaa Itoophiyaa';
-  static const String legacyDescription1 = 'Qorichi aadaa Itoophiyaa seenaa dheeraa fi beekumsa durii irratti hundaa’e har’as jiraata. Dhalootarraa dhalootatti darbaa jira.';
-  static const String legacyDescription2 = 'Dhaala kana eeguuf fi guddisuuf hojjechaa jirra, akkasumas jireenya ammayyaa waliin wal simsiifna.';
-  static const String legacyDescription3 = 'Ogeeyyiin hojii isaanii keessatti qoricha uumamaa fayyadamuun mala haaraa fi aadaa walitti makaa uumu.';
-  static const String traditionalHealing = 'Qorichi Aadaa Jalqaba';
-  static const String traditionalMedicineCenters = 'Giddugala Qoricha Aadaa';
-  static const String wholesomeIngredients = 'Wantoota Uumamaa Fayyaa Qaban';
-  static const String naturalIngredients = 'Wantoota Uumamaa';
-  static const String digitalPreservation = 'Eegumsa Dijitaalaa';
-  static const String digitalPreservationCenters = 'Giddugala Dijitaalaa';
-  static const String accuracyRespectCommunity = 'Sirrummaa, Kabaja fi Hawaasa';
-  static const String valuesDescription = 'Sirrummaa saayinsii, kabaja aadaa fi hojii waloo hawaasaa dursa kennina. Namoonni biroo imala isaanii akka ijaaranii fi eegan gargaaruuf qophiidha.';
-  static const String stabilityTips = 'Gorsa Tasgabbii';
-  static const String culturalInsight = 'Hubannoo Aadaa';
-  static const String balanceHarmony = 'Wal Madaaluu fi Waliigaltee';
-  static const String shapingFuture = 'Fuuldura Beekumsa Biqiltootaa Ijaaruu';
-  static const String futureDescription = 'Yeroo guddannu, gahumsa keenya addunyaa irratti bal’isuu fi beekumsa keenya cimsuuf hojjanna. Beekumsa kana dhalootaaf dabarsuuf kutannoodhaan hojjanna.';
-  static const String ourRoadmap = 'Kaartaa Karooraa Keenya';
-  static const String commitmentStatement = 'Oomisha qulqullina olaanaa, nageenya fi itti fufiinsa qabu dhiyeessuuf kutannoo qabna.';
+  static const String discoverHerbiSense = 'Discover HerbiSense:';
+  static const String bridgingWisdom = 'Bridging Ancient Wisdom with Modern Wellness';
+  static const String herbiSenseDescription = 'HerbiSense is a dedicated platform for people, parents, and all those involved in developing indigenous biological herbal remedies, particularly for infants. Our mission is to make this invaluable heritage accessible, fostering wellness through natural solutions in a modern context.';
+  static const String herbiSenseMission = 'We aim to connect you with authentic, holistic remedies, ensuring that the rich history and ancestral wisdom of these powerful herbs are not only preserved but also celebrated and shared with future generations.';
+  static const String ourMission = 'Our Mission: Empowering Health, Preserving Heritage';
+  static const String missionDescription1 = 'We are committed to cultivating, preserving, and sharing traditional wisdom. Through natural products, we bring authenticity and cultural richness to our customers. Our vision extends to empowering individuals with ancient wisdom for optimal health and well-being. We believe in the power of nature and its ability to heal and nourish.';
+  static const String missionDescription2 = 'Through careful research and collaboration with local communities, we have developed a range of products that are both culturally significant and environmentally friendly.';
+  static const String research = 'Research';
+  static const String researchCenter = 'Research Center';
+  static const String ourMethodology = 'Our Methodology';
+  static const String organization = 'Organization';
+  static const String organizationCenter = 'Organization Center';
+  static const String community = 'Community';
+  static const String legacyTitle = 'The Enduring Legacy of Ethiopian Herbal Traditions';
+  static const String legacyDescription1 = 'Ethiopian herbal traditions, rooted in deep history and centuries-old wisdom, continue to thrive today. These practices are passed down from generation to generation, embodying the wisdom of our ancestors. They are not just a collection of plants; they are living beings that carry the essence of our heritage.';
+  static const String legacyDescription2 = 'Our commitment to preserving these traditions is evident in our efforts to protect and promote them. We work closely with local communities, ensuring that the knowledge and practices are adapted to meet the needs of modern life while staying true to their roots.';
+  static const String legacyDescription3 = 'Our artisans and craftsmen play a crucial role in maintaining these traditions. They are skilled in the art of herbal medicine, using natural ingredients to create unique blends that offer a blend of tradition and innovation.';
+  static const String traditionalHealing = 'Traditional Healing Practices Begin';
+  static const String traditionalMedicineCenters = 'Traditional Medicine Centers';
+  static const String wholesomeIngredients = 'Wholesome Natural Ingredients';
+  static const String naturalIngredients = 'Natural Ingredients';
+  static const String digitalPreservation = 'Digital Preservation';
+  static const String digitalPreservationCenters = 'Digital Preservation Centers';
+  static const String accuracyRespectCommunity = 'Accuracy, Respect, and Community';
+  static const String valuesDescription = 'Prioritizing scientific rigor, cultural respect, and community collaboration. We are ready to help others develop and maintain their own fertility journey, ensuring that our products are truly effective.';
+  static const String stabilityTips = 'Stability Tips';
+  static const String culturalInsight = 'Cultural Insight';
+  static const String balanceHarmony = 'Balance & Harmony';
+  static const String shapingFuture = 'Shaping the Future of Herbal Knowledge';
+  static const String futureDescription = 'As we continue to grow, we will focus on expanding our global reach and deepening our understanding of herbal medicine. We are committed to sharing this knowledge with the world, ensuring that it remains relevant and beneficial for generations to come.';
+  static const String ourRoadmap = 'Our Roadmap';
+  static const String commitmentStatement = 'We are committed to providing high-quality products that are safe, effective, and sustainable. We are excited to share our journey with you and look forward to continuing to shape the future of herbal medicine.';
 
   // Auth Strings
   static const String appName = 'HerbiSense';
-  static const String appTagline = 'BEEKUMSA BIQILTOOTA ITIYOOPHIYAA';
-  static const String welcomeBack = 'Baga nagaan dhuftan gara HerbiSense';
-  static const String signInToContinue = 'Seeni imala kee itti fufuuf';
-  static const String emailAddress = 'Imeelii';
-  static const String yourEmail = 'Imeelii kee galchi';
-  static const String password = 'Jecha iccitii';
-  static const String enterPassword = 'Jecha iccitii galchi';
-  static const String rememberMe = 'Guyyaa 30f na yaadadhu';
-  static const String forgotPassword = 'Jecha iccitii irraanfatte?';
-  static const String signIn = 'Seeni';
-  static const String noAccount = 'Akkaawuntii hin qabduu? ';
-  static const String signUp = 'Galmaa’i';
+  static const String appTagline = 'ETHIOPIAN HERBAL WISDOM';
+  static const String welcomeBack = 'Welcome Back to HerbiSense';
+  static const String signInToContinue = 'Sign in to continue your journey with Ethiopian herbal wisdom';
+  static const String emailAddress = 'Email Address';
+  static const String yourEmail = 'Your email address';
+  static const String password = 'Password';
+  static const String enterPassword = 'Enter your password';
+  static const String rememberMe = 'Remember me for 30 days';
+  static const String forgotPassword = 'Forgot Password?';
+  static const String signIn = 'Sign In';
+  static const String noAccount = 'Don\'t have an account? ';
+  static const String signUp = 'Sign Up';
 
   // Journey Features
-  static const String continueJourney = 'Imala kee itti fufi';
-  static const String journeyDescription = 'Gorsa dhuunfaa, wantoota kuufatte fi beekumsa aadaa baradhu';
-  static const String personalizedRecommendations = 'Gorsa Dhuunfaa';
-  static const String tailoredSuggestions = 'Gorsa siif qophaa’e argadhu';
-  static const String saveFavorites = 'Kan si jaallatan kuusi';
-  static const String bookmarkHerbs = 'Biqiltoota fi qoricha kuusi';
-  static const String communityAccess = 'Hawaasa keessaa seeni';
-  static const String connectWithHealers = 'Ogeeyyii aadaa waliin walqunnami';
+  static const String continueJourney = 'Continue Your Journey with Ethiopian Herbal Wisdom';
+  static const String journeyDescription = 'Access your personalized herb recommendations, saved remedies, and continue learning about traditional Ethiopian skincare.';
+  static const String personalizedRecommendations = 'Personalized Recommendations';
+  static const String tailoredSuggestions = 'Get tailored herbal suggestions';
+  static const String saveFavorites = 'Save Favorites';
+  static const String bookmarkHerbs = 'Bookmark herbs and remedies';
+  static const String communityAccess = 'Community Access';
+  static const String connectWithHealers = 'Connect with traditional healers';
 
   // Register Page
-  static const String joinEnthusiasts = '10,000+ namoota biqiltoota jaallatan waliin ta’i';
-  static const String startYourJourney = 'Imala kee har’a jalqabi';
-  static const String createAccountDescription = 'Akkaawuntii uumi, wantoota kuusi fi hawaasa waliin ta’i';
-  static const String createAccount = 'Akkaawuntii Uumi';
-  static const String signUpToExplore = 'Galmaa’i qorachuuf';
-  static const String fullName = 'Maqaa Guutuu';
-  static const String enterFullName = 'Maqaa kee galchi';
-  static const String enterEmail = 'Imeelii kee galchi';
-  static const String createPassword = 'Jecha iccitii uumi';
-  static const String confirmPassword = 'Jecha iccitii mirkaneessi';
-  static const String confirmYourPassword = 'Jecha iccitii kee mirkaneessi';
-  static const String iAgreeTo = 'Ani walii gala ';
-  static const String termsOfService = 'Seera Tajaajilaa';
-  static const String privacyPolicy = 'Imaammata Dhoksaa';
-  static const String alreadyHaveAccount = 'Akkaawuntii qabdaa? ';
-  static const String accountCreated = 'Akkaawuntiin milkaa’inaan uumame!';
+  static const String joinEnthusiasts = 'Join 10,000+ Herbal Enthusiasts';
+  static const String startYourJourney = 'Start Your Herbal Journey Today';
+  static const String createAccountDescription = 'Create an account to access our complete herbal directory, save favorites, and join our community.';
+  static const String createAccount = 'Create Account';
+  static const String signUpToExplore = 'Sign up to explore our herbal directory';
+  static const String fullName = 'Full Name';
+  static const String enterFullName = 'Enter your full name';
+  static const String enterEmail = 'Enter your email';
+  static const String createPassword = 'Create a password';
+  static const String confirmPassword = 'Confirm Password';
+  static const String confirmYourPassword = 'Confirm your password';
+  static const String iAgreeTo = 'I agree to the ';
+  static const String termsOfService = 'Terms of Service';
+  static const String privacyPolicy = 'Privacy Policy';
+  static const String alreadyHaveAccount = 'Already have an account? ';
+  static const String accountCreated = 'Account created successfully!';
 
   // Validation messages
-  static const String fillAllFields = 'Maaloo hunda guuti';
-  static const String passwordsDoNotMatch = 'Jecha iccitii wal hin fakkaatu';
-  static const String passwordTooShort = 'Jecha iccitii gabaabaa dha';
-  static const String invalidEmail = 'Imeelii sirrii galchi';
-  static const String mustAgreeToTerms = 'Seerota irratti walii galuu qabda';
-  static const String registrationFailed = 'Galmeen hin milkoofne. Irra deebi’i yaali';
+  static const String fillAllFields = 'Please fill in all fields';
+  static const String passwordsDoNotMatch = 'Passwords do not match';
+  static const String passwordTooShort = 'Password must be at least 6 characters';
+  static const String invalidEmail = 'Please enter a valid email address';
+  static const String mustAgreeToTerms = 'You must agree to the Terms of Service and Privacy Policy';
+  static const String registrationFailed = 'Registration failed. Please try again.';
 
   // Contact Page
-  static const String contactTitle = 'HerbiSense qunnami';
-  static const String contactSubtitle = 'Gaaffii ykn yaada qabdu nu qunnami';
+  static const String contactTitle = 'Contact HerbiSense';
+  static const String contactSubtitle = 'We would love to hear from you. Reach out with questions, feedback, or partnership ideas.';
   static const String contactEmail = 'hello@herbisense.com';
   static const String contactPhone = '+251 900 000 000';
-  static const String contactAddress = 'Finfinnee, Itoophiyaa';
-  static const String contactAction = 'Ergaa ergi';
+  static const String contactAddress = 'Addis Ababa, Ethiopia';
+  static const String contactAction = 'Send Us A Message';
 
   // Saved Herbs Page
-  static const String savedHerbsTitle = 'Biqiltoota Kuufaman';
-  static const String savedHerbsSubtitle = 'Boodarra ilaaluuf kuufatte';
-  static const String savedHerbsEmpty = 'Ammaaf homaa hin kuufne';
-  static const String savedHerbsCountLabel = 'Kuufame';
+  static const String savedHerbsTitle = 'Saved Herbs';
+  static const String savedHerbsSubtitle = 'Access herbs you bookmarked to review later';
+  static const String savedHerbsEmpty = 'You have no saved herbs yet. Browse the directory and tap save to keep your favorites.';
+  static const String savedHerbsCountLabel = 'Saved';
 
   // Favorites Page
-  static const String favoritesTitle = 'Kan jaallataman';
-  static const String favoritesSubtitle = 'Biqiltoota kee bakka tokkootti';
-  static const String favoritesEmpty = 'Ammaaf hin jiru';
-  static const String favoritesCountLabel = 'Jaallatamtoota';
+  static const String favoritesTitle = 'Favorites';
+  static const String favoritesSubtitle = 'Your bookmarked herbs and remedies in one place';
+  static const String favoritesEmpty = 'You have no favorites yet. Tap the heart icon on a herb or remedy to add it here.';
+  static const String favoritesCountLabel = 'Favorites';
 }

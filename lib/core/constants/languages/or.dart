@@ -1,4 +1,4 @@
-class AppStrings {
+class AppStringsOr {
   // Home Page
   static const String homeTitle = 'Beekumsa Uumamaa Bareedina Gogaa keef Argadhu';
   static const String homeSubtitle = 'Qoricha aadaa Itiyoophiyaa fi qorannoo ammayyaa walitti makamee imala kee ni deeggaru';

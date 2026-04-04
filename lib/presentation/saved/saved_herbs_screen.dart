@@ -10,6 +10,7 @@ import 'package:herbisense/core/constants/data/models/herb_model.dart';
 import 'package:herbisense/core/constants/data/repositories/saved_herbs_repository.dart';
 import 'package:herbisense/core/constants/data/repositories/herb_repository.dart';
 import 'package:herbisense/presentation/discover/herb_detail_screen.dart';
+import 'package:herbisense/core/state/language_provider.dart';
 
 final savedHerbsProvider = FutureProvider<List<HerbModel>>((ref) {
   final repo = ref.read(savedHerbsRepositoryProvider);
@@ -42,6 +43,8 @@ class _SavedHerbsScreenState extends ConsumerState<SavedHerbsScreen> {
   @override
   Widget build(BuildContext context) {
     final savedAsync = ref.watch(savedHerbsProvider);
+    final language = ref.watch(languageProvider);
+    final languageNotifier = ref.read(languageProvider.notifier);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
@@ -54,7 +57,9 @@ class _SavedHerbsScreenState extends ConsumerState<SavedHerbsScreen> {
             showBack: true,
             height: 90,
             solidColor: true,
-            // language: 'en', // TODO: hook up localization when ready
+            language: language,
+            languageOptions: const ['eng', 'amh', 'or'],
+            onLanguageSelected: languageNotifier.setLanguage,
           ),
           SliverToBoxAdapter(
             child: Padding(
