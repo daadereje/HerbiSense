@@ -19,7 +19,8 @@ class SkinConcernModel {
     required this.severity,
   });
 
-  factory SkinConcernModel.initial(String title, String description, {int? id}) {
+  factory SkinConcernModel.initial(String title, String description,
+      {int? id}) {
     return SkinConcernModel(
       id: id,
       title: title,
@@ -55,17 +56,24 @@ class SkinConcernModel {
   factory SkinConcernModel.fromJson(Map<String, dynamic> json) {
     final dynamic level = json['severity'] ?? json['level'];
     return SkinConcernModel(
-      id: (json['id'] ?? json['condition_id']) is num
-          ? (json['id'] ?? json['condition_id']).toInt()
-          : null,
+      id: _parseInt(json['id'] ?? json['condition_id']),
       title: (json['title'] ?? json['name'] ?? '').toString(),
       description: (json['description'] ?? '').toString(),
       translatedTitle: json['translated_name']?.toString(),
       translatedDescription: json['translated_description']?.toString(),
       translationLanguage: json['language']?.toString(),
       selected: json['selected'] == true,
-      severity: level is num ? level.toInt() : 0,
+      severity: level is num
+          ? level.toInt()
+          : (level is String ? int.tryParse(level) ?? 0 : 0),
     );
+  }
+
+  static int? _parseInt(dynamic value) {
+    if (value == null) return null;
+    if (value is num) return value.toInt();
+    if (value is String) return int.tryParse(value);
+    return null;
   }
 
   Map<String, dynamic> toJson() {
@@ -132,7 +140,13 @@ class SkinConcernModel {
   }
 
   bool _matchesLanguage(String code) {
-    if (translationLanguage == null) return false;
+    if (translationLanguage == null || translationLanguage!.isEmpty) {
+      if (code.toLowerCase() == 'eng' || code.toLowerCase() == 'en') {
+        return false;
+      }
+      return (translatedTitle?.isNotEmpty == true ||
+          translatedDescription?.isNotEmpty == true);
+    }
     final normalized = translationLanguage!.toLowerCase();
     final target = switch (code.toLowerCase()) {
       'amh' => 'am',

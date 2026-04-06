@@ -5,11 +5,13 @@ import '../../../core/constants/data/models/skin_concern_model.dart';
 class ConcernGrid extends StatelessWidget {
   final List<SkinConcernModel> concerns;
   final Function(BuildContext, int) onConcernTap;
+  final String language;
 
   const ConcernGrid({
     super.key,
     required this.concerns,
     required this.onConcernTap,
+    required this.language,
   });
 
   @override
@@ -28,7 +30,7 @@ class ConcernGrid extends StatelessWidget {
         final concern = concerns[index];
         return GestureDetector(
           onTap: () => onConcernTap(context, index),
-          child: ConcernCard(concern: concern),
+          child: ConcernCard(concern: concern, language: language),
         );
       },
     );
@@ -37,8 +39,9 @@ class ConcernGrid extends StatelessWidget {
 
 class ConcernCard extends StatelessWidget {
   final SkinConcernModel concern;
+  final String language;
 
-  const ConcernCard({super.key, required this.concern});
+  const ConcernCard({super.key, required this.concern, required this.language});
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +64,7 @@ class ConcernCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  concern.title,
+                  concern.titleFor(language),
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
@@ -80,7 +83,7 @@ class ConcernCard extends StatelessWidget {
             ],
           ),
           Text(
-            concern.description,
+            concern.descriptionFor(language),
             style: TextStyle(
               fontSize: 11,
               color: Colors.grey[600],

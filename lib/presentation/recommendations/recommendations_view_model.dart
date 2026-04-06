@@ -3,22 +3,29 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/data/models/skin_concern_model.dart';
 import '../../core/constants/data/repositories/recommendation_repository.dart';
 import 'widgets/severity_bottom_sheet.dart';
+import '../../core/state/language_provider.dart';
 
 final recommendationsViewModelProvider =
-    StateNotifierProvider<RecommendationsViewModel, RecommendationsState>((ref) {
+    StateNotifierProvider<RecommendationsViewModel, RecommendationsState>(
+        (ref) {
   final repository = ref.watch(recommendationRepositoryProvider);
-  return RecommendationsViewModel(repository);
+  final language = ref.watch(languageProvider);
+  return RecommendationsViewModel(repository, language);
 });
 
 class RecommendationsViewModel extends StateNotifier<RecommendationsState> {
   final RecommendationRepository _repository;
+  final String _language;
 
-  RecommendationsViewModel(this._repository) : super(RecommendationsState.initial());
+  RecommendationsViewModel(this._repository, this._language)
+      : super(RecommendationsState.initial()) {
+    Future.microtask(loadSkinConcerns);
+  }
 
   Future<void> loadSkinConcerns() async {
     state = state.copyWith(isLoading: true);
     try {
-      final concerns = await _repository.getSkinConcerns();
+      final concerns = await _repository.getSkinConcerns(language: _language);
       state = state.copyWith(isLoading: false, skinConcerns: concerns);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -52,7 +59,8 @@ class RecommendationsViewModel extends StateNotifier<RecommendationsState> {
 
   void _toggleConcernSelection(int index, bool selected) {
     final updatedConcerns = List<SkinConcernModel>.from(state.skinConcerns);
-    updatedConcerns[index] = updatedConcerns[index].copyWith(selected: selected);
+    updatedConcerns[index] =
+        updatedConcerns[index].copyWith(selected: selected);
     state = state.copyWith(skinConcerns: updatedConcerns);
   }
 
@@ -73,7 +81,8 @@ class RecommendationsViewModel extends StateNotifier<RecommendationsState> {
 
     state = state.copyWith(isSearchLoading: true, searchError: null);
     try {
-      final results = await _repository.searchConditions(query);
+      final results =
+          await _repository.searchConditions(query, language: _language);
       state = state.copyWith(
         isSearchLoading: false,
         searchResults: results,

@@ -28,14 +28,9 @@ class _RecommendationsScreenState extends ConsumerState<RecommendationsScreen> {
   void initState() {
     super.initState();
     _searchController = TextEditingController();
-    Future.microtask(
-      () => ref
-          .read(recommendationsViewModelProvider.notifier)
-          .loadSkinConcerns(),
-    );
   }
 
-  Widget _buildSearchResults() {
+  Widget _buildSearchResults(String language) {
     final state = ref.watch(recommendationsViewModelProvider);
     if (_searchController.text.isEmpty) return const SizedBox.shrink();
 
@@ -66,17 +61,18 @@ class _RecommendationsScreenState extends ConsumerState<RecommendationsScreen> {
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.healing, color: AppColors.primaryGreen),
           title: Text(
-            condition.title,
+            condition.titleFor(language),
             style: const TextStyle(
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
             ),
           ),
           subtitle: Text(
-            condition.description,
+            condition.descriptionFor(language),
             style: TextStyle(color: Colors.grey[600], fontSize: 12),
           ),
-          trailing: const Icon(Icons.add, size: 18, color: AppColors.secondaryGreen),
+          trailing:
+              const Icon(Icons.add, size: 18, color: AppColors.secondaryGreen),
           onTap: () {
             ref
                 .read(recommendationsViewModelProvider.notifier)
@@ -100,7 +96,8 @@ class _RecommendationsScreenState extends ConsumerState<RecommendationsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final RecommendationsState state = ref.watch(recommendationsViewModelProvider);
+    final RecommendationsState state =
+        ref.watch(recommendationsViewModelProvider);
     final RecommendationsViewModel notifier =
         ref.read(recommendationsViewModelProvider.notifier);
     final language = ref.watch(languageProvider);
@@ -129,12 +126,13 @@ class _RecommendationsScreenState extends ConsumerState<RecommendationsScreen> {
                 children: [
                   // StepIndicator(currentStep: state.currentStep),
                   // const SizedBox(height: 24),
-                  _buildMainQuestion(strings),
+                  _buildMainQuestion(strings, language),
                   const SizedBox(height: 20),
                   _buildSubtitle(strings),
                   const SizedBox(height: 16),
                   ConcernGrid(
                     concerns: state.skinConcerns,
+                    language: language,
                     onConcernTap: notifier.showSeverityDialog,
                   ),
                   const SizedBox(height: 24),
@@ -158,7 +156,7 @@ class _RecommendationsScreenState extends ConsumerState<RecommendationsScreen> {
     );
   }
 
-  Widget _buildMainQuestion(RecommendationsStrings strings) {
+  Widget _buildMainQuestion(RecommendationsStrings strings, String language) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -198,7 +196,7 @@ class _RecommendationsScreenState extends ConsumerState<RecommendationsScreen> {
           ],
         ),
         const SizedBox(height: 12),
-        _buildSearchResults(),
+        _buildSearchResults(language),
         const SizedBox(height: 16),
         Text(
           strings.whatAreYourConcerns,
