@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:herbisense/presentation/auth/register/register_screen.dart';
 import '../../../../core/constants/colors.dart';
-import '../../../../core/constants/languages/strings.dart';
+import '../../../../core/constants/languages/auth_strings.dart';
 import '../../../../core/widgets/inputs/email_field.dart';
 import '../../../../core/widgets/inputs/password_field.dart';
 
@@ -13,21 +13,22 @@ class LoginForm extends StatelessWidget {
   final VoidCallback onSubmit;
   final bool isLoading;
   final String? error;
+  final AuthStrings strings;
 
   LoginForm({
-    Key? key,
+    super.key,
     TextEditingController? emailController,
     TextEditingController? passwordController,
     required this.rememberMe,
     required this.onRememberMeChanged,
     required this.onSubmit,
     required this.isLoading,
+    required this.strings,
     this.error,
   })  : emailController =
             emailController ?? TextEditingController(text: 'admin@herbisense.com'),
         passwordController =
-            passwordController ?? TextEditingController(text: 'admin123'),
-        super(key: key);
+            passwordController ?? TextEditingController(text: 'admin123');
 
   @override
   Widget build(BuildContext context) {
@@ -59,10 +60,9 @@ class LoginForm extends StatelessWidget {
             ),
             const SizedBox(height: 16),
           ],
-          const Text(
-            AppStrings.emailAddress,
-
-            style: TextStyle(
+          Text(
+            strings.emailAddress,
+            style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
@@ -71,12 +71,12 @@ class LoginForm extends StatelessWidget {
           const SizedBox(height: 8),
           EmailField(
             controller: emailController,
-            hintText: AppStrings.yourEmail,
+            hintText: strings.yourEmail,
           ),
           const SizedBox(height: 20),
-          const Text(
-            AppStrings.password,
-            style: TextStyle(
+          Text(
+            strings.password,
+            style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
@@ -85,7 +85,7 @@ class LoginForm extends StatelessWidget {
           const SizedBox(height: 8),
           PasswordField(
             controller: passwordController,
-            hintText: AppStrings.enterPassword,
+            hintText: strings.enterPassword,
           ),
           const SizedBox(height: 16),
           _buildRememberMeRow(),
@@ -114,9 +114,9 @@ class LoginForm extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 8),
-        const Text(
-          AppStrings.rememberMe,
-          style: TextStyle(
+        Text(
+          strings.rememberMe,
+          style: const TextStyle(
             fontSize: 14,
             color: AppColors.textPrimary,
           ),
@@ -127,7 +127,7 @@ class LoginForm extends StatelessWidget {
           style: TextButton.styleFrom(
             foregroundColor: AppColors.secondaryGreen,
           ),
-          child: const Text(AppStrings.forgotPassword),
+          child: Text(strings.forgotPassword),
         ),
       ],
     );
@@ -156,18 +156,18 @@ class LoginForm extends StatelessWidget {
                   strokeWidth: 2,
                 ),
               )
-            : const Row(
+            : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    AppStrings.signIn,
-                    style: TextStyle(
+                    strings.signIn,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(width: 8),
-                  Icon(Icons.arrow_forward, size: 20),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.arrow_forward, size: 20),
                 ],
               ),
       ),
@@ -179,7 +179,7 @@ class LoginForm extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          AppStrings.noAccount,
+          strings.noAccount,
           style: TextStyle(color: Colors.grey[600]),
         ),
         TextButton(
@@ -193,10 +193,9 @@ class LoginForm extends StatelessWidget {
           style: TextButton.styleFrom(
             foregroundColor: AppColors.secondaryGreen,
           ),
-          child: const Text(
-            AppStrings.signUp,
-            
-            style: TextStyle(fontWeight: FontWeight.bold),
+          child: Text(
+            strings.signUp,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
       ],

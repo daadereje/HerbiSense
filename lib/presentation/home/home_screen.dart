@@ -40,7 +40,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           HeaderWidget.compact(
             title: strings.homeTitle,
             subtitle: strings.homeSubtitle,
-            height: 200,
+            height: 240,
             actions: [_HomeBadgesRow(strings: strings)],
             language: language,
             languageOptions: const ['eng', 'amh', 'or'],
@@ -147,8 +147,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildFeaturesRow(HomeStrings strings) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 12,
+      runSpacing: 12,
       children: [
         FeaturePill(icon: Icons.eco, label: strings.herbsCount),
         FeaturePill(icon: Icons.verified, label: strings.whoVerified),
@@ -224,15 +226,18 @@ class _HomeBadgesRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        _HomeBadge(icon: Icons.person, label: strings.personalized),
-         const SizedBox(width: 20),
-        _HomeBadge(icon: Icons.auto_awesome, label: strings.traditionalWisdom),
-                const SizedBox(width: 20),
-        _HomeBadge(icon: Icons.health_and_safety, label: strings.safeAndNatural),
-      ],
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Row(
+        children: [
+          _HomeBadge(icon: Icons.person, label: strings.personalized),
+          const SizedBox(width: 16),
+          _HomeBadge(icon: Icons.auto_awesome, label: strings.traditionalWisdom),
+          const SizedBox(width: 16),
+          _HomeBadge(icon: Icons.health_and_safety, label: strings.safeAndNatural),
+        ],
+      ),
     );
   }
 }
@@ -245,6 +250,7 @@ class _HomeBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           padding: const EdgeInsets.all(10),
@@ -256,12 +262,17 @@ class _HomeBadge extends StatelessWidget {
           child: Icon(icon, color: Colors.white, size: 20),
         ),
         const SizedBox(height: 6),
-        Text(
-          label,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
+        SizedBox(
+          width: 110,
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            softWrap: true,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ],

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:herbisense/presentation/favorites/favorites_screen.dart';
-import '../../../presentation/home/home_screen.dart';
 import '../../../presentation/recommendations/recommendations_screen.dart';
 import '../../../presentation/profile/profile_screen.dart';
 import '../../../presentation/discover/discover_screen.dart';

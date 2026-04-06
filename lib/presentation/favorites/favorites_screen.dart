@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:herbisense/common/network/api_client.dart';
 import 'package:herbisense/common/network/api_endpoints.dart';
 import 'package:herbisense/core/constants/colors.dart';
-import 'package:herbisense/core/constants/languages/strings.dart';
+import 'package:herbisense/core/constants/languages/favorites_strings.dart';
 import 'package:herbisense/core/widgets/cards/info_card.dart';
 import 'package:herbisense/core/state/language_provider.dart';
 import 'package:herbisense/core/widgets/navigation/app_bottom_nav_bar.dart';
@@ -21,8 +21,9 @@ final favoritesProvider = FutureProvider<List<FavoriteModel>>((ref) {
 
 final favoriteHerbProvider =
     FutureProvider.family<HerbModel?, int>((ref, herbId) async {
+  final language = ref.watch(languageProvider);
   final repo = ref.read(herbRepositoryProvider);
-  return repo.getHerbById(herbId.toString());
+  return repo.getHerbById(herbId.toString(), language: language);
 });
 
 class FavoritesScreen extends ConsumerWidget {
@@ -33,6 +34,7 @@ class FavoritesScreen extends ConsumerWidget {
     final favoritesAsync = ref.watch(favoritesProvider);
     final language = ref.watch(languageProvider);
     final languageNotifier = ref.read(languageProvider.notifier);
+    final strings = FavoritesStrings.fromLanguage(language);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
@@ -40,8 +42,8 @@ class FavoritesScreen extends ConsumerWidget {
       body: CustomScrollView(
         slivers: [
           HeaderWidget.compact(
-            title: AppStrings.favoritesTitle,
-            subtitle: AppStrings.favoritesSubtitle,
+            title: strings.favoritesTitle,
+            subtitle: strings.favoritesSubtitle,
             showBack: false,
             height: 120,
             solidColor: true,
@@ -64,13 +66,13 @@ class FavoritesScreen extends ConsumerWidget {
                     child: CircularProgressIndicator(),
                   ),
                 ),
-                error: (err, _) => _buildError(err.toString()),
+                error: (err, _) => _buildError(err.toString(), strings),
                 data: (favorites) => favorites.isEmpty
-                    ? _buildEmptyState()
+                    ? _buildEmptyState(strings)
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildSummary(favorites.length),
+                          _buildSummary(favorites.length, strings),
                           const SizedBox(height: 16),
                           ...favorites.map(
                             (item) => Padding(
@@ -88,7 +90,7 @@ class FavoritesScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSummary(int count) {
+  Widget _buildSummary(int count, FavoritesStrings strings) {
     return Row(
       children: [
         Container(
@@ -105,7 +107,7 @@ class FavoritesScreen extends ConsumerWidget {
               const SizedBox(width: 6),
               Text(
                 // 'register to app to see your favorites',
-                '${AppStrings.favoritesCountLabel}: $count',
+                '${strings.favoritesCountLabel}: $count',
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
@@ -118,18 +120,18 @@ class FavoritesScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(FavoritesStrings strings) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 20),
         child: Column(
-          children: const [
-            Icon(Icons.favorite_border, size: 64, color: Colors.grey),
-            SizedBox(height: 16),
+          children: [
+            const Icon(Icons.favorite_border, size: 64, color: Colors.grey),
+            const SizedBox(height: 16),
             Text(
-              AppStrings.favoritesEmpty,
+              strings.favoritesEmpty,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 15,
                 color: AppColors.textSecondary,
               ),
@@ -140,7 +142,7 @@ class FavoritesScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildError(String message) {
+  Widget _buildError(String message, FavoritesStrings strings) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
@@ -149,7 +151,7 @@ class FavoritesScreen extends ConsumerWidget {
             const Icon(Icons.error_outline, size: 48, color: Colors.redAccent),
             const SizedBox(height: 12),
             Text(
-              'Failed to load favorites',
+              strings.favoritesLoadErrorTitle,
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -158,7 +160,7 @@ class FavoritesScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              "Register or login to the app to see your favorites",
+              strings.favoritesLoadErrorBody,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 13,
@@ -178,6 +180,8 @@ class _FavoriteHerbTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final language = ref.watch(languageProvider);
+    final strings = FavoritesStrings.fromLanguage(language);
     if (item.herbId == null) {
       return InfoCard(
         title: item.name,
@@ -193,7 +197,7 @@ class _FavoriteHerbTile extends ConsumerWidget {
       loading: () => const _SkeletonTile(),
       error: (_, __) => InfoCard(
         title: item.name,
-        description: 'Failed to load linked herb.',
+        description: strings.favoritesLinkedHerbError,
         tags: item.tags,
         extra: item.extraNote,
       ),
@@ -201,14 +205,15 @@ class _FavoriteHerbTile extends ConsumerWidget {
         if (herb == null) {
           return InfoCard(
             title: item.name,
-            description: 'Herb details not found.',
+            description: strings.favoritesHerbNotFound,
             tags: item.tags,
             extra: item.extraNote,
           );
         }
         return _HerbListTile(
           herb: herb,
-          favoriteId: item.id?.toString() ?? item.herbId?.toString() ?? herb.id,
+          favoriteId: item.id.toString(),
+          strings: strings,
         );
       },
     );
@@ -218,11 +223,13 @@ class _FavoriteHerbTile extends ConsumerWidget {
 class _HerbListTile extends ConsumerWidget {
   final HerbModel herb;
   final String favoriteId;
-  const _HerbListTile({required this.herb, required this.favoriteId});
+  final FavoritesStrings strings;
+  const _HerbListTile({required this.herb, required this.favoriteId, required this.strings});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final apiClient = ref.read(apiClientProvider);
+    final language = ref.watch(languageProvider);
     return InkWell(
       borderRadius: BorderRadius.circular(14),
       onTap: () {
@@ -287,13 +294,13 @@ class _HerbListTile extends ConsumerWidget {
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    herb.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        herb.nameFor(language),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 15,
@@ -341,7 +348,7 @@ class _HerbListTile extends ConsumerWidget {
             IconButton(
               icon: const Icon(Icons.open_in_new,
                   color: AppColors.secondaryGreen),
-              tooltip: 'Open herb',
+              tooltip: strings.favoritesOpenTooltip,
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -351,7 +358,7 @@ class _HerbListTile extends ConsumerWidget {
             ),
             IconButton(
               icon: const Icon(Icons.favorite, color: Colors.redAccent),
-              tooltip: 'Remove from favorites',
+              tooltip: strings.favoritesRemoveTooltip,
               onPressed: () async {
                 final parsedId = int.tryParse(favoriteId);
                 try {
@@ -359,9 +366,9 @@ class _HerbListTile extends ConsumerWidget {
                       '${ApiEndpoints.favorites}/${parsedId ?? favoriteId}');
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Removed from favorites'),
-                        duration: Duration(seconds: 2),
+                      SnackBar(
+                        content: Text(strings.favoritesRemovedSnack),
+                        duration: const Duration(seconds: 2),
                       ),
                     );
                     ref.invalidate(favoritesProvider);
@@ -370,7 +377,7 @@ class _HerbListTile extends ConsumerWidget {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('Failed to remove: $e'),
+                        content: Text('${strings.favoritesRemoveFailSnack}: $e'),
                         duration: const Duration(seconds: 3),
                       ),
                     );

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:herbisense/core/constants/colors.dart';
-import 'package:herbisense/core/constants/languages/strings.dart';
+import 'package:herbisense/core/constants/languages/profile_strings.dart';
+import 'package:herbisense/core/state/language_provider.dart';
 import 'package:herbisense/core/widgets/navigation/app_bottom_nav_bar.dart';
 import 'package:herbisense/core/constants/data/models/user_model.dart';
 import 'package:herbisense/core/constants/data/repositories/auth_repository.dart';
@@ -21,6 +22,8 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userAsync = ref.watch(currentUserProvider);
+    final language = ref.watch(languageProvider);
+    final strings = ProfileStrings.fromLanguage(language);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
@@ -29,9 +32,10 @@ class ProfileScreen extends ConsumerWidget {
         backgroundColor: AppColors.secondaryGreen,
         elevation: 0,
         // toolbarHeight: 160.0,
-        title: const Text(
-          'Profile',
-          style: TextStyle(color: AppColors.white, fontWeight: FontWeight.bold),
+        title: Text(
+          strings.title,
+          style:
+              const TextStyle(color: AppColors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         automaticallyImplyLeading: false,
@@ -39,25 +43,28 @@ class ProfileScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          _SectionTitle(label: 'Account'),
+          _SectionTitle(label: strings.sectionAccount),
           userAsync.when(
             loading: () => const _ProfilePlaceholder(),
-            error: (err, _) => _ProfileError(message: err.toString()),
+            error: (err, _) => _ProfileError(
+              message: '${strings.loadFailed}: ${err.toString()}',
+              actionLabel: strings.signIn,
+            ),
             data: (user) {
               if (user == null) {
                 return _ProfileError(
-                  message:
-                      'You are not logged in. Please sign in to view your profile.',
+                  message: strings.notLoggedIn,
                   action: () {
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(builder: (_) => const LoginScreen()),
                     );
                   },
+                  actionLabel: strings.signIn,
                 );
               }
               return _ProfileHeader(
-                name: user.fullName.isNotEmpty ? user.fullName : 'Guest',
-                email: user.email.isNotEmpty ? user.email : 'Unknown',
+                name: user.fullName.isNotEmpty ? user.fullName : strings.guest,
+                email: user.email.isNotEmpty ? user.email : strings.unknownEmail,
                 role: user.role,
               );
             },
@@ -71,19 +78,19 @@ class ProfileScreen extends ConsumerWidget {
           //   onTap: null, // navigation removed per request
           // ),
           const SizedBox(height: 16),
-          _SectionTitle(label: 'Engage'),
+          _SectionTitle(label: strings.sectionEngage),
           _NavTile(
             icon: Icons.feedback_outlined,
-            title: 'Provide Feedback',
-            subtitle: 'Tell us how we can improve',
+            title: strings.feedbackTitle,
+            subtitle: strings.feedbackSubtitle,
             onTap: () => _push(context, const FeedbackScreen()),
           ),
           const SizedBox(height: 16),
-          _SectionTitle(label: 'Library'),
+          _SectionTitle(label: strings.sectionLibrary),
           _NavTile(
             icon: Icons.bookmark_outlined,
-            title: 'Saved Herbs',
-            subtitle: 'See herbs you bookmarked',
+            title: strings.savedHerbsTitle,
+            subtitle: strings.savedHerbsSubtitle,
             onTap: () => _push(context, const SavedHerbsScreen()),
           ),
           const SizedBox(height: 10),
@@ -230,7 +237,8 @@ class _ProfilePlaceholder extends StatelessWidget {
 class _ProfileError extends StatelessWidget {
   final String message;
   final VoidCallback? action;
-  const _ProfileError({required this.message, this.action});
+  final String? actionLabel;
+  const _ProfileError({required this.message, this.action, this.actionLabel});
 
   @override
   Widget build(BuildContext context) {
@@ -253,7 +261,7 @@ class _ProfileError extends StatelessWidget {
             if (action != null)
               TextButton(
                 onPressed: action,
-                child: const Text('Sign In'),
+                child: Text(actionLabel ?? 'Sign In'),
               ),
           ],
         ),

@@ -7,11 +7,13 @@ import 'herb_card.dart';
 class HerbList extends StatelessWidget {
   final List<HerbModel> herbs;
   final int totalCount;
+  final String language;
 
   const HerbList({
     super.key,
     required this.herbs,
     required this.totalCount,
+    required this.language,
   });
 
   @override
@@ -65,7 +67,7 @@ class HerbList extends StatelessWidget {
             ),
           )
         else
-          ...herbs.map((herb) => HerbCard(herb: herb)),
+          ...herbs.map((herb) => HerbCard(herb: herb, language: language)),
       ],
     );
   }

@@ -5,6 +5,7 @@ import 'package:herbisense/core/constants/colors.dart';
 import 'package:herbisense/core/widgets/navigation/app_bottom_nav_bar.dart';
 import 'package:herbisense/core/constants/data/repositories/feedback_repository.dart';
 import 'package:herbisense/core/state/language_provider.dart';
+import 'package:herbisense/core/constants/languages/feedback_strings.dart';
 
 import '../../core/widgets/shared/header_widget.dart';
 
@@ -22,6 +23,8 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
   final _messageController = TextEditingController();
   bool _isSubmitting = false;
 
+  FeedbackStrings get _strings => FeedbackStrings.fromLanguage(ref.read(languageProvider));
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -34,13 +37,14 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
   Widget build(BuildContext context) {
     final language = ref.watch(languageProvider);
     final languageNotifier = ref.read(languageProvider.notifier);
+    final strings = _strings;
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
       bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 3),
       body: CustomScrollView(
         slivers: [
           HeaderWidget.compact(
-            title: 'Provide Feedback',
+            title: strings.title,
             showBack: true,
             height: 90,
             solidColor: true,
@@ -56,9 +60,9 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'We value your feedback',
-                      style: TextStyle(
+                    Text(
+                      strings.heading,
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textPrimary,
@@ -66,7 +70,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Share your thoughts so we can improve your HerbiSense experience.',
+                      strings.subheading,
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey[700],
@@ -74,26 +78,26 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
                     ),
                     const SizedBox(height: 24),
                     _buildField(
-                      label: 'Name',
+                      label: strings.name,
                       controller: _nameController,
-                      hint: 'Enter your name',
-                      validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                      hint: strings.nameHint,
+                      validator: (v) => v == null || v.isEmpty ? strings.required : null,
                     ),
                     const SizedBox(height: 16),
                     _buildField(
-                      label: 'Email',
+                      label: strings.email,
                       controller: _emailController,
-                      hint: 'Enter your email',
+                      hint: strings.emailHint,
                       keyboardType: TextInputType.emailAddress,
-                      validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                      validator: (v) => v == null || v.isEmpty ? strings.required : null,
                     ),
                     const SizedBox(height: 16),
                     _buildField(
-                      label: 'Message',
+                      label: strings.message,
                       controller: _messageController,
-                      hint: 'Share your feedback...',
+                      hint: strings.messageHint,
                       maxLines: 5,
-                      validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                      validator: (v) => v == null || v.isEmpty ? strings.required : null,
                     ),
                     const SizedBox(height: 24),
                     SizedBox(
@@ -116,9 +120,9 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
                                   valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
                                 ),
                               )
-                            : const Text(
-                                'Submit Feedback',
-                                style: TextStyle(fontWeight: FontWeight.w700),
+                            : Text(
+                                strings.submit,
+                                style: const TextStyle(fontWeight: FontWeight.w700),
                               ),
                       ),
                     ),
@@ -196,8 +200,8 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Thank you for your feedback!'),
+        SnackBar(
+          content: Text(_strings.thankYou),
           backgroundColor: AppColors.secondaryGreen,
         ),
       );
@@ -208,7 +212,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
     } on ApiException catch (e) {
       _showError(e.message);
     } catch (e) {
-      _showError('Something went wrong. Please try again.');
+      _showError(_strings.genericError);
     } finally {
       if (mounted) {
         setState(() => _isSubmitting = false);

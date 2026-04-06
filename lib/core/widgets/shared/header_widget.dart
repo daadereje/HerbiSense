@@ -29,7 +29,7 @@ class HeaderWidget extends StatelessWidget {
   });
 
   /// Compact variant with a shorter default height (overrideable).
-  HeaderWidget.compact({
+  const HeaderWidget.compact({
     Key? key,
     required String title,
     String? subtitle,

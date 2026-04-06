@@ -17,6 +17,8 @@ class ApiEndpoints {
   static const String conditionSearch = '/conditions/search';
   static const String recommendations = '/recommendations';
   static const String userProfile = '/users/profile';
+  static String conditionTranslation(String conditionId) =>
+      '/condition-translations/$conditionId';
 
   // Lists
   static const String favorites = '/favorites';
@@ -24,6 +26,9 @@ class ApiEndpoints {
 
   // Feedback
   static const String feedback = '/feedback';
+
+  // Translations
+  static String translationByHerb(String herbId) => '/translations/$herbId';
 
   // Uploads (some backends serve at /uploads/{id}, others at /uploads/herbs/{id})
   static String uploadHerbById(String id, {bool withHerbsSegment = true}) =>

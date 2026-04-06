@@ -7,7 +7,7 @@ class AppConfig {
   static const String apiBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
     // Local network backend (port 5001) running on 10.250.56.116
-    defaultValue: 'http://10.42.0.109:5001/api',
+    defaultValue: 'http://10.250.56.116:5001/api',
   );
 
   // Features

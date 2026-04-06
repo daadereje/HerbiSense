@@ -6,10 +6,12 @@ import '../../../core/constants/data/repositories/saved_herbs_repository.dart';
 
 class HerbCard extends ConsumerStatefulWidget {
   final dynamic herb;
+  final String language;
 
   const HerbCard({
     super.key,
     required this.herb,
+    required this.language,
   });
 
   @override
@@ -22,6 +24,11 @@ class _HerbCardState extends ConsumerState<HerbCard> {
 
   @override
   Widget build(BuildContext context) {
+    final sourceOrDescription =
+        (widget.herb.sourceFor(widget.language)).toString().trim();
+    final displayText =
+        sourceOrDescription.isEmpty ? 'Source not provided.' : sourceOrDescription;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -48,7 +55,7 @@ class _HerbCardState extends ConsumerState<HerbCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.herb.name,
+                      widget.herb.nameFor(widget.language),
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -79,7 +86,7 @@ class _HerbCardState extends ConsumerState<HerbCard> {
           ),
           const SizedBox(height: 8),
           Text(
-            widget.herb.description,
+            displayText,
             style: const TextStyle(
               fontSize: 13,
               color: AppColors.textSecondary,

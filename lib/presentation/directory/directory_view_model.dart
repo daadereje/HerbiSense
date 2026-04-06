@@ -12,10 +12,10 @@ class DirectoryViewModel extends StateNotifier<DirectoryState> {
 
   DirectoryViewModel(this._herbRepository) : super(DirectoryState.initial());
 
-  Future<void> loadHerbs() async {
+  Future<void> loadHerbs(String language) async {
     state = state.copyWith(isLoading: true);
     try {
-      final herbs = await _herbRepository.getAllHerbs();
+      final herbs = await _herbRepository.getAllHerbs(language: language);
       state = state.copyWith(
         allHerbs: herbs,
         filteredHerbs: herbs,

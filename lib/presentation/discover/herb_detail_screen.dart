@@ -1,18 +1,26 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:herbisense/config/app_config.dart';
 import 'package:herbisense/core/constants/colors.dart';
 import 'package:herbisense/core/constants/data/models/herb_model.dart';
+import 'package:herbisense/core/state/language_provider.dart';
 import 'package:herbisense/common/network/api_client.dart';
 import 'package:http/http.dart' as http;
 
-class HerbDetailScreen extends StatelessWidget {
+class HerbDetailScreen extends ConsumerWidget {
   final HerbModel herb;
   const HerbDetailScreen({super.key, required this.herb});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final language = ref.watch(languageProvider);
+    final displayName = herb.nameFor(language);
+    final displayUses = herb.usesFor(language);
+    final displayPrep = herb.preparationFor(language);
+    final displaySafety = herb.safetyFor(language);
+    final displaySource = herb.sourceFor(language);
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
       appBar: AppBar(
@@ -20,7 +28,7 @@ class HerbDetailScreen extends StatelessWidget {
         foregroundColor: AppColors.textPrimary,
         elevation: 0.5,
         title: Text(
-          herb.name,
+          displayName,
           style: const TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.w700,
@@ -75,18 +83,27 @@ class HerbDetailScreen extends StatelessWidget {
             const SizedBox(height: 20),
             _section(
               title: 'Description',
-              value: herb.description,
+              value: displayUses,
             ),
             _section(
               title: 'Preparation',
-              value: herb.preparation ?? '',
+              value: displayPrep,
               placeholder: 'No preparation instructions provided.',
             ),
             _section(
               title: 'Safety Warning',
-              value: herb.safetyWarning ?? '',
+              value: displaySafety,
               placeholder: 'No safety warnings provided.',
             ),
+            if (displaySource.isNotEmpty)
+              _section(
+                title: 'Source',
+                value: displaySource,
+                valueStyle: const TextStyle(
+                  fontStyle: FontStyle.italic,
+                  color: AppColors.textSecondary,
+                ),
+              ),
             const SizedBox(height: 12),
             _HerbImageBox(herb: herb),
           ],
@@ -99,6 +116,7 @@ class HerbDetailScreen extends StatelessWidget {
     required String title,
     required String value,
     String placeholder = 'Not provided.',
+    TextStyle? valueStyle,
   }) {
     final display = value.trim().isEmpty ? placeholder : value.trim();
     return Padding(
@@ -116,11 +134,12 @@ class HerbDetailScreen extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             display,
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 14,
-              height: 1.4,
-            ),
+            style: valueStyle ??
+                const TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 14,
+                  height: 1.4,
+                ),
           ),
         ],
       ),

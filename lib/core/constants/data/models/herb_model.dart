@@ -8,6 +8,13 @@ class HerbModel {
   final String? conditionId;
   final String? conditionName;
   final String? conditionDescription;
+  final String? source;
+  final String? translatedName;
+  final String? translatedUses;
+  final String? translatedPreparation;
+  final String? translatedSafety;
+  final String? translatedSource;
+  final String? translationLanguage;
   final String category;
   final int views;
   final List<String> skinConditions;
@@ -26,6 +33,13 @@ class HerbModel {
     this.conditionId,
     this.conditionName,
     this.conditionDescription,
+    this.source,
+    this.translatedName,
+    this.translatedUses,
+    this.translatedPreparation,
+    this.translatedSafety,
+    this.translatedSource,
+    this.translationLanguage,
     required this.category,
     required this.views,
     required this.skinConditions,
@@ -40,6 +54,10 @@ class HerbModel {
         json['imageUrl'] ?? json['image_url'] ?? json['image'] ?? '';
     final conditionMap =
         json['condition'] is Map ? Map<String, dynamic>.from(json['condition']) : null;
+
+    final langCode =
+        (json['language'] ?? json['lang'] ?? json['translation_language'])
+            ?.toString();
 
     return HerbModel(
       id: (json['id'] ?? json['herb_id'] ?? '').toString(),
@@ -65,6 +83,15 @@ class HerbModel {
       conditionDescription: (json['condition_description'] ??
               conditionMap?['description'])
           ?.toString(),
+      source: json['source']?.toString(),
+      translatedName: json['translated_name']?.toString(),
+      translatedUses: json['translated_uses']?.toString(),
+      translatedPreparation: json['translated_preparation']?.toString(),
+      translatedSafety: json['translated_safety']?.toString(),
+      translatedSource: (json['translated_source'] ??
+              (langCode != null ? json['source'] : null))
+          ?.toString(),
+      translationLanguage: langCode,
       category: (json['category'] ?? 'Traditional medicine').toString(),
       views: (json['views'] ?? json['view_count'] ?? 0) is num
           ? (json['views'] ?? json['view_count'] ?? 0 as num).toInt()
@@ -94,6 +121,13 @@ class HerbModel {
       'condition_id': conditionId,
       'condition_name': conditionName,
       'condition_description': conditionDescription,
+      'source': source,
+      'translated_name': translatedName,
+      'translated_uses': translatedUses,
+      'translated_preparation': translatedPreparation,
+      'translated_safety': translatedSafety,
+      'translated_source': translatedSource,
+      'translation_language': translationLanguage,
       'category': category,
       'views': views,
       'skinConditions': skinConditions,
@@ -108,6 +142,13 @@ class HerbModel {
     String? imageUrl,
     String? conditionName,
     String? conditionDescription,
+    String? source,
+    String? translatedName,
+    String? translatedUses,
+    String? translatedPreparation,
+    String? translatedSafety,
+    String? translatedSource,
+    String? translationLanguage,
   }) {
     return HerbModel(
       id: id,
@@ -119,6 +160,13 @@ class HerbModel {
       conditionId: conditionId,
       conditionName: conditionName ?? this.conditionName,
       conditionDescription: conditionDescription ?? this.conditionDescription,
+      source: source ?? this.source,
+      translatedName: translatedName ?? this.translatedName,
+      translatedUses: translatedUses ?? this.translatedUses,
+      translatedPreparation: translatedPreparation ?? this.translatedPreparation,
+      translatedSafety: translatedSafety ?? this.translatedSafety,
+      translatedSource: translatedSource ?? this.translatedSource,
+      translationLanguage: translationLanguage ?? this.translationLanguage,
       category: category,
       views: views,
       skinConditions: skinConditions,
@@ -170,4 +218,41 @@ class HerbModel {
       ),
     ];
   }
+
+  bool _matchesLanguage(String code) {
+    if (translationLanguage == null || translationLanguage!.isEmpty) return false;
+    final normalized = translationLanguage!.toLowerCase();
+    final target = switch (code.toLowerCase()) {
+      'amh' => 'am',
+      'or' => 'om',
+      'eng' => 'en',
+      _ => code.toLowerCase(),
+    };
+    return normalized.startsWith(target);
+  }
+
+  String nameFor(String code) =>
+      _matchesLanguage(code) && (translatedName ?? '').isNotEmpty
+          ? translatedName!
+          : name;
+
+  String usesFor(String code) =>
+      _matchesLanguage(code) && (translatedUses ?? '').isNotEmpty
+          ? translatedUses!
+          : description;
+
+  String preparationFor(String code) =>
+      _matchesLanguage(code) && (translatedPreparation ?? '').isNotEmpty
+          ? translatedPreparation!
+          : (preparation ?? '');
+
+  String safetyFor(String code) =>
+      _matchesLanguage(code) && (translatedSafety ?? '').isNotEmpty
+          ? translatedSafety!
+          : (safetyWarning ?? '');
+
+  String sourceFor(String code) =>
+      _matchesLanguage(code) && (translatedSource ?? '').isNotEmpty
+          ? translatedSource!
+          : (source ?? '');
 }

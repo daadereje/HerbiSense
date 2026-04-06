@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/colors.dart';
-import '../../../core/constants/languages/strings.dart';
+import '../../../core/constants/languages/auth_strings.dart';
+import '../../../core/state/language_provider.dart';
 import '../../../core/widgets/navigation/app_bottom_nav_bar.dart';
-import '../../profile/profile_screen.dart';
-import '../../profile/profile_screen.dart' show currentUserProvider;
+import '../../profile/profile_screen.dart' show ProfileScreen, currentUserProvider;
 import 'login_view_model.dart';
 import 'widgets/login_header.dart';
 import 'widgets/login_form.dart';
-import 'widgets/features_section.dart';
 import 'widgets/login_footer.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -33,6 +32,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(loginViewModelProvider);
     final notifier = ref.read(loginViewModelProvider.notifier);
+    final language = ref.watch(languageProvider);
+    final strings = AuthStrings.fromLanguage(language);
 
     ref.listen(loginViewModelProvider, (previous, next) {
       if (next.loginSuccess) {
@@ -51,9 +52,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           child: Column(
             children: [
               // const TopNavigationBar(),
-              const LoginHeader(),
+              LoginHeader(strings: strings),
               const SizedBox(height: 30),
-              _buildWelcomeMessage(),
+              _buildWelcomeMessage(strings),
               const SizedBox(height: 30),
               LoginForm(
                 emailController: _emailController,
@@ -66,6 +67,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 isLoading: state.isLoading,
                 error: state.error,
+                strings: strings,
               ),
               const SizedBox(height: 30),
               // const FeaturesSection(),
@@ -78,15 +80,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  Widget _buildWelcomeMessage() {
+  Widget _buildWelcomeMessage(AuthStrings strings) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            AppStrings.welcomeBack,
-            style: TextStyle(
+          Text(
+            strings.welcomeBack,
+            style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
               color: AppColors.textPrimary,
@@ -94,7 +96,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            AppStrings.signInToContinue,
+            strings.signInToContinue,
             style: TextStyle(
               fontSize: 14,
               color: Colors.grey[600],

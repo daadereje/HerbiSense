@@ -16,19 +16,22 @@ import 'package:herbisense/core/constants/data/repositories/saved_herbs_reposito
 import 'package:http/http.dart' as http;
 import 'herb_detail_screen.dart';
 import 'package:herbisense/core/state/language_provider.dart';
+import 'package:herbisense/core/constants/languages/discover_strings.dart';
 
 final discoverHerbsProvider =
     FutureProvider.autoDispose.family<List<HerbModel>, String>(
   (ref, query) async {
+    final language = ref.watch(languageProvider);
     final repo = ref.read(herbRepositoryProvider);
     if (query.trim().isEmpty) {
-      return repo.getAllHerbs();
+      return repo.getAllHerbs(language: language);
     }
     return repo.searchHerbs(
       query: query,
       page: 1,
       limit: 20,
       sort: 'created_at',
+      language: language,
     );
   },
 );
@@ -91,6 +94,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
     final savedAsync = ref.watch(savedHerbIdsProvider);
     final language = ref.watch(languageProvider);
     final languageNotifier = ref.read(languageProvider.notifier);
+    final strings = DiscoverStrings.fromLanguage(language);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
@@ -109,8 +113,8 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
       body: CustomScrollView(
         slivers: [
           HeaderWidget.compact(
-            title: 'Discover',
-            subtitle: 'Browse herbs',
+            title: strings.title,
+            subtitle: strings.subtitle,
             // showBack: true,
             height: 120,
             solidColor: true,
@@ -126,7 +130,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                 children: [
                   CustomSearchBar(
                     controller: _searchController,
-                    hintText: 'Search herbs...',
+                    hintText: strings.searchHint,
                     onChanged: (val) =>
                         setState(() => _query = val.trim().toLowerCase()),
                   ),
@@ -149,7 +153,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                         child: CircularProgressIndicator(),
                       ),
                     ),
-                    error: (err, _) => _buildError(err.toString()),
+                    error: (err, _) => _buildError(strings, err.toString()),
                     data: (herbs) {
                       final favIds = favsAsync.maybeWhen(
                         data: (ids) => ids,
@@ -160,8 +164,8 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                         orElse: () => <String>{},
                       );
                       return herbs.isEmpty
-                          ? _buildEmptyState()
-                          : _buildList(herbs, favIds, savedIds);
+                          ? _buildEmptyState(strings)
+                          : _buildList(strings, language, herbs, favIds, savedIds);
                     },
                   ),
                 ],
@@ -174,7 +178,11 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
   }
 
   Widget _buildList(
-      List<HerbModel> herbs, Set<String> favoriteIds, Set<String> savedIds) {
+      DiscoverStrings strings,
+      String language,
+      List<HerbModel> herbs,
+      Set<String> favoriteIds,
+      Set<String> savedIds) {
     final apiClient = ref.read(apiClientProvider);
     final isLoggedIn =
         ApiClient.authToken != null && ApiClient.authToken!.isNotEmpty;
@@ -230,7 +238,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                         children: [
                           Expanded(
                             child: Text(
-                              herb.name,
+                              herb.nameFor(language),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
@@ -246,6 +254,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                             initiallyFavorite: favoriteIds.contains(herb.id),
                             initiallySaved: savedIds.contains(herb.id),
                             canMutate: isLoggedIn,
+                            strings: strings,
                           ),
                         ],
                       ),
@@ -261,28 +270,42 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      Row(
-                        children: [
-                          Icon(
-                            herb.isVerified
-                                ? Icons.verified
-                                : Icons.eco_outlined,
-                            size: 16,
-                            color: AppColors.secondaryGreen,
-                          ),
-                          const SizedBox(width: 6),
-                          Flexible(
-                            child: Text(
-                              herb.category,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                          ),
-                        ],
+                      // Row(
+                      //   children: [
+                      //     Icon(
+                      //       herb.isVerified
+                      //           ? Icons.verified
+                      //           : Icons.eco_outlined,
+                      //       size: 16,
+                      //       color: AppColors.secondaryGreen,
+                      //     ),
+                      //     const SizedBox(width: 6),
+                      //     Flexible(
+                      //       child: Text(
+                      //         herb.category,
+                      //         maxLines: 1,
+                      //         overflow: TextOverflow.ellipsis,
+                      //         style: const TextStyle(
+                      //           fontSize: 12,
+                      //           color: AppColors.textSecondary,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+                      // const SizedBox(height: 6),
+                  
+                      Text(
+                        herb.sourceFor(language).isNotEmpty
+                            ? "source: ${herb.sourceFor(language)}"
+                            : 'Source not provided.',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary,
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
                       if (herb.skinConditions.isNotEmpty) ...[
                         const SizedBox(height: 6),
@@ -320,17 +343,17 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(DiscoverStrings strings) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 60),
         child: Column(
-          children: const [
-            Icon(Icons.photo_library_outlined, size: 56, color: Colors.grey),
-            SizedBox(height: 12),
+          children: [
+            const Icon(Icons.photo_library_outlined, size: 56, color: Colors.grey),
+            const SizedBox(height: 12),
             Text(
-              'No herb images available yet.',
-              style: TextStyle(color: AppColors.textSecondary),
+              strings.emptyImages,
+              style: const TextStyle(color: AppColors.textSecondary),
             ),
           ],
         ),
@@ -338,7 +361,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
     );
   }
 
-  Widget _buildError(String message) {
+  Widget _buildError(DiscoverStrings strings, String message) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 12),
@@ -347,7 +370,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
             const Icon(Icons.error_outline, color: Colors.redAccent, size: 48),
             const SizedBox(height: 8),
             Text(
-              'Could not load herbs',
+              strings.loadErrorTitle,
               style: const TextStyle(
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary,
@@ -570,14 +593,15 @@ class _QuickActions extends StatefulWidget {
     required this.initiallyFavorite,
     required this.initiallySaved,
     required this.canMutate,
-    Key? key,
-  }) : super(key: key);
+    required this.strings,
+  });
 
   final String herbId;
   final ApiClient apiClient;
   final bool initiallyFavorite;
   final bool initiallySaved;
   final bool canMutate;
+  final DiscoverStrings strings;
 
   @override
   State<_QuickActions> createState() => _QuickActionsState();
@@ -602,9 +626,9 @@ class _QuickActionsState extends State<_QuickActions> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        IconButton(
-          icon: _saving
-              ? const SizedBox(
+          IconButton(
+            icon: _saving
+                ? const SizedBox(
                   width: 16,
                   height: 16,
                   child: CircularProgressIndicator(strokeWidth: 2))
@@ -612,7 +636,9 @@ class _QuickActionsState extends State<_QuickActions> {
                   _isSaved ? Icons.bookmark : Icons.bookmark_add_outlined,
                   color: AppColors.secondaryGreen,
                 ),
-          tooltip: _isSaved ? 'Saved' : 'Save herb',
+          tooltip: _isSaved
+              ? widget.strings.savedTooltipOn
+              : widget.strings.savedTooltipOff,
           onPressed: !canMutate
               ? null
               : (_saving
@@ -629,7 +655,9 @@ class _QuickActionsState extends State<_QuickActions> {
                   _isFavorite ? Icons.favorite : Icons.favorite_border,
                   color: Colors.redAccent,
                 ),
-          tooltip: _isFavorite ? 'Favorited' : 'Add to favorites',
+          tooltip: _isFavorite
+              ? widget.strings.favoriteTooltipOn
+              : widget.strings.favoriteTooltipOff,
           onPressed: !canMutate
               ? null
               : (_favoriting
@@ -643,12 +671,12 @@ class _QuickActionsState extends State<_QuickActions> {
   Future<void> _post(String endpoint, {required bool isSave}) async {
     // Require auth before attempting mutations.
     if (ApiClient.authToken == null || ApiClient.authToken!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('You need to log in to perform this action.'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(widget.strings.authRequired),
+            duration: const Duration(seconds: 2),
+          ),
+        );
       return;
     }
 
@@ -692,10 +720,10 @@ class _QuickActionsState extends State<_QuickActions> {
         SnackBar(
           content: Text(
             isSave
-                ? (_isSaved ? 'Saved herb' : 'Removed from saved')
+                ? (_isSaved ? widget.strings.savedAdded : widget.strings.savedRemoved)
                 : (_isFavorite
-                    ? 'Added to favorites'
-                    : 'Removed from favorites'),
+                    ? widget.strings.favoriteTooltipOn
+                    : widget.strings.removedFavorite),
           ),
           duration: const Duration(seconds: 2),
         ),
@@ -704,19 +732,20 @@ class _QuickActionsState extends State<_QuickActions> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed: $e'),
+          content: Text('${widget.strings.saveFail}: $e'),
           duration: const Duration(seconds: 3),
         ),
       );
     } finally {
-      if (!mounted) return;
-      setState(() {
-        if (isSave) {
-          _saving = false;
-        } else {
-          _favoriting = false;
-        }
-      });
+      if (mounted) {
+        setState(() {
+          if (isSave) {
+            _saving = false;
+          } else {
+            _favoriting = false;
+          }
+        });
+      }
     }
   }
 }

@@ -189,4 +189,44 @@ class AppStringsAm {
   static const String favoritesSubtitle = 'የሚወዱት ዕፅዋት እና መፍትሄዎች';
   static const String favoritesEmpty = 'እስካሁን ተወዳጅ ነገር የለም።';
   static const String favoritesCountLabel = 'ተወዳጆች';
+  static const String favoritesLoadErrorTitle = 'ተወዳጆች መጫን አልተሳካም';
+  static const String favoritesLoadErrorBody = 'ተወዳጆችን ለማየት ይመዝገቡ ወይም ይግቡ';
+  static const String favoritesLinkedHerbError = 'የተያያዘው ዕፅዋት መረጃ አልተጫነም።';
+  static const String favoritesHerbNotFound = 'የዕፅዋት ዝርዝር አልተገኘም።';
+  static const String favoritesOpenTooltip = 'ዕፅዋትን ክፈት';
+  static const String favoritesRemoveTooltip = 'ከተወዳጆች አጥፋ';
+  static const String favoritesRemovedSnack = 'ከተወዳጆች ተወግዷል';
+  static const String favoritesRemoveFailSnack = 'ማስወገድ አልተቻለም';
+
+  // Profile
+  static const String profileTitle = 'መገለጫ';
+  static const String profileSectionAccount = 'መለያ';
+  static const String profileSectionEngage = 'ተሳትፍ';
+  static const String profileSectionLibrary = 'ቤተ-መጻሕፍት';
+  static const String profileNotLoggedIn =
+      'አልገቡም። መገለጫዎን ለማየት እባክዎት ይግቡ።';
+  static const String profileLoadFailed = 'መለያ መጫን አልተሳካም';
+  static const String profileSignIn = 'ግባ';
+  static const String profileGuest = 'እንግዳ';
+  static const String profileUnknownEmail = 'ያልታወቀ';
+  static const String profileFeedbackTitle = 'ግብረ መልስ ስጥ';
+  static const String profileFeedbackSubtitle = 'እንዴት እንደምን እንሻሻል ንገሩን';
+  static const String profileSavedHerbsTitle = 'የተቀመጡ ዕፅዋት';
+  static const String profileSavedHerbsSubtitle = 'ያስቀመጡትን ዕፅዋት ይመልከቱ';
+
+  // Feedback
+  static const String feedbackTitle = 'ግብረ መልስ ስጥ';
+  static const String feedbackHeading = 'ግብረ መልስዎን እናደርጋለን';
+  static const String feedbackSubheading =
+      'HerbiSense ልምድዎን እንድናሻሽል ሐሳብዎን ያካፍሉን።';
+  static const String feedbackName = 'ስም';
+  static const String feedbackEmail = 'ኢሜይል';
+  static const String feedbackMessage = 'መልዕክት';
+  static const String feedbackNameHint = 'ስምዎን ያስገቡ';
+  static const String feedbackEmailHint = 'ኢሜይልዎን ያስገቡ';
+  static const String feedbackMessageHint = 'ግብረ መልስዎን ያጋሩ...';
+  static const String feedbackSubmit = 'ግብረ መልስ ላክ';
+  static const String feedbackThankYou = 'ግብረ መልስዎን ስጡን እናመሰግናለን!';
+  static const String feedbackGenericError = 'ችግኝ ተፈጥሯል። እባክዎ ደግመው ይሞክሩ።';
+  static const String feedbackRequired = 'ያስፈልጋል';
 }

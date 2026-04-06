@@ -189,4 +189,45 @@ class AppStrings {
   static const String favoritesSubtitle = 'Your bookmarked herbs and remedies in one place';
   static const String favoritesEmpty = 'You have no favorites yet. Tap the heart icon on a herb or remedy to add it here.';
   static const String favoritesCountLabel = 'Favorites';
+  static const String favoritesLoadErrorTitle = 'Failed to load favorites';
+  static const String favoritesLoadErrorBody = 'Register or login to the app to see your favorites';
+  static const String favoritesLinkedHerbError = 'Failed to load linked herb.';
+  static const String favoritesHerbNotFound = 'Herb details not found.';
+  static const String favoritesOpenTooltip = 'Open herb';
+  static const String favoritesRemoveTooltip = 'Remove from favorites';
+  static const String favoritesRemovedSnack = 'Removed from favorites';
+  static const String favoritesRemoveFailSnack = 'Failed to remove';
+
+  // Profile
+  static const String profileTitle = 'Profile';
+  static const String profileSectionAccount = 'Account';
+  static const String profileSectionEngage = 'Engage';
+  static const String profileSectionLibrary = 'Library';
+  static const String profileNotLoggedIn =
+      'You are not logged in. Please sign in to view your profile.';
+  static const String profileLoadFailed = 'Failed to load account';
+  static const String profileSignIn = 'Sign In';
+  static const String profileGuest = 'Guest';
+  static const String profileUnknownEmail = 'Unknown';
+  static const String profileFeedbackTitle = 'Provide Feedback';
+  static const String profileFeedbackSubtitle = 'Tell us how we can improve';
+  static const String profileSavedHerbsTitle = 'Saved Herbs';
+  static const String profileSavedHerbsSubtitle = 'See herbs you bookmarked';
+
+  // Feedback
+  static const String feedbackTitle = 'Provide Feedback';
+  static const String feedbackHeading = 'We value your feedback';
+  static const String feedbackSubheading =
+      'Share your thoughts so we can improve your HerbiSense experience.';
+  static const String feedbackName = 'Name';
+  static const String feedbackEmail = 'Email';
+  static const String feedbackMessage = 'Message';
+  static const String feedbackNameHint = 'Enter your name';
+  static const String feedbackEmailHint = 'Enter your email';
+  static const String feedbackMessageHint = 'Share your feedback...';
+  static const String feedbackSubmit = 'Submit Feedback';
+  static const String feedbackThankYou = 'Thank you for your feedback!';
+  static const String feedbackGenericError =
+      'Something went wrong. Please try again.';
+  static const String feedbackRequired = 'Required';
 }

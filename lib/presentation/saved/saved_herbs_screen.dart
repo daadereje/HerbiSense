@@ -231,7 +231,9 @@ class _SavedHerbsScreenState extends ConsumerState<SavedHerbsScreen> {
     _showLoadingDialog(context);
     try {
       final repo = ref.read(herbRepositoryProvider);
-      final herb = await repo.getHerbById(herbId);
+      final language = ref.read(languageProvider);
+      final herb = await repo.getHerbById(herbId, language: language);
+      if (!context.mounted) return;
       Navigator.of(context, rootNavigator: true).pop(); // close dialog
 
       if (herb == null) {
@@ -241,16 +243,19 @@ class _SavedHerbsScreenState extends ConsumerState<SavedHerbsScreen> {
         return;
       }
 
+      if (!context.mounted) return;
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (_) => HerbDetailScreen(herb: herb),
         ),
       );
     } catch (e) {
-      Navigator.of(context, rootNavigator: true).pop(); // close dialog
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to open herb: $e')),
-      );
+      if (context.mounted) {
+        Navigator.of(context, rootNavigator: true).pop(); // close dialog
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to open herb: $e')),
+        );
+      }
     }
   }
 
@@ -265,7 +270,7 @@ class _SavedHerbsScreenState extends ConsumerState<SavedHerbsScreen> {
   }
 }
 
-class _SavedHerbTile extends StatelessWidget {
+class _SavedHerbTile extends ConsumerWidget {
   final HerbModel herb;
   final VoidCallback onDelete;
   final VoidCallback onOpen;
@@ -277,15 +282,18 @@ class _SavedHerbTile extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final language = ref.watch(languageProvider);
     return Stack(
       children: [
         InkWell(
           borderRadius: BorderRadius.circular(12),
           onTap: onOpen,
           child: InfoCard(
-            title: herb.name,
-            description: herb.description,
+            title: herb.nameFor(language),
+            description: herb.sourceFor(language).isNotEmpty
+                ? herb.sourceFor(language)
+                : 'Source not provided.',
             tags: herb.skinConditions,
             extra: herb.category,
           ),

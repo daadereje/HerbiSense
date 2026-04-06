@@ -4,7 +4,7 @@ import 'package:herbisense/core/widgets/navigation/app_bottom_nav_bar.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/languages/strings.dart';
 import '../../core/widgets/inputs/search_bar.dart';
-import '../../core/widgets/navigation/top_navigation_bar.dart';
+import '../../core/state/language_provider.dart';
 import 'directory_view_model.dart';
 import 'widgets/filter_sidebar.dart';
 import 'widgets/herb_list.dart';
@@ -23,13 +23,17 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => ref.read(directoryViewModelProvider.notifier).loadHerbs());
+    Future.microtask(() {
+      final lang = ref.read(languageProvider);
+      ref.read(directoryViewModelProvider.notifier).loadHerbs(lang);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(directoryViewModelProvider);
     final notifier = ref.read(directoryViewModelProvider.notifier);
+    final language = ref.watch(languageProvider);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
@@ -62,6 +66,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                           child: HerbList(
                             herbs: state.filteredHerbs,
                             totalCount: state.totalHerbs,
+                            language: language,
                           ),
                         ),
                       ],

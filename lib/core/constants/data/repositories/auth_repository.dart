@@ -7,20 +7,19 @@ import '../models/user_model.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   final apiClient = ref.read(apiClientProvider);
-  return AuthRepository(apiClient, ref);
+  return AuthRepository(apiClient);
 });
 
 /// Global auth token provider to trigger dependent listeners when token changes.
 final authTokenProvider = StateProvider<String?>((ref) => ApiClient.authToken);
 
 class AuthRepository {
-  AuthRepository(this._apiClient, this._ref);
+  AuthRepository(this._apiClient);
 
   static UserModel? _cachedUser;
   static const _tokenKey = 'auth_token';
 
   final ApiClient _apiClient;
-  final Ref _ref;
 
   Future<bool> login(String email, String password) async {
     final response = await _apiClient.post(

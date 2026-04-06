@@ -189,4 +189,44 @@ class AppStringsOr {
   static const String favoritesSubtitle = 'Biqiltoota kee bakka tokkootti';
   static const String favoritesEmpty = 'Ammaaf hin jiru';
   static const String favoritesCountLabel = 'Jaallatamtoota';
+  static const String favoritesLoadErrorTitle = 'Kan jaallataman fe\'uu hin dandeenye';
+  static const String favoritesLoadErrorBody = 'Kan jaallataman argachuuf galmaa\'i ykn seeni';
+  static const String favoritesLinkedHerbError = 'Herb walqabate fe\'uu hin dandeenye';
+  static const String favoritesHerbNotFound = 'Odeeffannoo biqiltootaa hin argamne';
+  static const String favoritesOpenTooltip = 'Herb banuu';
+  static const String favoritesRemoveTooltip = 'Kan jaallataman keessaa balleessi';
+  static const String favoritesRemovedSnack = 'Kan jaallataman keessaa haqeera';
+  static const String favoritesRemoveFailSnack = 'Balleessuu hin dandeenye';
+
+  // Profile
+  static const String profileTitle = 'Profaayilii';
+  static const String profileSectionAccount = 'Herrega';
+  static const String profileSectionEngage = 'Hirmaadhaa';
+  static const String profileSectionLibrary = 'Kuusaa';
+  static const String profileNotLoggedIn =
+      'Hin seeniin. Profaayilii kee ilaaluf seeni.';
+  static const String profileLoadFailed = 'Herrega fe\'uu hin dandeenye';
+  static const String profileSignIn = 'Seeni';
+  static const String profileGuest = 'Bakka bu\'aa';
+  static const String profileUnknownEmail = 'Hin beekamu';
+  static const String profileFeedbackTitle = 'Yaada kenni';
+  static const String profileFeedbackSubtitle = 'Akka fooyyinu nu gargaari';
+  static const String profileSavedHerbsTitle = 'Biqiltoota Kuufaman';
+  static const String profileSavedHerbsSubtitle = 'Biqiltoota kuufatte ilaali';
+
+  // Feedback
+  static const String feedbackTitle = 'Yaada kenni';
+  static const String feedbackHeading = 'Yaada keessan ni dinqisiifanna';
+  static const String feedbackSubheading =
+      'Muuxannoo HerbiSense fooyyessuuf yaada keessan nuuf qoodaa.';
+  static const String feedbackName = 'Maqaa';
+  static const String feedbackEmail = 'Imeelii';
+  static const String feedbackMessage = 'Ergaa';
+  static const String feedbackNameHint = 'Maqaa kee galchi';
+  static const String feedbackEmailHint = 'Imeelii kee galchi';
+  static const String feedbackMessageHint = 'Yaada kee barreessi...';
+  static const String feedbackSubmit = 'Yaada ergi';
+  static const String feedbackThankYou = 'Yaada keessan galatoomaa!';
+  static const String feedbackGenericError = 'Dogoggorri uumame. Amma booda irra deebi\'i.';
+  static const String feedbackRequired = 'Barbaachisa';
 }
