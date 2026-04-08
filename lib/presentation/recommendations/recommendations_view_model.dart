@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/constants/colors.dart';
 import '../../core/constants/data/models/skin_concern_model.dart';
 import '../../core/constants/data/repositories/recommendation_repository.dart';
-import 'widgets/severity_bottom_sheet.dart';
+import 'condition_detail_screen.dart';
 import '../../core/state/language_provider.dart';
 
 final recommendationsViewModelProvider =
@@ -32,42 +33,63 @@ class RecommendationsViewModel extends StateNotifier<RecommendationsState> {
     }
   }
 
-  void showSeverityDialog(BuildContext context, int index) {
-    if (!state.skinConcerns[index].selected) {
-      _toggleConcernSelection(index, true);
-    }
-
-    _showSeverityBottomSheet(context, index);
+  void showConditionDetail(BuildContext context, int index) {
+    _showConditionDetailSheet(context, state.skinConcerns[index]);
   }
 
-  void _showSeverityBottomSheet(BuildContext context, int index) {
+  void _showConditionDetailSheet(
+    BuildContext context,
+    SkinConcernModel concern,
+  ) {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (context) {
-        return SeverityBottomSheet(
-          concern: state.skinConcerns[index],
-          onSeveritySelected: (level) {
-            _setSeverityLevel(index, level);
+        return DraggableScrollableSheet(
+          initialChildSize: 0.75,
+          minChildSize: 0.5,
+          maxChildSize: 0.95,
+          expand: false,
+          builder: (context, scrollController) {
+            return Container(
+              decoration: BoxDecoration(
+                color: AppColors.backgroundLight,
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              child: SingleChildScrollView(
+                controller: scrollController,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    ConditionDetailContent(concern: concern),
+                  ],
+                ),
+              ),
+            );
           },
         );
       },
     );
   }
 
-  void _toggleConcernSelection(int index, bool selected) {
-    final updatedConcerns = List<SkinConcernModel>.from(state.skinConcerns);
-    updatedConcerns[index] =
-        updatedConcerns[index].copyWith(selected: selected);
-    state = state.copyWith(skinConcerns: updatedConcerns);
-  }
-
   void _setSeverityLevel(int index, int level) {
     final updatedConcerns = List<SkinConcernModel>.from(state.skinConcerns);
     updatedConcerns[index] = updatedConcerns[index].copyWith(
-      selected: true,
       severity: level,
     );
     state = state.copyWith(skinConcerns: updatedConcerns);
@@ -104,11 +126,10 @@ class RecommendationsViewModel extends StateNotifier<RecommendationsState> {
     );
     if (index >= 0) {
       updated[index] = updated[index].copyWith(
-        selected: true,
         severity: updated[index].severity > 0 ? updated[index].severity : 1,
       );
     } else {
-      updated.add(concern.copyWith(selected: true, severity: 1));
+      updated.add(concern.copyWith(severity: 1));
     }
     state = state.copyWith(
       skinConcerns: updated,
@@ -161,7 +182,7 @@ class RecommendationsState {
     );
   }
 
-  bool get hasSelection => skinConcerns.any((concern) => concern.selected);
+  bool get hasSelection => skinConcerns.any((concern) => concern.severity > 0);
 
   RecommendationsState copyWith({
     int? currentStep,

@@ -8,6 +8,7 @@ import '../../core/state/language_provider.dart';
 import '../../core/widgets/navigation/app_bottom_nav_bar.dart';
 import '../../core/widgets/inputs/search_bar.dart';
 import '../../core/widgets/shared/header_widget.dart';
+import 'condition_detail_screen.dart';
 import 'recommendations_view_model.dart';
 import 'widgets/concern_grid.dart';
 import 'widgets/tips_card.dart';
@@ -71,14 +72,23 @@ class _RecommendationsScreenState extends ConsumerState<RecommendationsScreen> {
             condition.descriptionFor(language),
             style: TextStyle(color: Colors.grey[600], fontSize: 12),
           ),
-          trailing:
-              const Icon(Icons.add, size: 18, color: AppColors.secondaryGreen),
+          trailing: IconButton(
+            icon: const Icon(Icons.info_outline,
+                size: 20, color: AppColors.primaryGreen),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => ConditionDetailScreen(concern: condition),
+                ),
+              );
+            },
+          ),
           onTap: () {
-            ref
-                .read(recommendationsViewModelProvider.notifier)
-                .selectConditionFromSearch(condition);
-            _searchController.clear();
-            FocusScope.of(context).unfocus();
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => ConditionDetailScreen(concern: condition),
+              ),
+            );
           },
         );
       },
@@ -133,18 +143,18 @@ class _RecommendationsScreenState extends ConsumerState<RecommendationsScreen> {
                   ConcernGrid(
                     concerns: state.skinConcerns,
                     language: language,
-                    onConcernTap: notifier.showSeverityDialog,
+                    onConcernTap: notifier.showConditionDetail,
                   ),
-                  const SizedBox(height: 24),
-                  TipsCard(strings: strings),
+                  // const SizedBox(height: 24),
+                  // TipsCard(strings: strings),
+                  // const SizedBox(height: 20),
+                  // _buildContinueButton(notifier, state, strings),
+                  // if (!state.hasSelection) _buildValidationMessage(strings),
+                  // const SizedBox(height: 16),
+                  // // const PrivacyNotice(),
+                  // // const SizedBox(height: 20),
+                  // // const TrustSection(),
                   const SizedBox(height: 20),
-                  _buildContinueButton(notifier, state, strings),
-                  if (!state.hasSelection) _buildValidationMessage(strings),
-                  const SizedBox(height: 16),
-                  // const PrivacyNotice(),
-                  // const SizedBox(height: 20),
-                  // const TrustSection(),
-                  // const SizedBox(height: 20),
                   _buildFooter(strings),
                   const SizedBox(height: 20),
                 ],

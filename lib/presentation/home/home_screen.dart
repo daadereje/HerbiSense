@@ -23,7 +23,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => ref.read(homeViewModelProvider.notifier).loadHomeData());
+    Future.microtask(
+        () => ref.read(homeViewModelProvider.notifier).loadHomeData());
   }
 
   @override
@@ -147,15 +148,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildFeaturesRow(HomeStrings strings) {
-    return Wrap(
-      alignment: WrapAlignment.center,
-      spacing: 12,
-      runSpacing: 12,
-      children: [
-        FeaturePill(icon: Icons.eco, label: strings.herbsCount),
-        FeaturePill(icon: Icons.verified, label: strings.whoVerified),
-        FeaturePill(icon: Icons.science, label: strings.runBasedSystem),
-      ],
+    return Center(
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 12,
+        runSpacing: 12,
+        children: [
+          FeaturePill(icon: Icons.eco, label: strings.herbsCount),
+          FeaturePill(icon: Icons.verified, label: strings.whoVerified),
+          FeaturePill(icon: Icons.science, label: strings.runBasedSystem),
+        ],
+      ),
     );
   }
 
@@ -226,18 +229,16 @@ class _HomeBadgesRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: Row(
-        children: [
-          _HomeBadge(icon: Icons.person, label: strings.personalized),
-          const SizedBox(width: 16),
-          _HomeBadge(icon: Icons.auto_awesome, label: strings.traditionalWisdom),
-          const SizedBox(width: 16),
-          _HomeBadge(icon: Icons.health_and_safety, label: strings.safeAndNatural),
-        ],
-      ),
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        _HomeBadge(icon: Icons.person, label: strings.personalized),
+        _HomeBadge(icon: Icons.auto_awesome, label: strings.traditionalWisdom),
+        _HomeBadge(
+            icon: Icons.health_and_safety, label: strings.safeAndNatural),
+      ],
     );
   }
 }
@@ -263,7 +264,7 @@ class _HomeBadge extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         SizedBox(
-          width: 110,
+          width: 100,
           child: Text(
             label,
             textAlign: TextAlign.center,

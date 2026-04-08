@@ -48,11 +48,14 @@ class ConcernCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: concern.selected ? AppColors.cardBackground : AppColors.white,
+        color:
+            concern.severity > 0 ? AppColors.cardBackground : AppColors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: concern.selected ? AppColors.secondaryGreen : AppColors.cardBorder,
-          width: concern.selected ? 2 : 1,
+          color: concern.severity > 0
+              ? AppColors.secondaryGreen
+              : AppColors.cardBorder,
+          width: concern.severity > 0 ? 2 : 1,
         ),
       ),
       child: Column(
@@ -74,7 +77,7 @@ class ConcernCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              if (concern.selected)
+              if (concern.severity > 0)
                 const Icon(
                   Icons.check_circle,
                   color: AppColors.secondaryGreen,

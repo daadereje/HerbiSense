@@ -5,7 +5,6 @@ class SkinConcernModel {
   final String? translatedTitle;
   final String? translatedDescription;
   final String? translationLanguage;
-  final bool selected;
   final int severity;
 
   SkinConcernModel({
@@ -15,7 +14,6 @@ class SkinConcernModel {
     this.translatedTitle,
     this.translatedDescription,
     this.translationLanguage,
-    required this.selected,
     required this.severity,
   });
 
@@ -25,7 +23,6 @@ class SkinConcernModel {
       id: id,
       title: title,
       description: description,
-      selected: false,
       severity: 0,
     );
   }
@@ -37,7 +34,6 @@ class SkinConcernModel {
     String? translatedTitle,
     String? translatedDescription,
     String? translationLanguage,
-    bool? selected,
     int? severity,
   }) {
     return SkinConcernModel(
@@ -48,7 +44,6 @@ class SkinConcernModel {
       translatedDescription:
           translatedDescription ?? this.translatedDescription,
       translationLanguage: translationLanguage ?? this.translationLanguage,
-      selected: selected ?? this.selected,
       severity: severity ?? this.severity,
     );
   }
@@ -62,7 +57,6 @@ class SkinConcernModel {
       translatedTitle: json['translated_name']?.toString(),
       translatedDescription: json['translated_description']?.toString(),
       translationLanguage: json['language']?.toString(),
-      selected: json['selected'] == true,
       severity: level is num
           ? level.toInt()
           : (level is String ? int.tryParse(level) ?? 0 : 0),
@@ -84,7 +78,6 @@ class SkinConcernModel {
       'translated_name': translatedTitle,
       'translated_description': translatedDescription,
       'language': translationLanguage,
-      'selected': selected,
       'severity': severity,
     };
   }
