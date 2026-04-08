@@ -8,10 +8,20 @@ import '../../presentation/auth/login/login_screen.dart';
 import '../../presentation/auth/register/register_screen.dart';
 import '../../presentation/contact/contact_screen.dart';
 import '../../presentation/splash/splash_screen.dart';
+import '../constants/data/repositories/auth_repository.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
+  final authToken = ref.watch(authTokenProvider);
+  final isAuthenticated = authToken != null && authToken.isNotEmpty;
+
   return GoRouter(
     initialLocation: '/splash',
+    redirect: (context, state) {
+      if (state.uri.path == '/' && isAuthenticated) {
+        return '/recommendations';
+      }
+      return null;
+    },
     routes: [
       GoRoute(
         path: '/splash',

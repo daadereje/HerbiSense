@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../common/network/api_client.dart';
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -17,7 +19,12 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     _timer = Timer(const Duration(seconds: 2), () {
-      if (mounted) context.go('/');
+      if (!mounted) return;
+      final targetRoute =
+          ApiClient.authToken != null && ApiClient.authToken!.isNotEmpty
+              ? '/recommendations'
+              : '/';
+      context.go(targetRoute);
     });
   }
 

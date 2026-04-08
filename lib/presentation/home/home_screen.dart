@@ -195,7 +195,7 @@ class _GetStartedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton(
       onPressed: () {
-        Navigator.of(context).push(
+        Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const RecommendationsScreen()),
         );
       },

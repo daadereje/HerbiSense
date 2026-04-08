@@ -7,14 +7,16 @@ import '../models/user_model.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   final apiClient = ref.read(apiClientProvider);
-  return AuthRepository(apiClient);
+  return AuthRepository(apiClient, ref);
 });
 
 /// Global auth token provider to trigger dependent listeners when token changes.
 final authTokenProvider = StateProvider<String?>((ref) => ApiClient.authToken);
 
 class AuthRepository {
-  AuthRepository(this._apiClient);
+  AuthRepository(this._apiClient, this._ref);
+
+  final Ref _ref;
 
   static UserModel? _cachedUser;
   static const _tokenKey = 'auth_token';
@@ -36,6 +38,7 @@ class AuthRepository {
         final rawToken = data['token'] ?? data['access_token'];
         if (rawToken != null) {
           ApiClient.authToken = rawToken.toString();
+          _ref.read(authTokenProvider.notifier).state = ApiClient.authToken;
           await _persistToken(ApiClient.authToken);
         }
         if (data['user'] != null && data['user'] is Map<String, dynamic>) {
@@ -74,6 +77,7 @@ class AuthRepository {
         final rawToken = data['token'] ?? data['access_token'];
         if (rawToken != null) {
           ApiClient.authToken = rawToken.toString();
+          _ref.read(authTokenProvider.notifier).state = ApiClient.authToken;
           await _persistToken(ApiClient.authToken);
         }
         if (data['user'] != null && data['user'] is Map<String, dynamic>) {
@@ -94,6 +98,7 @@ class AuthRepository {
   Future<void> logout() async {
     await _apiClient.post(ApiEndpoints.logout);
     ApiClient.authToken = null;
+    _ref.read(authTokenProvider.notifier).state = null;
     await _clearToken();
   }
 

@@ -165,7 +165,8 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                       );
                       return herbs.isEmpty
                           ? _buildEmptyState(strings)
-                          : _buildList(strings, language, herbs, favIds, savedIds);
+                          : _buildList(
+                              strings, language, herbs, favIds, savedIds);
                     },
                   ),
                 ],
@@ -177,12 +178,8 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
     );
   }
 
-  Widget _buildList(
-      DiscoverStrings strings,
-      String language,
-      List<HerbModel> herbs,
-      Set<String> favoriteIds,
-      Set<String> savedIds) {
+  Widget _buildList(DiscoverStrings strings, String language,
+      List<HerbModel> herbs, Set<String> favoriteIds, Set<String> savedIds) {
     final apiClient = ref.read(apiClientProvider);
     final isLoggedIn =
         ApiClient.authToken != null && ApiClient.authToken!.isNotEmpty;
@@ -294,7 +291,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                       //   ],
                       // ),
                       // const SizedBox(height: 6),
-                  
+
                       Text(
                         herb.sourceFor(language).isNotEmpty
                             ? "source: ${herb.sourceFor(language)}"
@@ -349,7 +346,8 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
         padding: const EdgeInsets.symmetric(vertical: 60),
         child: Column(
           children: [
-            const Icon(Icons.photo_library_outlined, size: 56, color: Colors.grey),
+            const Icon(Icons.photo_library_outlined,
+                size: 56, color: Colors.grey),
             const SizedBox(height: 12),
             Text(
               strings.emptyImages,
@@ -626,9 +624,9 @@ class _QuickActionsState extends State<_QuickActions> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-          IconButton(
-            icon: _saving
-                ? const SizedBox(
+        IconButton(
+          icon: _saving
+              ? const SizedBox(
                   width: 16,
                   height: 16,
                   child: CircularProgressIndicator(strokeWidth: 2))
@@ -639,11 +637,11 @@ class _QuickActionsState extends State<_QuickActions> {
           tooltip: _isSaved
               ? widget.strings.savedTooltipOn
               : widget.strings.savedTooltipOff,
-          onPressed: !canMutate
+          onPressed: _saving
               ? null
-              : (_saving
-                  ? null
-                  : () => _post(ApiEndpoints.savedHerbs, isSave: true)),
+              : () => canMutate
+                  ? _post(ApiEndpoints.savedHerbs, isSave: true)
+                  : _showLoginRequired(),
         ),
         IconButton(
           icon: _favoriting
@@ -658,25 +656,29 @@ class _QuickActionsState extends State<_QuickActions> {
           tooltip: _isFavorite
               ? widget.strings.favoriteTooltipOn
               : widget.strings.favoriteTooltipOff,
-          onPressed: !canMutate
+          onPressed: _favoriting
               ? null
-              : (_favoriting
-                  ? null
-                  : () => _post(ApiEndpoints.favorites, isSave: false)),
+              : () => canMutate
+                  ? _post(ApiEndpoints.favorites, isSave: false)
+                  : _showLoginRequired(),
         ),
       ],
+    );
+  }
+
+  void _showLoginRequired() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('please log in to use this property!'),
+        duration: Duration(seconds: 2),
+      ),
     );
   }
 
   Future<void> _post(String endpoint, {required bool isSave}) async {
     // Require auth before attempting mutations.
     if (ApiClient.authToken == null || ApiClient.authToken!.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(widget.strings.authRequired),
-            duration: const Duration(seconds: 2),
-          ),
-        );
+      _showLoginRequired();
       return;
     }
 
@@ -720,7 +722,9 @@ class _QuickActionsState extends State<_QuickActions> {
         SnackBar(
           content: Text(
             isSave
-                ? (_isSaved ? widget.strings.savedAdded : widget.strings.savedRemoved)
+                ? (_isSaved
+                    ? widget.strings.savedAdded
+                    : widget.strings.savedRemoved)
                 : (_isFavorite
                     ? widget.strings.favoriteTooltipOn
                     : widget.strings.removedFavorite),
