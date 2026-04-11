@@ -14,10 +14,19 @@ class SavedHerbsRepository {
 
   final ApiClient _apiClient;
 
-  Future<List<HerbModel>> getSavedHerbs() async {
-    final response = await _apiClient.get(ApiEndpoints.savedHerbs);
+  Future<List<HerbModel>> getSavedHerbs({String? language}) async {
+    final response = await _apiClient.get(
+      ApiEndpoints.savedHerbs,
+      queryParams: _langParam(language),
+    );
     final items = _unwrapList(response);
-    return items.map(HerbModel.fromJson).toList();
+    final herbs = items.map(HerbModel.fromJson).toList();
+
+    return Future.wait(herbs.map((herb) async {
+      if (herb.imageUrl != null && herb.imageUrl!.isNotEmpty) return herb;
+      final imageUrl = await _fetchFirstImageUrl(herb.id);
+      return herb.copyWith(imageUrl: imageUrl);
+    }));
   }
 
   Future<void> addSavedHerb(String herbId) async {
@@ -72,5 +81,45 @@ class SavedHerbsRepository {
     }
 
     return <Map<String, dynamic>>[];
+  }
+
+  Map<String, String> _langParam(String? code) {
+    if (code == null || code.isEmpty) return {};
+    final normalized = switch (code.toLowerCase()) {
+      'amh' => 'AM',
+      'or' => 'OM',
+      'eng' => 'EN',
+      _ => code.toUpperCase(),
+    };
+    return {
+      'language': normalized,
+      'lang': normalized,
+    };
+  }
+
+  Future<String?> _fetchFirstImageUrl(String herbId) async {
+    try {
+      final response =
+          await _apiClient.get(ApiEndpoints.uploadById(herbId.toString()));
+
+      final data = response is Map<String, dynamic>
+          ? response['data'] ?? response['uploads'] ?? response['images']
+          : response;
+
+      if (data is List && data.isNotEmpty) {
+        final first = data.first;
+        if (first is Map<String, dynamic>) {
+          return (first['url'] ??
+                  first['path'] ??
+                  first['image'] ??
+                  first['location'])
+              ?.toString();
+        }
+        return first.toString();
+      }
+    } catch (_) {
+      // ignore
+    }
+    return null;
   }
 }

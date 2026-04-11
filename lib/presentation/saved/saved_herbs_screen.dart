@@ -12,9 +12,10 @@ import 'package:herbisense/core/constants/data/repositories/herb_repository.dart
 import 'package:herbisense/presentation/discover/herb_detail_screen.dart';
 import 'package:herbisense/core/state/language_provider.dart';
 
-final savedHerbsProvider = FutureProvider<List<HerbModel>>((ref) {
+final savedHerbsProvider = FutureProvider.autoDispose<List<HerbModel>>((ref) {
+  final language = ref.watch(languageProvider);
   final repo = ref.read(savedHerbsRepositoryProvider);
-  return repo.getSavedHerbs();
+  return repo.getSavedHerbs(language: language);
 });
 
 class SavedHerbsScreen extends ConsumerStatefulWidget {
@@ -289,13 +290,73 @@ class _SavedHerbTile extends ConsumerWidget {
         InkWell(
           borderRadius: BorderRadius.circular(12),
           onTap: onOpen,
-          child: InfoCard(
-            title: herb.nameFor(language),
-            description: herb.sourceFor(language).isNotEmpty
-                ? herb.sourceFor(language)
-                : 'Source not provided.',
-            tags: herb.skinConditions,
-            extra: herb.category,
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.cardBorder),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.06),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: SizedBox(
+                    width: 80,
+                    height: 80,
+                    child: _MiniImage(url: herb.imageUrl),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        herb.nameFor(language),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        herb.usesFor(language),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary,
+                          height: 1.3,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        herb.scientificName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontStyle: FontStyle.italic,
+                          color: AppColors.secondaryGreen,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         Positioned(
@@ -308,6 +369,35 @@ class _SavedHerbTile extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _MiniImage extends StatelessWidget {
+  final String? url;
+  const _MiniImage({this.url});
+
+  @override
+  Widget build(BuildContext context) {
+    if (url == null || url!.isEmpty) {
+      return _placeholder();
+    }
+    return Image.network(
+      url!,
+      fit: BoxFit.cover,
+      errorBuilder: (_, __, ___) => _placeholder(),
+    );
+  }
+
+  Widget _placeholder() {
+    return Container(
+      color: Colors.grey[200],
+      alignment: Alignment.center,
+      child: const Icon(
+        Icons.image_not_supported_outlined,
+        color: Colors.grey,
+        size: 28,
+      ),
     );
   }
 }
