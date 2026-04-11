@@ -5,7 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:herbisense/config/app_config.dart';
 import 'package:herbisense/core/constants/colors.dart';
 import 'package:herbisense/core/constants/data/models/herb_model.dart';
+import 'package:herbisense/core/constants/data/models/skin_concern_model.dart';
+import 'package:herbisense/core/constants/languages/strings.dart';
 import 'package:herbisense/core/state/language_provider.dart';
+import 'package:herbisense/presentation/recommendations/condition_detail_screen.dart';
 import 'package:herbisense/common/network/api_client.dart';
 import 'package:http/http.dart' as http;
 
@@ -21,6 +24,22 @@ class HerbDetailScreen extends ConsumerWidget {
     final displayPrep = herb.preparationFor(language);
     final displaySafety = herb.safetyFor(language);
     final displaySource = herb.sourceFor(language);
+    final scientificNameLabel =
+        AppStrings.translate(AppStrings.scientificName, language);
+    final conditionsUsedForLabel =
+        AppStrings.translate(AppStrings.conditionsUsedFor, language);
+    final herbDescriptionLabel =
+        AppStrings.translate(AppStrings.herbDescription, language);
+    final medicinePreparationLabel =
+        AppStrings.translate(AppStrings.medicinePreparation, language);
+    final safetyWarningLabel =
+        AppStrings.translate(AppStrings.safetyWarning, language);
+    final sourceLabel = AppStrings.translate(AppStrings.source, language);
+    final noPrepPlaceholder =
+        AppStrings.translate(AppStrings.noPreparationInstructions, language);
+    final noSafetyPlaceholder =
+        AppStrings.translate(AppStrings.noSafetyWarnings, language);
+    final imageLabel = AppStrings.translate(AppStrings.image, language);
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
       appBar: AppBar(
@@ -41,63 +60,192 @@ class HerbDetailScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              herb.scientificName,
+              "$scientificNameLabel: ${herb.scientificName}",
               style: const TextStyle(
                 fontStyle: FontStyle.italic,
                 color: AppColors.secondaryGreen,
                 fontSize: 14,
               ),
             ),
-            if (herb.conditionName != null && herb.conditionName!.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Row(
-                  children: [
-                    const Icon(Icons.healing,
-                        size: 18, color: AppColors.secondaryGreen),
-                    const SizedBox(width: 6),
-                    Flexible(
-                      child: Text(
-                        herb.conditionName!,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
+            if (herb.conditions.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(
+                conditionsUsedForLabel,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 8),
+              ...herb.conditions.map(
+                (condition) => Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ConditionDetailScreen(
+                              concern: condition,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(Icons.healing,
+                                size: 18, color: AppColors.secondaryGreen),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: Text.rich(
+                                TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: condition.titleFor(language),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        color: AppColors.textPrimary,
+                                      ),
+                                    ),
+                                    if (condition
+                                        .descriptionFor(language)
+                                        .trim()
+                                        .isNotEmpty)
+                                      TextSpan(
+                                        text:
+                                            ': ${condition.descriptionFor(language)}',
+                                        style: const TextStyle(
+                                          color: AppColors.textSecondary,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-            if (herb.conditionDescription != null &&
-                herb.conditionDescription!.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 6),
-                child: Text(
-                  herb.conditionDescription!,
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 13,
                   ),
                 ),
               ),
+            ] else ...[
+              if (herb.conditionName != null && herb.conditionName!.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        final selectedCondition = SkinConcernModel.initial(
+                          herb.conditionName!,
+                          herb.conditionDescription ?? '',
+                          id: herb.conditionId != null
+                              ? int.tryParse(herb.conditionId!)
+                              : null,
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ConditionDetailScreen(
+                              concern: selectedCondition,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(Icons.healing,
+                                size: 18, color: AppColors.secondaryGreen),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: Text.rich(
+                                TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: herb.conditionName!,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        color: AppColors.textPrimary,
+                                      ),
+                                    ),
+                                    if (herb.conditionDescription != null &&
+                                        herb.conditionDescription!.isNotEmpty)
+                                      TextSpan(
+                                        text: ': ${herb.conditionDescription!}',
+                                        style: const TextStyle(
+                                          color: AppColors.textSecondary,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              if (herb.skinConditions.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(
+                  conditionsUsedForLabel,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: herb.skinConditions
+                      .map(
+                        (condition) => Chip(
+                          label: Text(
+                            condition,
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                          visualDensity: VisualDensity.compact,
+                          backgroundColor: AppColors.cardBackground,
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ],
+            ],
             const SizedBox(height: 20),
             _section(
-              title: 'Description',
+              title: herbDescriptionLabel,
               value: displayUses,
             ),
             _section(
-              title: 'Preparation',
+              title: medicinePreparationLabel,
               value: displayPrep,
-              placeholder: 'No preparation instructions provided.',
+              placeholder: noPrepPlaceholder,
             ),
             _section(
-              title: 'Safety Warning',
+              title: safetyWarningLabel,
               value: displaySafety,
-              placeholder: 'No safety warnings provided.',
+              placeholder: noSafetyPlaceholder,
             ),
             if (displaySource.isNotEmpty)
               _section(
-                title: 'Source',
+                title: sourceLabel,
                 value: displaySource,
                 valueStyle: const TextStyle(
                   fontStyle: FontStyle.italic,
@@ -105,7 +253,7 @@ class HerbDetailScreen extends ConsumerWidget {
                 ),
               ),
             const SizedBox(height: 12),
-            _HerbImageBox(herb: herb),
+            _HerbImageBox(herb: herb, title: imageLabel),
           ],
         ),
       ),
@@ -149,7 +297,8 @@ class HerbDetailScreen extends ConsumerWidget {
 
 class _HerbImageBox extends StatefulWidget {
   final HerbModel herb;
-  const _HerbImageBox({required this.herb});
+  final String title;
+  const _HerbImageBox({required this.herb, required this.title});
 
   @override
   State<_HerbImageBox> createState() => _HerbImageBoxState();
@@ -196,9 +345,9 @@ class _HerbImageBoxState extends State<_HerbImageBox> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Image',
-          style: TextStyle(
+        Text(
+          widget.title,
+          style: const TextStyle(
             fontWeight: FontWeight.w700,
             color: AppColors.textPrimary,
           ),
@@ -226,7 +375,8 @@ class _HerbImageBoxState extends State<_HerbImageBox> {
                         });
                         return const SizedBox.shrink();
                       }
-                      debugPrint('Herb detail image load failed: ${_candidates[_index]} ($_lastError)');
+                      debugPrint(
+                          'Herb detail image load failed: ${_candidates[_index]} ($_lastError)');
                       return _placeholder(isLoading: false);
                     },
                   ),
@@ -261,16 +411,14 @@ class _HerbImageBoxState extends State<_HerbImageBox> {
 
   Future<String?> _fetchUploadImageUrl(String url) async {
     try {
-      final resp = await http
-          .get(
-            Uri.parse(url),
-            headers: {
-              'Accept': 'application/json',
-              if (ApiClient.authToken != null)
-                'Authorization': 'Bearer ${ApiClient.authToken}',
-            },
-          )
-          .timeout(const Duration(seconds: 8));
+      final resp = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Accept': 'application/json',
+          if (ApiClient.authToken != null)
+            'Authorization': 'Bearer ${ApiClient.authToken}',
+        },
+      ).timeout(const Duration(seconds: 8));
       if (resp.statusCode >= 200 && resp.statusCode < 300) {
         final decoded = jsonDecode(resp.body);
         if (decoded is Map &&
@@ -308,7 +456,9 @@ class _HerbImageBoxState extends State<_HerbImageBox> {
     final uri = Uri.parse(base);
     var path = uri.path;
     if (path.endsWith('/')) path = path.substring(0, path.length - 1);
-    if (!keepApiPrefix && path.endsWith('/api')) path = path.substring(0, path.length - 4);
+    if (!keepApiPrefix && path.endsWith('/api')) {
+      path = path.substring(0, path.length - 4);
+    }
     final uploadPath = withHerbsSegment
         ? '$path/uploads/herbs/$herbId'
         : '$path/uploads/$herbId';

@@ -87,7 +87,11 @@ class RecommendationRepository {
       'eng' => 'EN',
       _ => code.toUpperCase(),
     };
-    return {'language': normalized};
+    // Some endpoints expect `lang`, others `language`; send both for safety.
+    return {
+      'language': normalized,
+      'lang': normalized,
+    };
   }
 
   Future<List<SkinConcernModel>> _attachTranslations(
@@ -102,12 +106,27 @@ class RecommendationRepository {
 
     return Future.wait(base.map((c) async {
       final translated = await _fetchTranslation(c, language);
-      if (translated == null) return c;
-      return c.copyWith(
-        translatedTitle: translated.translatedTitle,
-        translatedDescription: translated.translatedDescription,
-        translationLanguage: translated.translationLanguage,
-      );
+      if (translated != null) {
+        return c.copyWith(
+          translatedTitle: translated.translatedTitle,
+          translatedDescription: translated.translatedDescription,
+          translationLanguage:
+              translated.translationLanguage ?? language.toLowerCase(),
+        );
+      }
+
+      // If the API already returned localized fields (no separate translation),
+      // treat them as translated values so the UI picks them for the target language.
+      if ((c.translationLanguage == null || c.translationLanguage!.isEmpty) &&
+          (c.title.isNotEmpty || c.description.isNotEmpty)) {
+        return c.copyWith(
+          translatedTitle: c.title,
+          translatedDescription: c.description,
+          translationLanguage: language.toLowerCase(),
+        );
+      }
+
+      return c;
     }));
   }
 

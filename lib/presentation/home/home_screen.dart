@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:herbisense/presentation/recommendations/recommendations_screen.dart'
-    show RecommendationsScreen;
+import 'package:go_router/go_router.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/languages/home_strings.dart';
 import '../../core/state/language_provider.dart';
@@ -195,9 +194,7 @@ class _GetStartedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton(
       onPressed: () {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const RecommendationsScreen()),
-        );
+        context.go('/recommendations');
       },
       style: OutlinedButton.styleFrom(
         foregroundColor: AppColors.secondaryGreen,

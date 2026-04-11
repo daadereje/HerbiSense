@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:herbisense/core/widgets/navigation/app_bottom_nav_bar.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/languages/strings.dart';
 import 'register_view_model.dart';
-import '../../profile/profile_screen.dart' show ProfileScreen, currentUserProvider;
+import '../../profile/profile_screen.dart'
+    show ProfileScreen, currentUserProvider;
 import 'widgets/register_hero.dart';
 import 'widgets/benefits_section.dart';
 import 'widgets/register_form.dart';
@@ -49,15 +51,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     ref.listen(registerViewModelProvider, (prev, next) {
       if (next.registerSuccess) {
         ref.invalidate(currentUserProvider);
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const ProfileScreen()),
-        );
+        context.go('/profile');
       }
     });
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
-            bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 3),
+      bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 3),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(

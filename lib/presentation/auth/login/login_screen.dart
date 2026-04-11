@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/languages/auth_strings.dart';
 import '../../../core/state/language_provider.dart';
 import '../../../core/widgets/navigation/app_bottom_nav_bar.dart';
-import '../../profile/profile_screen.dart' show ProfileScreen, currentUserProvider;
+import '../../profile/profile_screen.dart'
+    show ProfileScreen, currentUserProvider;
 import 'login_view_model.dart';
 import 'widgets/login_header.dart';
 import 'widgets/login_form.dart';
@@ -38,9 +40,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     ref.listen(loginViewModelProvider, (previous, next) {
       if (next.loginSuccess) {
         ref.invalidate(currentUserProvider);
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const ProfileScreen()),
-        );
+        context.go('/profile');
       }
     });
 

@@ -134,7 +134,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                     onChanged: (val) =>
                         setState(() => _query = val.trim().toLowerCase()),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 3),
                   // Trigger initial loads; UI waits until both sets are ready.
                   favsAsync.when(
                     loading: () => const SizedBox.shrink(),
@@ -304,31 +304,31 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                           fontStyle: FontStyle.italic,
                         ),
                       ),
-                      if (herb.skinConditions.isNotEmpty) ...[
-                        const SizedBox(height: 6),
-                        Wrap(
-                          spacing: 6,
-                          runSpacing: -4,
-                          children: herb.skinConditions
-                              .take(3)
-                              .map(
-                                (c) => Chip(
-                                  label: Text(
-                                    c,
-                                    style: const TextStyle(fontSize: 11),
-                                  ),
-                                  visualDensity: VisualDensity.compact,
-                                  backgroundColor: AppColors.cardBackground,
-                                  materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 4),
-                                ),
-                              )
-                              .toList(),
-                        ),
+                      // if (herb.skinConditions.isNotEmpty) ...[
+                      //   const SizedBox(height: 6),
+                      //   Wrap(
+                      //     spacing: 6,
+                      //     runSpacing: -4,
+                      //     children: herb.skinConditions
+                      //         .take(3)
+                      //         .map(
+                      //           (c) => Chip(
+                      //             label: Text(
+                      //               c,
+                      //               style: const TextStyle(fontSize: 11),
+                      //             ),
+                      //             visualDensity: VisualDensity.compact,
+                      //             backgroundColor: AppColors.cardBackground,
+                      //             materialTapTargetSize:
+                      //                 MaterialTapTargetSize.shrinkWrap,
+                      //             padding:
+                      //                 const EdgeInsets.symmetric(horizontal: 4),
+                      //           ),
+                      //         )
+                      //         .toList(),
+                        // ),
                       ],
-                    ],
+                    // ],
                   ),
                 ),
                 const SizedBox(width: 6),

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:herbisense/core/constants/colors.dart';
 import 'package:herbisense/core/constants/languages/profile_strings.dart';
 import 'package:herbisense/core/state/language_provider.dart';
 import 'package:herbisense/core/widgets/navigation/app_bottom_nav_bar.dart';
 import 'package:herbisense/core/constants/data/models/user_model.dart';
 import 'package:herbisense/core/constants/data/repositories/auth_repository.dart';
-import 'package:herbisense/presentation/auth/login/login_screen.dart';
 import 'package:herbisense/presentation/saved/saved_herbs_screen.dart';
 
 import '../feedback/feedback_screen.dart';
@@ -34,8 +34,8 @@ class ProfileScreen extends ConsumerWidget {
         // toolbarHeight: 160.0,
         title: Text(
           strings.title,
-          style:
-              const TextStyle(color: AppColors.white, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+              color: AppColors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         automaticallyImplyLeading: false,
@@ -55,16 +55,15 @@ class ProfileScreen extends ConsumerWidget {
                 return _ProfileError(
                   message: strings.notLoggedIn,
                   action: () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => const LoginScreen()),
-                    );
+                    context.go('/login');
                   },
                   actionLabel: strings.signIn,
                 );
               }
               return _ProfileHeader(
                 name: user.fullName.isNotEmpty ? user.fullName : strings.guest,
-                email: user.email.isNotEmpty ? user.email : strings.unknownEmail,
+                email:
+                    user.email.isNotEmpty ? user.email : strings.unknownEmail,
                 role: user.role,
               );
             },
@@ -116,7 +115,6 @@ class _ProfileHeader extends StatelessWidget {
   final String? role;
 
   const _ProfileHeader({
-
     required this.name,
     required this.email,
     this.role,
@@ -135,7 +133,8 @@ class _ProfileHeader extends StatelessWidget {
             CircleAvatar(
               radius: 28,
               backgroundColor: AppColors.softGreen,
-              child: const Icon(Icons.person, color: AppColors.secondaryGreen, size: 30),
+              child: const Icon(Icons.person,
+                  color: AppColors.secondaryGreen, size: 30),
             ),
             const SizedBox(width: 14),
             Expanded(

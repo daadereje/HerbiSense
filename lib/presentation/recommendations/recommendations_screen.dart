@@ -2,16 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/languages/recommendations_strings.dart';
 import '../../core/state/language_provider.dart';
 import '../../core/widgets/navigation/app_bottom_nav_bar.dart';
 import '../../core/widgets/inputs/search_bar.dart';
 import '../../core/widgets/shared/header_widget.dart';
-import 'condition_detail_screen.dart';
 import 'recommendations_view_model.dart';
 import 'widgets/concern_grid.dart';
-import 'widgets/tips_card.dart';
 
 class RecommendationsScreen extends ConsumerStatefulWidget {
   const RecommendationsScreen({super.key});
@@ -76,19 +75,11 @@ class _RecommendationsScreenState extends ConsumerState<RecommendationsScreen> {
             icon: const Icon(Icons.info_outline,
                 size: 20, color: AppColors.primaryGreen),
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => ConditionDetailScreen(concern: condition),
-                ),
-              );
+              context.push('/condition-details', extra: condition);
             },
           ),
           onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => ConditionDetailScreen(concern: condition),
-              ),
-            );
+            context.push('/condition-details', extra: condition);
           },
         );
       },

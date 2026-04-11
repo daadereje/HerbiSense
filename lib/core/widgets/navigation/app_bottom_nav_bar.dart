@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:herbisense/presentation/favorites/favorites_screen.dart';
-import '../../../presentation/recommendations/recommendations_screen.dart';
-import '../../../presentation/profile/profile_screen.dart';
-import '../../../presentation/discover/discover_screen.dart';
+import 'package:go_router/go_router.dart';
 import '../../constants/colors.dart';
 
 /// Reusable bottom navigation bar used across Home, Recommendations and Profile.
@@ -17,24 +14,16 @@ class AppBottomNavigationBar extends StatelessWidget {
 
     switch (index) {
       case 0:
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const RecommendationsScreen()),
-        );
+        context.go('/recommendations');
         break;
       case 1:
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const FavoritesScreen()),
-        );
+        context.go('/favorites');
         break;
       case 2:
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const DiscoverScreen()),
-        );
+        context.go('/discover');
         break;
       case 3:
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const ProfileScreen()),
-        );
+        context.go('/profile');
         break;
     }
   }
@@ -49,24 +38,23 @@ class AppBottomNavigationBar extends StatelessWidget {
       onTap: (index) => _handleTap(context, index),
       items: const [
         BottomNavigationBarItem(
-          icon: Icon(Icons.home_outlined),
-          activeIcon: Icon(Icons.home),
-          label: 'Home',
+          icon: Icon(Icons.recommend_outlined),
+          activeIcon: Icon(Icons.recommend),
+          label: 'Recommend',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.favorite),
+          icon: Icon(Icons.favorite_border),
           activeIcon: Icon(Icons.favorite),
           label: 'Favorites',
         ),
         BottomNavigationBarItem(
-           icon: Icon(Icons.photo_library_outlined),
+          icon: Icon(Icons.photo_library_outlined),
           activeIcon: Icon(Icons.photo_library),
           label: 'Discover',
         ),
         BottomNavigationBarItem(
-           icon: Icon(Icons.person_outline),
+          icon: Icon(Icons.person_outline),
           activeIcon: Icon(Icons.person),
-        
           label: 'Profile',
         ),
       ],

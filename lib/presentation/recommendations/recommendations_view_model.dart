@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/constants/colors.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/constants/data/models/skin_concern_model.dart';
 import '../../core/constants/data/repositories/recommendation_repository.dart';
-import 'condition_detail_screen.dart';
 import '../../core/state/language_provider.dart';
 
 final recommendationsViewModelProvider =
@@ -34,57 +33,8 @@ class RecommendationsViewModel extends StateNotifier<RecommendationsState> {
   }
 
   void showConditionDetail(BuildContext context, int index) {
-    _showConditionDetailSheet(context, state.skinConcerns[index]);
-  }
-
-  void _showConditionDetailSheet(
-    BuildContext context,
-    SkinConcernModel concern,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.75,
-          minChildSize: 0.5,
-          maxChildSize: 0.95,
-          expand: false,
-          builder: (context, scrollController) {
-            return Container(
-              decoration: BoxDecoration(
-                color: AppColors.backgroundLight,
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(20)),
-              ),
-              child: SingleChildScrollView(
-                controller: scrollController,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: Container(
-                        width: 40,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    ConditionDetailContent(concern: concern),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
+    final concern = state.skinConcerns[index];
+    context.push('/condition-details', extra: concern);
   }
 
   void _setSeverityLevel(int index, int level) {

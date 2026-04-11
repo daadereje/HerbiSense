@@ -1,3 +1,5 @@
+import 'package:herbisense/core/constants/data/models/skin_concern_model.dart';
+
 class HerbModel {
   final String id;
   final String name;
@@ -18,6 +20,7 @@ class HerbModel {
   final String category;
   final int views;
   final List<String> skinConditions;
+  final List<SkinConcernModel> conditions;
   final String? imageUrl;
   final bool isTraditional;
   final bool isVerified;
@@ -43,6 +46,7 @@ class HerbModel {
     required this.category,
     required this.views,
     required this.skinConditions,
+    required this.conditions,
     this.imageUrl,
     required this.isTraditional,
     required this.isVerified,
@@ -50,13 +54,25 @@ class HerbModel {
   });
 
   factory HerbModel.fromJson(Map<String, dynamic> json) {
+    // Support both flat translation fields and nested `translation` object
+    final translation = json['translation'] is Map<String, dynamic>
+        ? Map<String, dynamic>.from(json['translation'] as Map)
+        : json['translation'] is Map
+            ? Map<String, dynamic>.from(json['translation'] as Map)
+            : null;
+
     final rawImage =
         json['imageUrl'] ?? json['image_url'] ?? json['image'] ?? '';
-    final conditionMap =
-        json['condition'] is Map ? Map<String, dynamic>.from(json['condition']) : null;
+    final conditionMap = json['condition'] is Map
+        ? Map<String, dynamic>.from(json['condition'])
+        : null;
 
     final langCode =
-        (json['language'] ?? json['lang'] ?? json['translation_language'])
+        (json['language'] ??
+                json['lang'] ??
+                json['translation_language'] ??
+                translation?['language'] ??
+                translation?['lang'])
             ?.toString();
 
     return HerbModel(
@@ -78,17 +94,25 @@ class HerbModel {
               ? null
               : (json['safety_warning'] ?? json['warning']).toString(),
       conditionId: (json['condition_id'] ?? conditionMap?['id'])?.toString(),
-      conditionName: (json['condition_name'] ?? conditionMap?['name'])
-          ?.toString(),
-      conditionDescription: (json['condition_description'] ??
-              conditionMap?['description'])
-          ?.toString(),
+      conditionName:
+          (json['condition_name'] ?? conditionMap?['name'])?.toString(),
+      conditionDescription:
+          (json['condition_description'] ?? conditionMap?['description'])
+              ?.toString(),
       source: json['source']?.toString(),
-      translatedName: json['translated_name']?.toString(),
-      translatedUses: json['translated_uses']?.toString(),
-      translatedPreparation: json['translated_preparation']?.toString(),
-      translatedSafety: json['translated_safety']?.toString(),
-      translatedSource: (json['translated_source'] ??
+      translatedName:
+          translation?['translated_name']?.toString() ??
+              json['translated_name']?.toString(),
+      translatedUses: translation?['translated_uses']?.toString() ??
+          json['translated_uses']?.toString(),
+      translatedPreparation:
+          translation?['translated_preparation']?.toString() ??
+              json['translated_preparation']?.toString(),
+      translatedSafety: translation?['translated_safety']?.toString() ??
+          json['translated_safety']?.toString(),
+      translatedSource: (translation?['translated_source'] ??
+              translation?['source'] ??
+              json['translated_source'] ??
               (langCode != null ? json['source'] : null))
           ?.toString(),
       translationLanguage: langCode,
@@ -96,12 +120,11 @@ class HerbModel {
       views: (json['views'] ?? json['view_count'] ?? 0) is num
           ? (json['views'] ?? json['view_count'] ?? 0 as num).toInt()
           : 0,
-      skinConditions: List<String>.from(
-        (json['skinConditions'] ??
-                json['conditions'] ??
-                json['skin_conditions'] ??
-                [])
-            .map((e) => e.toString()),
+      skinConditions: _parseConditionNames(
+        json['skinConditions'] ?? json['conditions'] ?? json['skin_conditions'],
+      ),
+      conditions: _parseConditions(
+        json['conditions'] ?? json['skin_conditions'],
       ),
       imageUrl: rawImage.toString().isEmpty ? null : rawImage.toString(),
       isTraditional: json['isTraditional'] ?? json['traditional'] ?? true,
@@ -131,11 +154,45 @@ class HerbModel {
       'category': category,
       'views': views,
       'skinConditions': skinConditions,
+      'conditions': conditions.map((condition) => condition.toJson()).toList(),
       'imageUrl': imageUrl,
       'isTraditional': isTraditional,
       'isVerified': isVerified,
       'status': status,
     };
+  }
+
+  static List<String> _parseConditionNames(dynamic rawConditions) {
+    if (rawConditions is List) {
+      return rawConditions
+          .map((item) {
+            if (item is Map) {
+              return (item['name'] ??
+                          item['title'] ??
+                          item['condition_name'] ??
+                          item['label'])
+                      ?.toString() ??
+                  '';
+            }
+            return item?.toString() ?? '';
+          })
+          .where((value) => value.trim().isNotEmpty)
+          .toList();
+    }
+
+    if (rawConditions is Map) {
+      final name = rawConditions['name'] ??
+          rawConditions['title'] ??
+          rawConditions['condition_name'] ??
+          rawConditions['label'];
+      return name?.toString().trim().isEmpty == false ? [name.toString()] : [];
+    }
+
+    if (rawConditions is String && rawConditions.trim().isNotEmpty) {
+      return [rawConditions.trim()];
+    }
+
+    return [];
   }
 
   HerbModel copyWith({
@@ -149,6 +206,7 @@ class HerbModel {
     String? translatedSafety,
     String? translatedSource,
     String? translationLanguage,
+    List<SkinConcernModel>? conditions,
   }) {
     return HerbModel(
       id: id,
@@ -163,18 +221,42 @@ class HerbModel {
       source: source ?? this.source,
       translatedName: translatedName ?? this.translatedName,
       translatedUses: translatedUses ?? this.translatedUses,
-      translatedPreparation: translatedPreparation ?? this.translatedPreparation,
+      translatedPreparation:
+          translatedPreparation ?? this.translatedPreparation,
       translatedSafety: translatedSafety ?? this.translatedSafety,
       translatedSource: translatedSource ?? this.translatedSource,
       translationLanguage: translationLanguage ?? this.translationLanguage,
       category: category,
       views: views,
       skinConditions: skinConditions,
+      conditions: conditions ?? this.conditions,
       imageUrl: imageUrl ?? this.imageUrl,
       isTraditional: isTraditional,
       isVerified: isVerified,
       status: status,
     );
+  }
+
+  static List<SkinConcernModel> _parseConditions(dynamic rawConditions) {
+    if (rawConditions is List) {
+      return rawConditions
+          .map((item) {
+            if (item is Map<String, dynamic>) {
+              return SkinConcernModel.fromJson(item);
+            }
+            if (item is Map) {
+              return SkinConcernModel.fromJson(Map<String, dynamic>.from(item));
+            }
+            if (item is String) {
+              return SkinConcernModel.initial(item, '');
+            }
+            return SkinConcernModel.initial(item?.toString() ?? '', '');
+          })
+          .where((condition) => condition.title.trim().isNotEmpty)
+          .toList();
+    }
+
+    return [];
   }
 
   // Mock data for initial development
@@ -189,6 +271,7 @@ class HerbModel {
         category: 'Traditional medicine',
         views: 164,
         skinConditions: ['Dry Skin', 'Skin infections'],
+        conditions: [],
         isTraditional: true,
         isVerified: true,
       ),
@@ -201,6 +284,7 @@ class HerbModel {
         category: 'Traditional medicine',
         views: 417,
         skinConditions: ['Dry Skin', 'Sunburn', 'Minor Wounds'],
+        conditions: [],
         isTraditional: true,
         isVerified: true,
       ),
@@ -213,6 +297,7 @@ class HerbModel {
         category: 'Traditional medicine',
         views: 461,
         skinConditions: ['Inflammation', 'Acne', 'Dark Spots'],
+        conditions: [],
         isTraditional: true,
         isVerified: true,
       ),
@@ -220,7 +305,16 @@ class HerbModel {
   }
 
   bool _matchesLanguage(String code) {
-    if (translationLanguage == null || translationLanguage!.isEmpty) return false;
+    if (translationLanguage == null || translationLanguage!.isEmpty) {
+      if (code.toLowerCase() == 'eng' || code.toLowerCase() == 'en') {
+        return false;
+      }
+      return (translatedName?.isNotEmpty == true ||
+          translatedUses?.isNotEmpty == true ||
+          translatedPreparation?.isNotEmpty == true ||
+          translatedSafety?.isNotEmpty == true ||
+          translatedSource?.isNotEmpty == true);
+    }
     final normalized = translationLanguage!.toLowerCase();
     final target = switch (code.toLowerCase()) {
       'amh' => 'am',

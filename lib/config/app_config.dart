@@ -6,8 +6,8 @@ class AppConfig {
   // Backend
   static const String apiBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    // Local network backend (port 5001) running on 10.250.56.116
-    defaultValue: 'http://10.250.56.116:5001/api',
+    // Local network backend (port 5001) running on 10.131.203.116
+    defaultValue: 'http://10.131.203.116:5001/api',
   );
 
   // Features
@@ -22,13 +22,12 @@ class AppConfig {
     if (_isInitialized) {
       return;
     }
-    
     // Use compute for any heavy initialization work
     await Future.microtask(() {
       // Initialize any services here
       // Keep this minimal for fast startup
     });
-    
+
     _isInitialized = true;
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:herbisense/presentation/auth/register/register_screen.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/languages/auth_strings.dart';
 import '../../../../core/widgets/inputs/email_field.dart';
@@ -25,8 +25,8 @@ class LoginForm extends StatelessWidget {
     required this.isLoading,
     required this.strings,
     this.error,
-  })  : emailController =
-            emailController ?? TextEditingController(text: 'admin@herbisense.com'),
+  })  : emailController = emailController ??
+            TextEditingController(text: 'admin@herbisense.com'),
         passwordController =
             passwordController ?? TextEditingController(text: 'admin123');
 
@@ -186,9 +186,7 @@ class LoginForm extends StatelessWidget {
           onPressed: isLoading
               ? null
               : () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const RegisterScreen()),
-                  );
+                  context.go('/register');
                 },
           style: TextButton.styleFrom(
             foregroundColor: AppColors.secondaryGreen,

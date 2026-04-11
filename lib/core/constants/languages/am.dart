@@ -1,7 +1,8 @@
 class AppStringsAm {
   // Home Page
   static const String homeTitle = 'የተፈጥሮ ጥበብን ለቆዳ ብርሃን ያግኙ';
-  static const String homeSubtitle = 'የኢትዮጵያ ባህላዊ ዕፅዋት ከዘመናዊ የቆዳ ሕክምና ጋር ተጣጥመው ለቆዳዎ ጤና ጉዞ ይረዳሉ።';
+  static const String homeSubtitle =
+      'የኢትዮጵያ ባህላዊ ዕፅዋት ከዘመናዊ የቆዳ ሕክምና ጋር ተጣጥመው ለቆዳዎ ጤና ጉዞ ይረዳሉ።';
   static const String searchHerbs = 'የቆዳ ችግሮችን ፈልግ...';
   static const String searchSaved = 'የተቀመጡ ዕፅዋት ፈልግ...';
 
@@ -10,7 +11,8 @@ class AppStringsAm {
 
   // How to Use
   static const String howToUse = 'HerbiSenseን እንዴት እንጠቀም?';
-  static const String howToUseSubtitle = 'በ4 ቀላል እርምጃዎች ጀምር። በጥቂት ደቂቃዎች ውስጥ ተገቢ ዕፅዋት ያግኙ።';
+  static const String howToUseSubtitle =
+      'በ4 ቀላል እርምጃዎች ጀምር። በጥቂት ደቂቃዎች ውስጥ ተገቢ ዕፅዋት ያግኙ።';
 
   // Steps
   static const String step1Title = 'ዕፅዋት ፈልግ';
@@ -18,7 +20,8 @@ class AppStringsAm {
   static const String step2Title = 'ምድቦችን አስስ';
   static const String step2Desc = 'በአይነት፣ በቆዳ ችግር ወይም በባህላዊ አጠቃቀም መሰረት ያስሱ';
   static const String step3Title = 'ስለ ዕፅዋት ተማር';
-  static const String step3Desc = 'እያንዳንዱን ዕፅዋት በደህና እንዴት መጠቀም እንደሚቻል ዝርዝር መረጃ ያንብቡ';
+  static const String step3Desc =
+      'እያንዳንዱን ዕፅዋት በደህና እንዴት መጠቀም እንደሚቻል ዝርዝር መረጃ ያንብቡ';
   static const String step4Title = 'ምክር አግኝ';
   static const String step4Desc = 'በቆዳዎ ፍላጎት መሰረት ምክሮችን ያግኙ';
 
@@ -32,9 +35,11 @@ class AppStringsAm {
 
   // Cards
   static const String comprehensiveDb = 'ሙሉ መረጃ መዝገብ';
-  static const String comprehensiveDbDesc = 'ከ100+ በላይ የኢትዮጵያ ዕፅዋት የተረጋገጠ መረጃ ያግኙ';
+  static const String comprehensiveDbDesc =
+      'ከ100+ በላይ የኢትዮጵያ ዕፅዋት የተረጋገጠ መረጃ ያግኙ';
   static const String evidenceBased = 'በምርምር የተደገፈ መረጃ';
-  static const String evidenceBasedDesc = 'ሁሉም የዕፅዋት መረጃ በምርምር እና ባህላዊ ሐኪሞች የተረጋገጠ ነው';
+  static const String evidenceBasedDesc =
+      'ሁሉም የዕፅዋት መረጃ በምርምር እና ባህላዊ ሐኪሞች የተረጋገጠ ነው';
   static const String trustedTitle = 'በባህላዊ ሐኪሞች እና ሳይንስ የታመነ';
   static const String trustedDesc = 'መድረካችን የባህላዊ ጥበብን ከዘመናዊ ማረጋገጫ ጋር ያጣምራል';
 
@@ -63,7 +68,8 @@ class AppStringsAm {
 
   // Recommendations Page
   static const String recommendationsTitle = 'የዕፅዋት ምክሮች';
-  static const String recommendationsSubtitle = 'ለቆዳዎ ችግሮች የተስማሙ የኢትዮጵያ ባህላዊ መፍትሄዎችን ያግኙ';
+  static const String recommendationsSubtitle =
+      'ለቆዳዎ ችግሮች የተስማሙ የኢትዮጵያ ባህላዊ መፍትሄዎችን ያግኙ';
   static const String personalized = 'የግል';
   static const String traditionalWisdom = 'ባህላዊ ጥበብ';
   static const String safeAndNatural = 'ደህና እና ተፈጥሯዊ';
@@ -72,7 +78,8 @@ class AppStringsAm {
   static const String whatAreYourConcerns = 'የቆዳዎ ችግሮች ምንድን ናቸው?';
   static const String selectAllThatApply = 'የሚመለከቱትን ሁሉ ይምረጡ እና የግል ምክሮችን ያግኙ';
   static const String selectYourConcerns = 'የቆዳ ችግሮችዎን ይምረጡ';
-  static const String chooseConditions = 'የሚመለከቱትን ሁሉ ይምረጡ። ለተጨማሪ የግል ምክሮች የከባድነት ደረጃ ይምረጡ';
+  static const String chooseConditions =
+      'የሚመለከቱትን ሁሉ ይምረጡ። ለተጨማሪ የግል ምክሮች የከባድነት ደረጃ ይምረጡ';
   static const String tipsForBestResults = 'ለተሻለ ውጤት ምክሮች';
   static const String tip1 = 'ሙሉ ምክሮችን ለማግኘት ሁሉንም ይምረጡ';
   static const String tip2 = 'የከባድነት ደረጃ ይግለጹ ለተሻለ ምክር';
@@ -88,11 +95,15 @@ class AppStringsAm {
   // About Page
   static const String discoverHerbiSense = 'HerbiSenseን ያውቁ:';
   static const String bridgingWisdom = 'የጥንታዊ ጥበብን ከዘመናዊ ጤና ጋር ማገናኘት';
-  static const String herbiSenseDescription = 'HerbiSense ለሰዎች፣ ለወላጆች እና ለባህላዊ ዕፅዋት ሕክምና ላይ የሚሰሩ ሁሉ የተለየ መድረክ ነው፣ በተለይም ለህፃናት። ተፈጥሯዊ መፍትሄዎችን በዘመናዊ አቀራረብ ለማቅረብ ይረዳል።';
-  static const String herbiSenseMission = 'እውነተኛ እና ሙሉ የሆኑ መፍትሄዎችን እንዲያገኙ እንረዳለን፣ ታሪካዊ ጥበብን እንጠብቃለን።';
+  static const String herbiSenseDescription =
+      'HerbiSense ለሰዎች፣ ለወላጆች እና ለባህላዊ ዕፅዋት ሕክምና ላይ የሚሰሩ ሁሉ የተለየ መድረክ ነው፣ በተለይም ለህፃናት። ተፈጥሯዊ መፍትሄዎችን በዘመናዊ አቀራረብ ለማቅረብ ይረዳል።';
+  static const String herbiSenseMission =
+      'እውነተኛ እና ሙሉ የሆኑ መፍትሄዎችን እንዲያገኙ እንረዳለን፣ ታሪካዊ ጥበብን እንጠብቃለን።';
   static const String ourMission = 'ተልዕኮአችን: ጤናን ማበረታታት እና ባህልን ማስጠበቅ';
-  static const String missionDescription1 = 'ባህላዊ ጥበብን ማሳደግ፣ ማስጠበቅ እና ማካፈል እንፈልጋለን። ተፈጥሯዊ ምርቶች በመጠቀም እውነተኛነትን እና ባህላዊ እሴትን እናመጣለን።';
-  static const String missionDescription2 = 'ከአካባቢ ማህበረሰቦች ጋር በመስራት ባህላዊ እና አካባቢ ተስማሚ ምርቶችን እናቀርባለን።';
+  static const String missionDescription1 =
+      'ባህላዊ ጥበብን ማሳደግ፣ ማስጠበቅ እና ማካፈል እንፈልጋለን። ተፈጥሯዊ ምርቶች በመጠቀም እውነተኛነትን እና ባህላዊ እሴትን እናመጣለን።';
+  static const String missionDescription2 =
+      'ከአካባቢ ማህበረሰቦች ጋር በመስራት ባህላዊ እና አካባቢ ተስማሚ ምርቶችን እናቀርባለን።';
   static const String research = 'ምርምር';
   static const String researchCenter = 'የምርምር ማዕከል';
   static const String ourMethodology = 'የሥራ ዘዴ';
@@ -100,9 +111,11 @@ class AppStringsAm {
   static const String organizationCenter = 'የድርጅት ማዕከል';
   static const String community = 'ማህበረሰብ';
   static const String legacyTitle = 'የኢትዮጵያ ዕፅዋት ባህል ዘላቂ ቅርስ';
-  static const String legacyDescription1 = 'የኢትዮጵያ ዕፅዋት ባህል ከብዙ ዘመናት ጀምሮ የተረፈ ነው። ከትውልድ ወደ ትውልድ ይተላለፋል።';
+  static const String legacyDescription1 =
+      'የኢትዮጵያ ዕፅዋት ባህል ከብዙ ዘመናት ጀምሮ የተረፈ ነው። ከትውልድ ወደ ትውልድ ይተላለፋል።';
   static const String legacyDescription2 = 'ይህን ባህል ለመጠበቅ እና ለማስተዋወቅ ቁርጠኞች ነን።';
-  static const String legacyDescription3 = 'ሙያተኞች በተፈጥሯዊ ንጥረ ነገሮች ተጠቅመው አዲስ እና ባህላዊ መፍትሄዎችን ያቀርባሉ';
+  static const String legacyDescription3 =
+      'ሙያተኞች በተፈጥሯዊ ንጥረ ነገሮች ተጠቅመው አዲስ እና ባህላዊ መፍትሄዎችን ያቀርባሉ';
   static const String traditionalHealing = 'ባህላዊ ሕክምና መጀመሪያ';
   static const String traditionalMedicineCenters = 'የባህላዊ ሕክምና ማዕከላት';
   static const String wholesomeIngredients = 'ጤናማ ተፈጥሯዊ ንጥረ ነገሮች';
@@ -110,14 +123,17 @@ class AppStringsAm {
   static const String digitalPreservation = 'ዲጂታል ጥበቃ';
   static const String digitalPreservationCenters = 'ዲጂታል ማዕከላት';
   static const String accuracyRespectCommunity = 'ትክክለኛነት፣ ክብር እና ማህበረሰብ';
-  static const String valuesDescription = 'ሳይንሳዊ ጥራት፣ ባህላዊ ክብር እና የማህበረሰብ ትብብርን እንቀድማለን። ሌሎች የራሳቸውን ጉዞ እንዲገነቡ እና እንዲጠብቁ እንረዳለን።';
+  static const String valuesDescription =
+      'ሳይንሳዊ ጥራት፣ ባህላዊ ክብር እና የማህበረሰብ ትብብርን እንቀድማለን። ሌሎች የራሳቸውን ጉዞ እንዲገነቡ እና እንዲጠብቁ እንረዳለን።';
   static const String stabilityTips = 'የመረጋጋት ምክሮች';
   static const String culturalInsight = 'ባህላዊ እውቀት';
   static const String balanceHarmony = 'ሚዛን እና ስምምነት';
   static const String shapingFuture = 'የዕፅዋት እውቀት ወደፊት መቀረጽ';
-  static const String futureDescription = 'እየተዳበርን ስንሄድ ዓለም አቀፍ መድረሻችንን እና እውቀታችንን እንጨምራለን።';
+  static const String futureDescription =
+      'እየተዳበርን ስንሄድ ዓለም አቀፍ መድረሻችንን እና እውቀታችንን እንጨምራለን።';
   static const String ourRoadmap = 'የእቅዳችን ካርታ';
-  static const String commitmentStatement = 'ከፍተኛ ጥራት ያላቸው፣ ደህና እና ዘላቂ ምርቶችን ለማቅረብ ቁርጠኞች ነን።';
+  static const String commitmentStatement =
+      'ከፍተኛ ጥራት ያላቸው፣ ደህና እና ዘላቂ ምርቶችን ለማቅረብ ቁርጠኞች ነን።';
 
   // Auth Strings
   static const String appName = 'HerbiSense';
@@ -136,7 +152,8 @@ class AppStringsAm {
 
   // Journey Features
   static const String continueJourney = 'ጉዞዎን ቀጥሉ';
-  static const String journeyDescription = 'የግል ዕፅዋት ምክሮችን፣ የተቀመጡ መፍትሄዎችን ያግኙ እና ባህላዊ የቆዳ እንክብካቤን ይቀጥሉ።';
+  static const String journeyDescription =
+      'የግል ዕፅዋት ምክሮችን፣ የተቀመጡ መፍትሄዎችን ያግኙ እና ባህላዊ የቆዳ እንክብካቤን ይቀጥሉ።';
   static const String personalizedRecommendations = 'የግል ምክሮች';
   static const String tailoredSuggestions = 'የተስማሙ ምክሮችን ያግኙ';
   static const String saveFavorites = 'የሚወዱትን ያስቀምጡ';
@@ -147,7 +164,8 @@ class AppStringsAm {
   // Register Page
   static const String joinEnthusiasts = '10,000+ የዕፅዋት አፍቃሪዎችን ይቀላቀሉ';
   static const String startYourJourney = 'ዛሬ ጉዞዎን ይጀምሩ';
-  static const String createAccountDescription = 'አካውንት ፍጠር እና ሙሉ የዕፅዋት ዝርዝርን ይጠቀሙ፣ የሚወዱትን ያስቀምጡ እና ማህበረሰቡን ይቀላቀሉ።';
+  static const String createAccountDescription =
+      'አካውንት ፍጠር እና ሙሉ የዕፅዋት ዝርዝርን ይጠቀሙ፣ የሚወዱትን ያስቀምጡ እና ማህበረሰቡን ይቀላቀሉ።';
   static const String createAccount = 'አካውንት ፍጠር';
   static const String signUpToExplore = 'ለመመዝገብ ይመዝገቡ';
   static const String fullName = 'ሙሉ ስም';
@@ -203,8 +221,7 @@ class AppStringsAm {
   static const String profileSectionAccount = 'መለያ';
   static const String profileSectionEngage = 'ተሳትፍ';
   static const String profileSectionLibrary = 'ቤተ-መጻሕፍት';
-  static const String profileNotLoggedIn =
-      'አልገቡም። መገለጫዎን ለማየት እባክዎት ይግቡ።';
+  static const String profileNotLoggedIn = 'አልገቡም። መገለጫዎን ለማየት እባክዎት ይግቡ።';
   static const String profileLoadFailed = 'መለያ መጫን አልተሳካም';
   static const String profileSignIn = 'ግባ';
   static const String profileGuest = 'እንግዳ';
@@ -229,4 +246,12 @@ class AppStringsAm {
   static const String feedbackThankYou = 'ግብረ መልስዎን ስጡን እናመሰግናለን!';
   static const String feedbackGenericError = 'ችግኝ ተፈጥሯል። እባክዎ ደግመው ይሞክሩ።';
   static const String feedbackRequired = 'ያስፈልጋል';
+  static const String conditionDetails = 'የሁኔታ ዝርዝር';
+  static const String conditionName = 'የሁኔታ ስም';
+  static const String conditionDescription = 'የሁኔታ መግለጫ';
+  static const String primaryHerb = 'ዋና ዕፅዋት';
+  static const String recommendedHerbs = 'የሚመነጭ ዕፅዋቶች';
+  static const String medicineDescription = 'የህክምና መግለጫ';
+  static const String medicinePreparation = 'የህክምና ለማዘጋጀት';
+  static const String safetyWarning = 'ማስጠንቀቂያ';
 }

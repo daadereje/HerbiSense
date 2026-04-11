@@ -10,6 +10,6 @@ class LanguageNotifier extends StateNotifier<String> {
   LanguageNotifier() : super('eng');
 
   void setLanguage(String code) {
-    state = code;
+    state = code.toLowerCase();
   }
 }

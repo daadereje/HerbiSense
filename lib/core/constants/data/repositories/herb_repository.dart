@@ -34,9 +34,8 @@ class HerbRepository {
     );
     if (response == null) return null;
 
-    final map = response is Map<String, dynamic>
-        ? response
-        : <String, dynamic>{};
+    final map =
+        response is Map<String, dynamic> ? response : <String, dynamic>{};
     final data = map['data'] ?? map;
 
     final herb = HerbModel.fromJson(Map<String, dynamic>.from(data as Map));
@@ -96,7 +95,11 @@ class HerbRepository {
       'or' => 'OM',
       _ => code.toUpperCase(),
     };
-    return {'language': normalized};
+    // Support both `language` and `lang` query keys to match backend variations.
+    return {
+      'language': normalized,
+      'lang': normalized,
+    };
   }
 
   List<Map<String, dynamic>> _unwrapList(dynamic response, String key) {
@@ -158,7 +161,7 @@ class HerbRepository {
     if (language == null ||
         language.toLowerCase() == 'eng' ||
         language.toLowerCase() == 'en') {
-      return herb;
+      return _attachConditionTranslations(herb, language);
     }
 
     try {
@@ -173,7 +176,7 @@ class HerbRepository {
           'id': herb.id,
           'herb_id': herb.id,
         });
-        return herb.copyWith(
+        final herbWithTranslation = herb.copyWith(
           translatedName: translated.translatedName,
           translatedUses: translated.translatedUses,
           translatedPreparation: translated.translatedPreparation,
@@ -181,20 +184,24 @@ class HerbRepository {
           translatedSource: translated.translatedSource ?? translated.source,
           translationLanguage: translated.translationLanguage,
         );
+        return _attachConditionTranslations(herbWithTranslation, language);
       }
     } catch (_) {
       // ignore translation fetch errors
     }
-    return herb;
+    return _attachConditionTranslations(herb, language);
   }
 
   Map<String, dynamic>? _extractTranslation(dynamic resp, {String? language}) {
     if (resp is Map<String, dynamic>) {
       final data = resp['data'] ?? resp['translation'] ?? resp;
       if (data is Map<String, dynamic>) return data;
-      if (data is List && data.isNotEmpty && data.first is Map<String, dynamic>) {
+      if (data is List &&
+          data.isNotEmpty &&
+          data.first is Map<String, dynamic>) {
         if (language != null && language.isNotEmpty) {
-          final target = _langParam(language)['language']?.toString().toLowerCase();
+          final target =
+              _langParam(language)['language']?.toString().toLowerCase();
           final match = data.firstWhere(
             (e) =>
                 e is Map &&
@@ -208,6 +215,69 @@ class HerbRepository {
           if (match is Map<String, dynamic>) {
             return Map<String, dynamic>.from(match);
           }
+        }
+        return Map<String, dynamic>.from(data.first as Map);
+      }
+    }
+    return null;
+  }
+
+  Future<HerbModel> _attachConditionTranslations(
+    HerbModel herb,
+    String? language,
+  ) async {
+    if (language == null ||
+        language.toLowerCase() == 'eng' ||
+        language.toLowerCase() == 'en') {
+      return herb;
+    }
+
+    final translatedConditions =
+        await Future.wait(herb.conditions.map((c) async {
+      if (c.id == null) return c;
+      try {
+        final resp = await _apiClient.get(
+          ApiEndpoints.conditionTranslation(c.id.toString()),
+          queryParams: _langParam(language),
+        );
+        final data = _extractConditionTranslation(resp, language);
+        if (data == null) return c;
+        return c.copyWith(
+          translatedTitle: data['translated_name']?.toString(),
+          translatedDescription: data['translated_description']?.toString(),
+          translationLanguage: data['language']?.toString(),
+        );
+      } catch (_) {
+        return c;
+      }
+    }));
+
+    return herb.copyWith(conditions: translatedConditions);
+  }
+
+  Map<String, dynamic>? _extractConditionTranslation(
+    dynamic resp,
+    String language,
+  ) {
+    if (resp is Map<String, dynamic>) {
+      final data = resp['data'] ?? resp['translation'] ?? resp;
+      if (data is Map<String, dynamic>) return data;
+      if (data is List &&
+          data.isNotEmpty &&
+          data.first is Map<String, dynamic>) {
+        final target = _langParam(language)['language']!.toLowerCase();
+        final match = data.firstWhere(
+          (e) =>
+              e is Map &&
+              (e['language'] ?? e['lang'])
+                      ?.toString()
+                      .toLowerCase()
+                      .startsWith(target) ==
+                  true,
+          orElse: () => null,
+        );
+        if (match is Map<String, dynamic>) {
+          return Map<String, dynamic>.from(match);
         }
         return Map<String, dynamic>.from(data.first as Map);
       }
