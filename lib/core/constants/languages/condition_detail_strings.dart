@@ -11,6 +11,9 @@ class ConditionDetailStrings {
   final String medicineDescription;
   final String medicinePreparation;
   final String safetyWarning;
+  final String rateLabel;
+  final String ratingSubmitted;
+  final String ratingFailed;
 
   const ConditionDetailStrings({
     required this.conditionDetails,
@@ -21,6 +24,9 @@ class ConditionDetailStrings {
     required this.medicineDescription,
     required this.medicinePreparation,
     required this.safetyWarning,
+    required this.rateLabel,
+    required this.ratingSubmitted,
+    required this.ratingFailed,
   });
 
   factory ConditionDetailStrings.fromLanguage(String code) {
@@ -44,6 +50,9 @@ class ConditionDetailStrings {
         medicineDescription: AppStrings.medicineDescription,
         medicinePreparation: AppStrings.medicinePreparation,
         safetyWarning: AppStrings.safetyWarning,
+        rateLabel: AppStrings.rateHerb,
+        ratingSubmitted: AppStrings.ratingSubmitted,
+        ratingFailed: AppStrings.ratingFailed,
       );
 
   static ConditionDetailStrings _fromAm() => ConditionDetailStrings(
@@ -55,6 +64,9 @@ class ConditionDetailStrings {
         medicineDescription: AppStringsAm.medicineDescription,
         medicinePreparation: AppStringsAm.medicinePreparation,
         safetyWarning: AppStringsAm.safetyWarning,
+        rateLabel: AppStringsAm.rateHerb,
+        ratingSubmitted: AppStringsAm.ratingSubmitted,
+        ratingFailed: AppStringsAm.ratingFailed,
       );
 
   static ConditionDetailStrings _fromOr() => ConditionDetailStrings(
@@ -66,5 +78,8 @@ class ConditionDetailStrings {
         medicineDescription: AppStringsOr.medicineDescription,
         medicinePreparation: AppStringsOr.medicinePreparation,
         safetyWarning: AppStringsOr.safetyWarning,
+        rateLabel: AppStringsOr.rateHerb,
+        ratingSubmitted: AppStringsOr.ratingSubmitted,
+        ratingFailed: AppStringsOr.ratingFailed,
       );
 }

@@ -297,6 +297,9 @@ class AppStrings {
   static const String medicinePreparation = 'Medicine Preparation';
   static const String safetyWarning = 'Safety Warning';
   static const String source = 'Source';
+  static const String rateHerb = 'Rate';
+  static const String ratingSubmitted = 'Rating submitted';
+  static const String ratingFailed = 'Rating failed';
   static const String noPreparationInstructions =
       'No preparation instructions provided.';
   static const String noSafetyWarnings = 'No safety warnings provided.';

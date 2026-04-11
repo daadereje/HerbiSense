@@ -4,6 +4,7 @@ import '../../core/constants/colors.dart';
 import '../../core/constants/data/models/skin_concern_model.dart';
 import '../../core/constants/languages/condition_detail_strings.dart';
 import '../../core/state/language_provider.dart';
+import '../../common/network/api_client.dart';
 
 class ConditionDetailScreen extends ConsumerWidget {
   final SkinConcernModel concern;
@@ -187,7 +188,7 @@ class _DetailRow extends StatelessWidget {
   }
 }
 
-class _HerbInfoSection extends StatelessWidget {
+class _HerbInfoSection extends ConsumerStatefulWidget {
   final ConditionHerbModel herb;
   final String language;
   final ConditionDetailStrings strings;
@@ -201,7 +202,71 @@ class _HerbInfoSection extends StatelessWidget {
   });
 
   @override
+  ConsumerState<_HerbInfoSection> createState() => _HerbInfoSectionState();
+}
+
+class _HerbInfoSectionState extends ConsumerState<_HerbInfoSection> {
+  int? _selectedRating;
+
+  Future<void> _submitRating() async {
+    if (widget.herb.id == null || _selectedRating == null) return;
+    final api = ref.read(apiClientProvider);
+    final scaffold = ScaffoldMessenger.of(context);
+    try {
+      await api.post(
+        '/ratings',
+        body: {
+          'herbId': widget.herb.id,
+          'ratingValue': _selectedRating,
+        },
+      );
+      scaffold.showSnackBar(
+        SnackBar(
+          content: Text(widget.strings.ratingSubmitted),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } catch (_) {
+      scaffold.showSnackBar(
+        SnackBar(
+          content: Text(widget.strings.ratingFailed),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
+  }
+
+  Widget _buildStars() {
+    final current = _selectedRating ??
+        (widget.herb.ratingValue != null ? widget.herb.ratingValue!.round() : 0);
+    return Row(
+      children: List.generate(5, (index) {
+        final value = index + 1;
+        final filled = value <= current;
+        return IconButton(
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
+          icon: Icon(
+            filled ? Icons.star : Icons.star_border,
+            color: AppColors.secondaryGreen,
+            size: 22,
+          ),
+          onPressed: () {
+            setState(() {
+              // Toggle off if tapped star is already selected.
+              _selectedRating = (_selectedRating == value) ? null : value;
+            });
+          },
+        );
+      }),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final herb = widget.herb;
+    final language = widget.language;
+    final strings = widget.strings;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -232,7 +297,23 @@ class _HerbInfoSection extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(width: 8),
+            _buildStars(),
           ],
+        ),
+        const SizedBox(height: 8),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: ElevatedButton(
+            onPressed: _selectedRating == null ? null : _submitRating,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.secondaryGreen,
+              foregroundColor: AppColors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              minimumSize: const Size(0, 0),
+            ),
+            child: Text(widget.strings.rateLabel),
+          ),
         ),
         const SizedBox(height: 4),
 
@@ -328,7 +409,7 @@ class _HerbInfoSection extends StatelessWidget {
         ],
 
         // Divider between herbs
-        if (!isLast) ...[
+        if (!widget.isLast) ...[
           const SizedBox(height: 20),
           Divider(color: Colors.grey.shade300, thickness: 1),
           const SizedBox(height: 20),

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/data/repositories/auth_repository.dart';
+import '../../../common/network/api_exception.dart';
 
 final loginViewModelProvider = StateNotifierProvider<LoginViewModel, LoginState>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
@@ -37,9 +38,15 @@ class LoginViewModel extends StateNotifier<LoginState> {
       } else {
         state = state.copyWith(
           isLoading: false,
-          error: 'Invalid email or password',
+          error: 'invalid credential',
         );
       }
+    } on ApiException catch (e) {
+      final isAuthError = e.statusCode == 400 || e.statusCode == 401;
+      state = state.copyWith(
+        isLoading: false,
+        error: isAuthError ? 'invalid credential' : e.message,
+      );
     } catch (e) {
       state = state.copyWith(
         isLoading: false,

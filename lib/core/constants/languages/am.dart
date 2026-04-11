@@ -254,4 +254,7 @@ class AppStringsAm {
   static const String medicineDescription = 'የህክምና መግለጫ';
   static const String medicinePreparation = 'የህክምና ለማዘጋጀት';
   static const String safetyWarning = 'ማስጠንቀቂያ';
+  static const String rateHerb = 'ደረጃ ስጥ';
+  static const String ratingSubmitted = 'ደረጃ ተልኳል';
+  static const String ratingFailed = 'ደረጃ አልተላከም';
 }

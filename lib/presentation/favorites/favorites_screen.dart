@@ -15,6 +15,8 @@ import 'package:herbisense/presentation/discover/herb_detail_screen.dart';
 import 'package:herbisense/core/constants/data/models/herb_model.dart';
 
 final favoritesProvider = FutureProvider<List<FavoriteModel>>((ref) {
+  // Re-run when language changes so translated herb names/strings refresh in UI.
+  ref.watch(languageProvider);
   final repo = ref.read(favoritesRepositoryProvider);
   return repo.getFavorites();
 });
@@ -226,166 +228,162 @@ class _HerbListTile extends ConsumerWidget {
   final FavoritesStrings strings;
   const _HerbListTile({required this.herb, required this.favoriteId, required this.strings});
 
+  void _openHerbDetail(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => HerbDetailScreen(herb: herb)),
+    );
+  }
+
+  Future<void> _unfavorite(BuildContext context, WidgetRef ref) async {
+    final apiClient = ref.read(apiClientProvider);
+    final parsedId = int.tryParse(favoriteId);
+    try {
+      await apiClient.delete('${ApiEndpoints.favorites}/${parsedId ?? favoriteId}');
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(strings.favoritesRemovedSnack),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+        ref.invalidate(favoritesProvider);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${strings.favoritesRemoveFailSnack}: $e'),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final apiClient = ref.read(apiClientProvider);
     final language = ref.watch(languageProvider);
-    return InkWell(
+    return Material(
+      color: Colors.transparent,
       borderRadius: BorderRadius.circular(14),
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => HerbDetailScreen(herb: herb)),
-        );
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.cardBorder),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.06),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        padding: const EdgeInsets.all(10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: SizedBox(
-                    width: 96,
-                    height: 96,
-                    child: _MiniImage(url: herb.imageUrl),
-                  ),
-                ),
-                Positioned(
-                  top: 4,
-                  right: 4,
-                  child: Material(
-                    color: Colors.black45,
-                    shape: const CircleBorder(),
-                    child: InkWell(
-                      customBorder: const CircleBorder(),
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => HerbDetailScreen(herb: herb),
-                          ),
-                        );
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(6),
-                        child: Icon(
-                          Icons.open_in_new,
-                          size: 16,
-                          color: Colors.white,
-                        ),
-                      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: () => _openHerbDetail(context),
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: AppColors.cardBorder),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.06),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.favorite, color: Colors.redAccent),
+                tooltip: strings.favoritesRemoveTooltip,
+                onPressed: () => _unfavorite(context, ref),
+              ),
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: SizedBox(
+                      width: 96,
+                      height: 96,
+                      child: _MiniImage(url: herb.imageUrl),
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        herb.nameFor(language),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 15,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    herb.scientificName,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontStyle: FontStyle.italic,
-                      color: AppColors.secondaryGreen,
-                      fontSize: 13,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      Icon(
-                        herb.isVerified ? Icons.verified : Icons.eco_outlined,
-                        size: 16,
-                        color: AppColors.secondaryGreen,
-                      ),
-                      const SizedBox(width: 6),
-                      Flexible(
-                        child: Text(
-                          herb.category,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: AppColors.textSecondary,
+                  Positioned(
+                    top: 4,
+                    right: 4,
+                    child: Material(
+                      color: Colors.black45,
+                      shape: const CircleBorder(),
+                      child: InkWell(
+                        customBorder: const CircleBorder(),
+                        onTap: () => _openHerbDetail(context),
+                        child: const Padding(
+                          padding: EdgeInsets.all(6),
+                          child: Icon(
+                            Icons.open_in_new,
+                            size: 16,
+                            color: Colors.white,
                           ),
                         ),
                       ),
-                    ],
+                    ),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(width: 6),
-            const Icon(Icons.chevron_right, color: Colors.grey),
-            IconButton(
-              icon: const Icon(Icons.open_in_new,
-                  color: AppColors.secondaryGreen),
-              tooltip: strings.favoritesOpenTooltip,
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (_) => HerbDetailScreen(herb: herb)),
-                );
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.favorite, color: Colors.redAccent),
-              tooltip: strings.favoritesRemoveTooltip,
-              onPressed: () async {
-                final parsedId = int.tryParse(favoriteId);
-                try {
-                  await apiClient.delete(
-                      '${ApiEndpoints.favorites}/${parsedId ?? favoriteId}');
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(strings.favoritesRemovedSnack),
-                        duration: const Duration(seconds: 2),
+              const SizedBox(width: 12),
+              Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          herb.nameFor(language),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
+                        color: AppColors.textPrimary,
                       ),
-                    );
-                    ref.invalidate(favoritesProvider);
-                  }
-                } catch (e) {
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('${strings.favoritesRemoveFailSnack}: $e'),
-                        duration: const Duration(seconds: 3),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      herb.scientificName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontStyle: FontStyle.italic,
+                        color: AppColors.secondaryGreen,
+                        fontSize: 13,
                       ),
-                    );
-                  }
-                }
-              },
-            ),
-          ],
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Icon(
+                          herb.isVerified ? Icons.verified : Icons.eco_outlined,
+                          size: 16,
+                          color: AppColors.secondaryGreen,
+                        ),
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: Text(
+                            herb.category,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 6),
+              const Icon(Icons.chevron_right, color: Colors.grey),
+              IconButton(
+                icon: const Icon(Icons.open_in_new,
+                    color: AppColors.secondaryGreen),
+                tooltip: strings.favoritesOpenTooltip,
+                onPressed: () => _openHerbDetail(context),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -270,4 +270,7 @@ class AppStringsOr {
   static const String medicineDescription = 'Ibsa Qoricha';
   static const String medicinePreparation = 'Haala qophii';
   static const String safetyWarning = 'Akeekkachiisa';
+  static const String rateHerb = 'Sadarkaa kenni';
+  static const String ratingSubmitted = 'Sadarkaan ergame';
+  static const String ratingFailed = 'Sadarkaa ergamuu dide';
 }
