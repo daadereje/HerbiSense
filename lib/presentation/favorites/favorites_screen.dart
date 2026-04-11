@@ -8,24 +8,15 @@ import 'package:herbisense/core/widgets/cards/info_card.dart';
 import 'package:herbisense/core/state/language_provider.dart';
 import 'package:herbisense/core/widgets/navigation/app_bottom_nav_bar.dart';
 import 'package:herbisense/core/widgets/shared/header_widget.dart';
-import 'package:herbisense/core/constants/data/models/favorite_model.dart';
 import 'package:herbisense/core/constants/data/repositories/favorites_repository.dart';
-import 'package:herbisense/core/constants/data/repositories/herb_repository.dart';
 import 'package:herbisense/presentation/discover/herb_detail_screen.dart';
 import 'package:herbisense/core/constants/data/models/herb_model.dart';
 
-final favoritesProvider = FutureProvider<List<FavoriteModel>>((ref) {
+final favoritesProvider = FutureProvider.autoDispose<List<HerbModel>>((ref) {
   // Re-run when language changes so translated herb names/strings refresh in UI.
-  ref.watch(languageProvider);
-  final repo = ref.read(favoritesRepositoryProvider);
-  return repo.getFavorites();
-});
-
-final favoriteHerbProvider =
-    FutureProvider.family<HerbModel?, int>((ref, herbId) async {
   final language = ref.watch(languageProvider);
-  final repo = ref.read(herbRepositoryProvider);
-  return repo.getHerbById(herbId.toString(), language: language);
+  final repo = ref.read(favoritesRepositoryProvider);
+  return repo.getFavoriteHerbs(language: language);
 });
 
 class FavoritesScreen extends ConsumerWidget {
@@ -77,9 +68,13 @@ class FavoritesScreen extends ConsumerWidget {
                           _buildSummary(favorites.length, strings),
                           const SizedBox(height: 16),
                           ...favorites.map(
-                            (item) => Padding(
+                            (herb) => Padding(
                               padding: const EdgeInsets.only(bottom: 14),
-                              child: _FavoriteHerbTile(item: item),
+                              child: _HerbListTile(
+                                herb: herb,
+                                favoriteId: herb.id,
+                                strings: strings,
+                              ),
                             ),
                           ),
                         ],
@@ -172,52 +167,6 @@ class FavoritesScreen extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _FavoriteHerbTile extends ConsumerWidget {
-  final FavoriteModel item;
-  const _FavoriteHerbTile({required this.item});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final language = ref.watch(languageProvider);
-    final strings = FavoritesStrings.fromLanguage(language);
-    if (item.herbId == null) {
-      return InfoCard(
-        title: item.name,
-        description: item.description,
-        tags: item.tags,
-        extra: item.extraNote,
-      );
-    }
-
-    final herbAsync = ref.watch(favoriteHerbProvider(item.herbId!));
-
-    return herbAsync.when(
-      loading: () => const _SkeletonTile(),
-      error: (_, __) => InfoCard(
-        title: item.name,
-        description: strings.favoritesLinkedHerbError,
-        tags: item.tags,
-        extra: item.extraNote,
-      ),
-      data: (herb) {
-        if (herb == null) {
-          return InfoCard(
-            title: item.name,
-            description: strings.favoritesHerbNotFound,
-            tags: item.tags,
-            extra: item.extraNote,
-          );
-        }
-        return _HerbListTile(
-          herb: herb,
-          favoriteId: item.id.toString(),
-          strings: strings,
-        );
-      },
     );
   }
 }
@@ -324,25 +273,36 @@ class _HerbListTile extends ConsumerWidget {
                 ],
               ),
               const SizedBox(width: 12),
-              Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          herb.nameFor(language),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15,
-                        color: AppColors.textPrimary,
-                      ),
+            Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        herb.nameFor(language),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 15,
+                      color: AppColors.textPrimary,
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      herb.scientificName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    herb.usesFor(language),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
+                      height: 1.3,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    herb.scientificName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontStyle: FontStyle.italic,
                         color: AppColors.secondaryGreen,
